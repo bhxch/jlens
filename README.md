@@ -6,6 +6,9 @@ A Model Context Protocol (MCP) server for inspecting Java classes and Maven depe
 
 - **Java Class Inspection**: Inspect Java classes with bytecode analysis, reflection, and decompilation
 - **Maven Dependency Resolution**: List and analyze Maven module dependencies
+- **Class Search**: Search for classes across packages and dependencies
+- **Module Building**: Build Maven modules and download missing dependencies
+- **Intelligent Package Resolution**: AI-friendly class package resolution with context awareness
 - **Virtual Thread Support**: High-performance concurrent processing using Java 21+ virtual threads
 - **Multiple Decompilers**: Support for Fernflower, CFR, and Vineflower decompilers
 - **Caching**: Built-in Caffeine caching for improved performance
@@ -149,6 +152,99 @@ List dependencies for a Maven module.
 }
 ```
 
+### search_java_class
+
+Search for Java classes across packages and dependencies.
+
+**Parameters:**
+
+- classNamePattern (string, required): Class name pattern (supports wildcards: *, ?)
+- sourceFilePath (string, optional): Source file path for context
+- searchType (string, optional): Search type - "exact", "prefix", "suffix", "contains", or "wildcard" (default: "wildcard")
+- limit (integer, optional): Maximum number of results to return (default: 50)
+
+**Example Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "search_java_class",
+    "arguments": {
+      "classNamePattern": "List",
+      "searchType": "wildcard",
+      "limit": 10
+    }
+  }
+}
+```
+
+**Example Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"results\": [\n    {\n      \"className\": \"java.util.List\",\n      \"simpleName\": \"List\",\n      \"package\": \"java.util\",\n      \"dependency\": \"JDK\",\n      \"inClasspath\": true\n    },\n    {\n      \"className\": \"java.awt.List\",\n      \"simpleName\": \"List\",\n      \"package\": \"java.awt\",\n      \"dependency\": \"JDK\",\n      \"inClasspath\": true\n    }\n  ],\n  \"totalResults\": 2,\n  \"hasMissingDependencies\": false\n}"
+      }
+    ],
+    "isError": false
+  }
+}
+```
+
+### build_module
+
+Build Maven module and download missing dependencies.
+
+**Parameters:**
+
+- sourceFilePath (string, required): Source file path for module context
+- goals (array, optional): Maven goals to execute (default: ["compile", "dependency:resolve"])
+- downloadSources (boolean, optional): Whether to download source JARs (default: false)
+- timeoutSeconds (integer, optional): Build timeout in seconds (default: 300)
+
+**Example Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "build_module",
+    "arguments": {
+      "sourceFilePath": "src/main/java/io/github/bhxch/mcp/javastub/Main.java",
+      "downloadSources": true
+    }
+  }
+}
+```
+
+**Example Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": true,\n  \"exitCode\": 0,\n  \"durationSeconds\": 5.2,\n  \"output\": \"[INFO] BUILD SUCCESS\",\n  \"downloadedArtifacts\": [],\n  \"suggestion\": \"Build completed successfully. You can now inspect classes from the downloaded dependencies.\"\n}"
+      }
+    ],
+    "isError": false
+  }
+}
+```
+
 ## MCP Protocol Flow
 
 1. **Initialize**: Client sends initialize request
@@ -199,7 +295,9 @@ io.github.bhxch.mcp.javastub/
 │   ├── JavaClasspathServer.java       # Main server class using MCP SDK
 │   └── handlers/                      # Tool handlers
 │       ├── InspectJavaClassHandler.java
-│       └── ListModuleDependenciesHandler.java
+│       ├── ListModuleDependenciesHandler.java
+│       ├── SearchJavaClassHandler.java
+│       └── BuildModuleHandler.java
 ├── maven/                             # Maven integration
 │   ├── resolver/
 │   │   ├── MavenResolverFactory.java
@@ -222,8 +320,15 @@ io.github.bhxch.mcp.javastub/
 │       ├── ClassMetadata.java
 │       ├── MethodInfo.java
 │       └── FieldInfo.java
-└── cache/                             # Caching module
-    └── CacheManager.java
+├── cache/                             # Caching module
+│   └── CacheManager.java
+├── classpath/                         # Classpath and package resolution
+│   └── PackageMappingResolver.java
+├── dependency/                        # Dependency management
+│   ├── DependencyManager.java
+│   └── MavenBuilder.java
+└── intelligence/                      # AI interaction intelligence
+    └── BuildPromptGenerator.java
 
 ```
 

@@ -13,24 +13,37 @@ public class ModuleContext {
 
     private final Path pomFile;
     private final Path baseDirectory;
+    private final Path projectRoot;
+    private final Path localRepository;
+    private final Scope scope;
+    private final List<String> activeProfiles;
     private final String groupId;
     private final String artifactId;
     private final String version;
     private final String packaging;
     private final List<DependencyInfo> dependencies;
     private final List<Path> classpath;
+    private final List<Path> classpathJars;
+    private final List<Path> sourceJars;
     private final Path outputDirectory;
     private final Path testOutputDirectory;
 
     private ModuleContext(Builder builder) {
         this.pomFile = builder.pomFile;
         this.baseDirectory = builder.baseDirectory;
+        this.projectRoot = builder.projectRoot != null ? builder.projectRoot : builder.baseDirectory;
+        this.localRepository = builder.localRepository;
+        this.scope = builder.scope != null ? builder.scope : Scope.COMPILE;
+        this.activeProfiles = builder.activeProfiles != null ? 
+            List.copyOf(builder.activeProfiles) : List.of();
         this.groupId = builder.groupId;
         this.artifactId = builder.artifactId;
         this.version = builder.version;
         this.packaging = builder.packaging;
         this.dependencies = Collections.unmodifiableList(new ArrayList<>(builder.dependencies));
         this.classpath = Collections.unmodifiableList(new ArrayList<>(builder.classpath));
+        this.classpathJars = Collections.unmodifiableList(new ArrayList<>(builder.classpathJars));
+        this.sourceJars = Collections.unmodifiableList(new ArrayList<>(builder.sourceJars));
         this.outputDirectory = builder.outputDirectory;
         this.testOutputDirectory = builder.testOutputDirectory;
     }
@@ -41,6 +54,26 @@ public class ModuleContext {
 
     public Path getBaseDirectory() {
         return baseDirectory;
+    }
+
+    public Path getModuleRoot() {
+        return baseDirectory;
+    }
+
+    public Path getProjectRoot() {
+        return projectRoot;
+    }
+
+    public Path getLocalRepository() {
+        return localRepository;
+    }
+
+    public Scope getScope() {
+        return scope;
+    }
+
+    public List<String> getActiveProfiles() {
+        return activeProfiles;
     }
 
     public String getGroupId() {
@@ -65,6 +98,14 @@ public class ModuleContext {
 
     public List<Path> getClasspath() {
         return classpath;
+    }
+
+    public List<Path> getClasspathJars() {
+        return classpathJars;
+    }
+
+    public List<Path> getSourceJars() {
+        return sourceJars;
     }
 
     public Path getOutputDirectory() {
@@ -115,12 +156,18 @@ public class ModuleContext {
     public static class Builder {
         private Path pomFile;
         private Path baseDirectory;
+        private Path projectRoot;
+        private Path localRepository;
+        private Scope scope = Scope.COMPILE;
+        private List<String> activeProfiles = new ArrayList<>();
         private String groupId;
         private String artifactId;
         private String version;
         private String packaging = "jar";
         private List<DependencyInfo> dependencies = new ArrayList<>();
         private List<Path> classpath = new ArrayList<>();
+        private List<Path> classpathJars = new ArrayList<>();
+        private List<Path> sourceJars = new ArrayList<>();
         private Path outputDirectory;
         private Path testOutputDirectory;
 
@@ -131,6 +178,31 @@ public class ModuleContext {
 
         public Builder baseDirectory(Path baseDirectory) {
             this.baseDirectory = baseDirectory;
+            return this;
+        }
+
+        public Builder projectRoot(Path projectRoot) {
+            this.projectRoot = projectRoot;
+            return this;
+        }
+
+        public Builder localRepository(Path localRepository) {
+            this.localRepository = localRepository;
+            return this;
+        }
+
+        public Builder scope(Scope scope) {
+            this.scope = scope;
+            return this;
+        }
+
+        public Builder activeProfile(String profile) {
+            this.activeProfiles.add(profile);
+            return this;
+        }
+
+        public Builder activeProfiles(List<String> profiles) {
+            this.activeProfiles = new ArrayList<>(profiles);
             return this;
         }
 
@@ -171,6 +243,26 @@ public class ModuleContext {
 
         public Builder classpath(List<Path> classpath) {
             this.classpath = new ArrayList<>(classpath);
+            return this;
+        }
+
+        public Builder addClasspathJar(Path jarPath) {
+            this.classpathJars.add(jarPath);
+            return this;
+        }
+
+        public Builder classpathJars(List<Path> classpathJars) {
+            this.classpathJars = new ArrayList<>(classpathJars);
+            return this;
+        }
+
+        public Builder addSourceJar(Path jarPath) {
+            this.sourceJars.add(jarPath);
+            return this;
+        }
+
+        public Builder sourceJars(List<Path> sourceJars) {
+            this.sourceJars = new ArrayList<>(sourceJars);
             return this;
         }
 

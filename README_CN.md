@@ -6,6 +6,9 @@
 
 - **Java 类检查**：通过字节码分析、反射和反编译检查 Java 类
 - **Maven 依赖解析**：列出和分析 Maven 模块依赖
+- **类搜索**：跨包和依赖搜索 Java 类
+- **模块构建**：构建 Maven 模块并下载缺失依赖
+- **智能包解析**：AI 友好的类包解析，具有上下文感知能力
 - **虚拟线程支持**：使用 Java 21+ 虚拟线程实现高性能并发处理
 - **多种反编译器**：支持 Fernflower、CFR 和 Vineflower 反编译器
 - **缓存**：内置 Caffeine 缓存以提高性能
@@ -149,6 +152,99 @@ mcp-client exec java -jar target/javastub-mcp-server-1.0.0-SNAPSHOT.jar
 }
 ```
 
+### search_java_class
+
+跨包和依赖搜索 Java 类。
+
+**参数：**
+
+- classNamePattern（字符串，必需）：类名模式（支持通配符：*、?）
+- sourceFilePath（字符串，可选）：源文件路径，用于上下文
+- searchType（字符串，可选）：搜索类型 - "exact"、"prefix"、"suffix"、"contains" 或 "wildcard"（默认："wildcard"）
+- limit（整数，可选）：返回的最大结果数（默认：50）
+
+**示例请求：**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "search_java_class",
+    "arguments": {
+      "classNamePattern": "List",
+      "searchType": "wildcard",
+      "limit": 10
+    }
+  }
+}
+```
+
+**示例响应：**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"results\": [\n    {\n      \"className\": \"java.util.List\",\n      \"simpleName\": \"List\",\n      \"package\": \"java.util\",\n      \"dependency\": \"JDK\",\n      \"inClasspath\": true\n    },\n    {\n      \"className\": \"java.awt.List\",\n      \"simpleName\": \"List\",\n      \"package\": \"java.awt\",\n      \"dependency\": \"JDK\",\n      \"inClasspath\": true\n    }\n  ],\n  \"totalResults\": 2,\n  \"hasMissingDependencies\": false\n}"
+      }
+    ],
+    "isError": false
+  }
+}
+```
+
+### build_module
+
+构建 Maven 模块并下载缺失依赖。
+
+**参数：**
+
+- sourceFilePath（字符串，必需）：源文件路径，用于模块上下文
+- goals（数组，可选）：要执行的 Maven 目标（默认：["compile", "dependency:resolve"]）
+- downloadSources（布尔值，可选）：是否下载源 JAR（默认：false）
+- timeoutSeconds（整数，可选）：构建超时时间（秒）（默认：300）
+
+**示例请求：**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "build_module",
+    "arguments": {
+      "sourceFilePath": "src/main/java/io/github/bhxch/mcp/javastub/Main.java",
+      "downloadSources": true
+    }
+  }
+}
+```
+
+**示例响应：**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": true,\n  \"exitCode\": 0,\n  \"durationSeconds\": 5.2,\n  \"output\": \"[INFO] BUILD SUCCESS\",\n  \"downloadedArtifacts\": [],\n  \"suggestion\": \"Build completed successfully. You can now inspect classes from the downloaded dependencies.\"\n}"
+      }
+    ],
+    "isError": false
+  }
+}
+```
+
 ## MCP 协议流程
 
 1. **初始化**：客户端发送 initialize 请求
@@ -199,7 +295,9 @@ io.github.bhxch.mcp.javastub/
 │   ├── JavaClasspathServer.java       # 使用 MCP SDK 的主服务器类
 │   └── handlers/                      # 工具处理器
 │       ├── InspectJavaClassHandler.java
-│       └── ListModuleDependenciesHandler.java
+│       ├── ListModuleDependenciesHandler.java
+│       ├── SearchJavaClassHandler.java
+│       └── BuildModuleHandler.java
 ├── maven/                             # Maven 集成
 │   ├── resolver/
 │   │   ├── MavenResolverFactory.java
@@ -222,8 +320,15 @@ io.github.bhxch.mcp.javastub/
 │       ├── ClassMetadata.java
 │       ├── MethodInfo.java
 │       └── FieldInfo.java
-└── cache/                             # 缓存模块
-    └── CacheManager.java
+├── cache/                             # 缓存模块
+│   └── CacheManager.java
+├── classpath/                         # 类路径和包解析
+│   └── PackageMappingResolver.java
+├── dependency/                        # 依赖管理
+│   ├── DependencyManager.java
+│   └── MavenBuilder.java
+└── intelligence/                      # AI 交互智能
+    └── BuildPromptGenerator.java
 
 ```
 

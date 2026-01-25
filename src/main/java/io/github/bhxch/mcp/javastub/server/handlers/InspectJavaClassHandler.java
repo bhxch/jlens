@@ -96,6 +96,14 @@ public class InspectJavaClassHandler {
             // Inspect the class
             ClassMetadata metadata = inspector.inspect(className, context, detailLevel, null);
 
+            // Check if the class exists
+            if (!isClassExists(className, context)) {
+                return CallToolResult.builder()
+                    .content(List.of(new TextContent("Error: Class '" + className + "' not found in classpath")))
+                    .isError(true)
+                    .build();
+            }
+
             // Return the result
             return CallToolResult.builder()
                 .content(List.of(new TextContent(metadata.toString())))
@@ -138,5 +146,26 @@ public class InspectJavaClassHandler {
             }
         }
         return null;
+    }
+
+    /**
+     * Check if a class exists in the classpath
+     */
+    private boolean isClassExists(String className, ModuleContext context) {
+        try {
+            // Try to load the class using Class.forName
+            Class<?> clazz = Class.forName(className);
+            return clazz != null;
+        } catch (ClassNotFoundException e) {
+            // Class not found
+            return false;
+        } catch (NoClassDefFoundError e) {
+            // Class found but dependencies missing
+            return true;
+        } catch (Exception e) {
+            // Other errors, assume class doesn't exist
+            logger.warn("Error checking class existence: " + className, e);
+            return false;
+        }
     }
 }
