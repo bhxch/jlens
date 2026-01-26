@@ -8,24 +8,20 @@ A Model Context Protocol (MCP) server for inspecting Java classes and Maven depe
 
 All features are implemented, tested, and ready for production deployment.
 
-- **4 MCP Tools**: All tools fully functional
+- **4 MCP Tools**: All tools fully functional with standardized JSON output
 - **100% Test Pass Rate**: 25/25 end-to-end tests, 19/19 integration tests, 8/8 MCP Inspector tests
 - **MCP Compliant**: Fully compliant with MCP 2024-11-05 specification
-- **Performance Optimized**: 64.07s response time (acceptable for production)
-- **MCP Inspector Verified**: Successfully tested with MCP Inspector CLI mode
+- **Performance Optimized**: Real reflection-based inspection with caching
+- **MCP Inspector Verified**: Successfully tested with MCP Inspector CLI mode (JSON format)
 
 ## Features
 
-- **Java Class Inspection**: Inspect Java classes with bytecode analysis, reflection, and decompilation
-- **Maven Dependency Resolution**: List and analyze Maven module dependencies
+- **Java Class Inspection**: Inspect Java classes with real reflection analysis, bytecode analysis, and decompilation
+- **Maven Dependency Resolution**: List and analyze Maven module dependencies (JSON format)
 - **Class Search**: Search for classes across packages and dependencies
 - **Module Building**: Build Maven modules and download missing dependencies
 - **Intelligent Package Resolution**: AI-friendly class package resolution with context awareness
-- **Virtual Thread Support**: High-performance concurrent processing using Java 21+ virtual threads
-- **Multiple Decompilers**: Support for Fernflower, CFR, and Vineflower decompilers
-- **Caching**: Built-in Caffeine caching for improved performance
-- **MCP Protocol Compliant**: Fully compliant with MCP 2024-11-05 specification
-- **MCP Java SDK**: Built on official MCP Java SDK 0.17.2
+- **Standardized Output**: Consistent JSON format for all tool outputs and errors
 
 ## Requirements
 

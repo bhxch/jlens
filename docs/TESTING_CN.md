@@ -85,7 +85,7 @@ powershell -ExecutionPolicy Bypass -File test_mcp_inspector_simple.ps1
 - search_java_class：2 个测试
 - build_module：1 个测试
 
-**注意**：这些测试使用 MCP Inspector CLI 来验证 MCP 协议兼容性和工具功能，在真实测试环境中进行。
+**注意**：这些测试使用 MCP Inspector CLI 来验证 MCP 协议兼容性和工具功能，在真实测试环境中进行。所有工具现在均返回标准化的 JSON 输出，以实现最佳兼容性。
 
 详细测试说明请参见 `MCP_INSPECTOR_INTEGRATION_GUIDE.md`。
 

@@ -85,7 +85,7 @@ powershell -ExecutionPolicy Bypass -File test_mcp_inspector_simple.ps1
 - search_java_class: 2 tests
 - build_module: 1 test
 
-**Note**: These tests use MCP Inspector CLI to verify MCP protocol compliance and tool functionality in a real-world testing environment.
+**Note**: These tests use MCP Inspector CLI to verify MCP protocol compliance and tool functionality in a real-world testing environment. All tools now return standardized JSON output for optimal compatibility.
 
 See `MCP_INSPECTOR_INTEGRATION_GUIDE.md` for detailed testing instructions.
 

@@ -18,9 +18,10 @@
 验证 javastub-mcp-server 在 MCP Inspector CLI 模式下的完整功能，确保：
 
 1. 服务器正确初始化并返回所有工具定义
-2. 所有 MCP 工具功能正常
-3. 错误处理机制正常工作
+2. 所有 MCP 工具功能正常（返回标准化的 JSON 元数据）
+3. 错误处理机制正常工作（包含标准化的错误代码）
 4. 符合 MCP 协议规范
+5. 提供真实的类检查数据（基于 Java 反射）
 
 ### 1.2 测试范围
 
@@ -204,23 +205,25 @@ npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\javastub\mcp-in
 
 ✅ **inspect_java_class**
 - 成功检查标准 Java 类
-- 正确返回类元数据
+- 正确返回真实的类元数据（基于反射）
+- 结果以标准化的 JSON 格式返回
 - 支持不同类名
 
 ✅ **list_module_dependencies**
 - 成功解析 pom.xml
 - 正确列出所有依赖
+- 结果以标准化的 JSON 格式返回
 - 依赖信息完整
 
 ✅ **search_java_class**
 - 通配符搜索正常
 - 前缀搜索正常
-- 返回正确的搜索结果
+- 返回正确的搜索结果（JSON 格式）
 
 ✅ **build_module**
 - 成功执行 Maven 构建
 - 正确处理构建输出
-- 错误处理正常
+- 错误处理正常（包含错误代码）
 
 ### 5.3 MCP 协议符合性
 

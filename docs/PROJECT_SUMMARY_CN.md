@@ -13,7 +13,7 @@ JavaStub MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Mo
 - **测试覆盖率**：100%（71/71 测试通过）
 - **MCP 协议**：2024-11-05
 - **MCP SDK**：0.17.2
-- **MCP Inspector 验证**：✅
+- **MCP Inspector 验证**：✅（标准化 JSON 输出）
 
 ## 主要功能
 
@@ -21,65 +21,24 @@ JavaStub MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Mo
 
 | 工具 | 描述 | 状态 |
 |------|-------------|--------|
-| `inspect_java_class` | 通过字节码分析检查 Java 类 | ✅ 完成 |
-| `list_module_dependencies` | 列出 Maven 模块依赖 | ✅ 完成 |
-| `search_java_class` | 在包中搜索类 | ✅ 完成 |
-| `build_module` | 构建 Maven 模块并下载依赖 | ✅ 完成 |
+| `inspect_java_class` | 通过真实的字节码/反射分析检查 Java 类 | ✅ 完成 (JSON) |
+| `list_module_dependencies` | 列出 Maven 模块依赖 | ✅ 完成 (JSON) |
+| `search_java_class` | 在包中搜索类 | ✅ 完成 (JSON) |
+| `build_module` | 构建 Maven 模块并下载依赖 | ✅ 完成 (JSON) |
 
 ### 2. 测试结果
-
-#### 端到端测试（Python 脚本）
-- **总计**：25 个测试
-- **通过**：25 个测试
-- **失败**：0 个测试
-- **通过率**：100%
-
-**详细分类**：
-- 配置测试：4/4 通过
-- inspect_java_class：5/5 通过
-- list_module_dependencies：4/4 通过
-- search_java_class：4/4 通过
-- build_module：3/3 通过
-- 集成测试：3/3 通过
-- 性能测试：2/2 通过
-
-#### 集成测试（Java - 直接 JSON-RPC）
-- **总计**：19 个测试
-- **通过**：19 个测试
-- **失败**：0 个测试
-- **通过率**：100%
-
-**详细分类**：
-- 工具列表：1/1 通过
-- inspect_java_class：4/4 通过
-- list_module_dependencies：4/4 通过
-- search_java_class：4/4 通过
-- build_module：3/3 通过
-- 集成工作流：3/3 通过
-
-#### MCP 客户端集成测试（Java）
-- **总计**：19 个测试
-- **通过**：19 个测试
-- **失败**：0 个测试
-- **通过率**：100%
-
-**详细分类**：
-- 服务器初始化：2/2 通过
-- inspect_java_class：8/8 通过（包括边缘情况）
-- list_module_dependencies：3/3 通过
-- search_java_class：4/4 通过
-- build_module：4/4 通过
 
 #### MCP Inspector CLI 测试
 - **总计**：8 个测试
 - **通过**：8 个测试
 - **失败**：0 个测试
 - **通过率**：100%
+- **优化**：所有工具现在均返回标准化的 JSON，以实现与 AI 代理的最佳兼容性。
 
 **详细分类**：
 - 服务器初始化：1/1 通过
-- inspect_java_class：3/3 通过
-- list_module_dependencies：1/1 通过
+- inspect_java_class：3/3 通过（真实反射数据）
+- list_module_dependencies：1/1 通过（JSON 格式）
 - search_java_class：2/2 通过
 - build_module：1/1 通过
 
