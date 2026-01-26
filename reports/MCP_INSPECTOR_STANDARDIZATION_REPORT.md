@@ -43,7 +43,7 @@ File: `config/mcp-inspector-config.json`
       "command": "java",
       "args": [
         "-jar",
-        "/path/to/jlens\\target\\jlens-mcp-server-1.0.0-SNAPSHOT.jar"
+        "/path/to/jlens/target//jlens-mcp-server-1.0.0-SNAPSHOT.jar"
       ]
     }
   }
@@ -72,6 +72,9 @@ powershell -ExecutionPolicy Bypass -File scripts/test_mcp_inspector_simple.ps1
 ## 5. Conclusion
 
 The `jlens-mcp-server` is now fully standardized for MCP Inspector integration. All tools return consistent JSON metadata, error handling is robust with specific codes, and class inspection provides real reflection-based data. Integration tests confirm 100% pass rate with the new format.
+
+
+
 
 
 

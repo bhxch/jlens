@@ -162,7 +162,7 @@
 ✅ **成功**: 所有测试文件编译成功，无错误。
 
 ```
-[INFO] Compiling 11 source files with javac [debug target=17] to target\test-classes
+[INFO] Compiling 11 source files with javac [debug target=17] to target/test-classes
 ```
 
 ## 新的 MCP 工具
@@ -312,3 +312,4 @@ PLAN_2.md 的实施已**成功完成并经过测试**。所有新组件都已实
 这些功能通过提供关于构建项目、解决类模糊性和管理依赖的明确指导，显著提高了 AI 处理 Java 项目的能力。
 
 **项目状态：已准备好用于生产环境**
+

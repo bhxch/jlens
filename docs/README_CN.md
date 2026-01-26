@@ -80,13 +80,28 @@ java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 }
 ```
 
+### Gemini CLI
+
+将以下内容添加到您的 `.gemini/settings.json` 中：
+
+```json
+{
+  "mcpServers": {
+    "jlens": {
+      "command": "java",
+      "args": ["-jar", "/path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar"]
+    }
+  }
+}
+```
+
 ### Cursor
 
 设置 (Settings) -> 模型 (Models) -> MCP -> 添加新 MCP 服务器 (Add New MCP Server)：
 
 - **名称**: jlens
 - **类型**: command
-- **命令**: `java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+- **命令**: `java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar`
 
 ### Cline (VS Code 扩展)
 
@@ -99,7 +114,7 @@ MCP 设置 -> 添加服务器 (Add Server)：
 ### iFlow CLI
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 完整 JSON 配置请参见 `iflow_mcp.md`。

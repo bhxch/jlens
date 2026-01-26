@@ -2,7 +2,7 @@
 # Tests the jlens-mcp-server using MCP Inspector CLI
 
 $ErrorActionPreference = "Continue"
-$ConfigPath = "/path/to/jlens\mcp-inspector-config.json"
+$ConfigPath = "/path/to/jlens/mcp-inspector-config.json"
 $ServerName = "jlens-mcp-server"
 
 Write-Host "========================================" -ForegroundColor Cyan
@@ -81,7 +81,7 @@ try {
     $cmdParts = @("npx", "@modelcontextprotocol/inspector", "--cli", "--config", $ConfigPath, "--server", $ServerName, "--method", "tools/list")
     $output = & $cmdParts 2>&1 | Out-String
     
-    if ($output -match '"tools":\s*\[' -and 
+    if ($output -match '"tools":\s*/[' -and 
         $output -match 'inspect_java_class' -and 
         $output -match 'list_module_dependencies' -and 
         $output -match 'search_java_class' -and 
@@ -169,7 +169,7 @@ Write-Host "Test Suite 5: build_module" -ForegroundColor Cyan
 Write-Host "--------------------------" -ForegroundColor Cyan
 
 Test-Tool -ToolName "build_module" `
-          -Arguments "--tool-arg sourceFilePath=/path/to/jlens\src\main\java\io\github\bhxch\mcp\jlens\Main.java" `
+          -Arguments "--tool-arg sourceFilePath=/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java" `
           -TestName "Build module" `
           -Validate { param($out) $out -match 'isError":\s*false' }
 
@@ -184,7 +184,7 @@ Write-Host "Pass Rate: $([math]::Round(($script:PassedTests / $script:TotalTests
 Write-Host ""
 
 # Export results
-$ResultsFile = "/path/to/jlens\mcp_inspector_test_results.json"
+$ResultsFile = "/path/to/jlens/mcp_inspector_test_results.json"
 $script:TestResults | ConvertTo-Json -Depth 3 | Out-File -FilePath $ResultsFile -Encoding UTF8
 Write-Host "Results saved to: $ResultsFile" -ForegroundColor Gray
 
@@ -201,6 +201,11 @@ if ($script:FailedTests -eq 0) {
     Write-Host "✗ Some tests failed. Please review the output above." -ForegroundColor Red
     exit 1
 }
+
+
+
+
+
 
 
 

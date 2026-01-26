@@ -65,10 +65,10 @@ ProcessBuilder pb = new ProcessBuilder(
 );
 
 // JSON-RPC initialization
-String initRequest = "{\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"test-client\",\"version\":\"1.0.0\"}}}\n";
+String initRequest = "{/"jsonrpc\":/"2.0\",/"id\":0,/"method\":/"initialize\",/"params\":{/"protocolVersion\":/"2024-11-05\",/"capabilities\":{},/"clientInfo\":{/"name\":/"test-client\",/"version\":/"1.0.0\"}}}\n";
 
 // Tool execution via JSON-RPC
-String toolRequest = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\pom.xml\",\"scope\":\"compile\"}}}\n";
+String toolRequest = "{/"jsonrpc\":/"2.0\",/"id\":1,/"method\":/"tools/call\",/"params\":{/"name\":/"list_module_dependencies\",/"arguments\":{/"pomFilePath\":/"E://repos//0000//jlens///pom.xml\",/"scope\":/"compile\"}}}\n";
 ```
 
 ### Timeout Configuration
@@ -124,6 +124,8 @@ The test suite validates:
 3. **Error Reporting**: Add more detailed error messages in test failures to help diagnose issues more quickly.
 
 4. **Test Isolation**: Consider using a test-specific Maven configuration to avoid potential conflicts with the development environment.
+
+
 
 
 

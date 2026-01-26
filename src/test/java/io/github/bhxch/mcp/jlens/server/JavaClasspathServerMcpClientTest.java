@@ -135,7 +135,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute inspect_java_class with source file path")
     void testInspectJavaClassWithSourceFile() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"io.github.bhxch.mcp.jlens.Main\",\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"detailLevel\":\"basic\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"io.github.bhxch.mcp.jlens.Main\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"detailLevel\":\"basic\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("Main") || response.contains("io.github.bhxch.mcp.jlens"), "Response should contain class information");
@@ -153,7 +153,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute list_module_dependencies tool")
     void testListModuleDependencies() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\pom.xml\",\"scope\":\"compile\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"scope\":\"compile\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response, "Should get a response from list_module_dependencies");
     }
@@ -161,7 +161,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute list_module_dependencies with source file path")
     void testListModuleDependenciesWithSourceFile() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"scope\":\"compile\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"scope\":\"compile\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response, "Should get a response from list_module_dependencies with source file");
     }
@@ -169,7 +169,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute list_module_dependencies with test scope")
     void testListModuleDependenciesWithTestScope() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\pom.xml\",\"scope\":\"test\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"scope\":\"test\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("test") || response.contains("junit") || response.contains("error"), 
@@ -179,7 +179,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should handle invalid pom.xml file")
     void testListModuleDependenciesInvalidFile() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\nonexistent\\\\pom.xml\",\"scope\":\"compile\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/nonexistent/pom.xml\",\"scope\":\"compile\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("error") || response.contains("not found"), "Response should indicate error");
@@ -188,7 +188,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute search_java_class tool with wildcard")
     void testSearchJavaClassWildcard() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*List*\",\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*List*\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("List") || response.contains("result"), "Response should contain search results");
@@ -197,7 +197,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute search_java_class tool with prefix")
     void testSearchJavaClassPrefix() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"String\",\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"searchType\":\"prefix\",\"limit\":5}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"String\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"prefix\",\"limit\":5}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("String") || response.contains("result"), "Response should contain search results");
@@ -206,7 +206,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute search_java_class tool with exact match")
     void testSearchJavaClassExact() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"Map\",\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"searchType\":\"exact\",\"limit\":10}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"Map\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"exact\",\"limit\":10}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("Map") || response.contains("result"), "Response should contain search results");
@@ -215,7 +215,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute search_java_class tool for project classes")
     void testSearchJavaClassProjectClasses() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*Handler*\",\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*Handler*\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("Handler") || response.contains("result"), "Response should contain search results");
@@ -224,7 +224,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute build_module tool with default goals")
     void testBuildModuleDefaultGoals() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("BUILD") || response.contains("build") || response.contains("exitCode"), "Response should contain build information");
@@ -233,7 +233,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute build_module tool with source download")
     void testBuildModuleWithSourceDownload() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"downloadSources\":true,\"goals\":[\"compile\"]}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"downloadSources\":true,\"goals\":[\"compile\"]}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("BUILD") || response.contains("build") || response.contains("exitCode"), "Response should contain build information");
@@ -242,7 +242,7 @@ class JavaClasspathServerMcpClientTest {
     @Test
     @DisplayName("Should execute build_module tool with custom goals")
     void testBuildModuleCustomGoals() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"goals\":[\"clean\",\"test-compile\"]}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"goals\":[\"clean\",\"test-compile\"]}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("BUILD") || response.contains("build") || response.contains("exitCode"), "Response should contain build information");
@@ -252,7 +252,7 @@ class JavaClasspathServerMcpClientTest {
     @DisplayName("Should handle complete workflow: search -> inspect")
     void testCompleteWorkflow() {
         // Step 1: Search for List classes
-        String searchRequest = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*List*\",\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"searchType\":\"wildcard\",\"limit\":5}}}\n";
+        String searchRequest = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*List*\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":5}}}\n";
         String searchResponse = assertDoesNotThrow(() -> sendRequest(searchRequest));
         assertNotNull(searchResponse);
 
@@ -272,7 +272,7 @@ class JavaClasspathServerMcpClientTest {
         assertNotNull(result1);
 
         // Step 2: Search for similar classes
-        String searchRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*Class*\",\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
+        String searchRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*Class*\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
         String searchResponse = assertDoesNotThrow(() -> sendRequest(searchRequest));
         assertNotNull(searchResponse);
 
@@ -286,17 +286,17 @@ class JavaClasspathServerMcpClientTest {
     @DisplayName("Should handle dependency resolution and build workflow")
     void testDependencyResolutionAndBuild() {
         // Step 1: List current dependencies
-        String listRequest1 = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\pom.xml\",\"scope\":\"compile\"}}}\n";
+        String listRequest1 = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"scope\":\"compile\"}}}\n";
         String result1 = assertDoesNotThrow(() -> sendRequest(listRequest1));
         assertNotNull(result1);
 
         // Step 2: Build module
-        String buildRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\src\\\\main\\\\java\\\\io\\\\github\\\\bhxch\\\\mcp\\\\jlens\\\\Main.java\",\"goals\":[\"compile\"]}}}\n";
+        String buildRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"goals\":[\"compile\"]}}}\n";
         String buildResult = assertDoesNotThrow(() -> sendRequest(buildRequest));
         assertNotNull(buildResult);
 
         // Step 3: List dependencies after build
-        String listRequest2 = "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\pom.xml\",\"scope\":\"compile\"}}}\n";
+        String listRequest2 = "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"scope\":\"compile\"}}}\n";
         String result2 = assertDoesNotThrow(() -> sendRequest(listRequest2));
         assertNotNull(result2);
     }

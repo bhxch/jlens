@@ -56,20 +56,20 @@ public class BuildPromptGenerator {
         
         // 级别 1：简单的缺失类
         if (missingDependencies.isEmpty()) {
-            suggestion.append("Class '").append(className).append("' is not found in the current module's classpath.\n");
+            suggestion.append("Class '").append(className).append("' is not found in the current module's classpath./n");
             suggestion.append("This could be because:\n");
-            suggestion.append("1. The dependency is missing from local repository\n");
-            suggestion.append("2. The module hasn't been built yet\n");
-            suggestion.append("3. The class is in a different module\n\n");
+            suggestion.append("1. The dependency is missing from local repository/n");
+            suggestion.append("2. The module hasn't been built yet/n");
+            suggestion.append("3. The class is in a different module/n/n");
             suggestion.append("Please try building the module first:\n");
-            suggestion.append("```bash\n");
+            suggestion.append("```bash/n");
             suggestion.append(generateMavenBuildCommand(context, false));
             suggestion.append("\n```");
             return suggestion.toString();
         }
         
         // 级别 2：特定的依赖缺失
-        suggestion.append("The following dependencies required for '").append(className).append("' are missing:\n\n");
+        suggestion.append("The following dependencies required for '").append(className).append("' are missing:\n/n");
         
         for (DependencyInfo dep : missingDependencies) {
             suggestion.append("- ").append(dep.getCoordinates());
@@ -81,26 +81,26 @@ public class BuildPromptGenerator {
         
         suggestion.append("\nTo resolve this, you need to:\n");
         suggestion.append("1. **Build the module** to download dependencies:\n");
-        suggestion.append("   ```bash\n");
+        suggestion.append("   ```bash/n");
         suggestion.append("   ").append(generateMavenBuildCommand(context, true));
         suggestion.append("\n   ```\n");
         
         suggestion.append("2. **Or download specific dependencies**:\n");
-        suggestion.append("   ```bash\n");
+        suggestion.append("   ```bash/n");
         for (DependencyInfo dep : missingDependencies) {
             suggestion.append("   mvn dependency:get -Dartifact=").append(dep.getCoordinates());
             if (!"jar".equals(dep.getType())) {
                 suggestion.append(" -Dpackaging=").append(dep.getType());
             }
-            suggestion.append(" -Dtransitive=false\n");
+            suggestion.append(" -Dtransitive=false/n");
         }
         suggestion.append("   ```\n");
         
         suggestion.append("3. **For source code inspection**, also download sources:\n");
-        suggestion.append("   ```bash\n");
+        suggestion.append("   ```bash/n");
         for (DependencyInfo dep : missingDependencies) {
             suggestion.append("   mvn dependency:get -Dartifact=").append(dep.getCoordinates());
-            suggestion.append(" -Dclassifier=sources\n");
+            suggestion.append(" -Dclassifier=sources/n");
         }
         suggestion.append("   ```");
         
@@ -150,7 +150,7 @@ public class BuildPromptGenerator {
             suggestion.append("You can use the full qualified name in your import statement.");
         } else if (possiblePackages.size() > 1) {
             suggestion.append("Found ").append(possiblePackages.size()).append(" possible packages for class '")
-                     .append(simpleClassName).append("':\n\n");
+                     .append(simpleClassName).append("':\n/n");
             
             // 按公共前缀分组
             Map<String, List<String>> grouped = groupPackagesByPrefix(possiblePackages);
@@ -164,9 +164,9 @@ public class BuildPromptGenerator {
             }
             
             suggestion.append("To resolve ambiguity, you can:\n");
-            suggestion.append("1. Use the full qualified class name\n");
+            suggestion.append("1. Use the full qualified class name/n");
             suggestion.append("2. Check which dependencies provide these classes:\n");
-            suggestion.append("   ```bash\n");
+            suggestion.append("   ```bash/n");
             suggestion.append("   mvn dependency:tree | grep -E '");
             for (String pkg : possiblePackages) {
                 suggestion.append(pkg).append("|");
@@ -174,7 +174,7 @@ public class BuildPromptGenerator {
             suggestion.deleteCharAt(suggestion.length() - 1); // Remove last |
             suggestion.append("'\n   ```");
         } else {
-            suggestion.append("No packages found for class '").append(simpleClassName).append("'.\n");
+            suggestion.append("No packages found for class '").append(simpleClassName).append("'./n");
             suggestion.append("This class might not be in any dependency, or you need to build the project first.");
         }
         
@@ -203,7 +203,7 @@ public class PackageMappingResolver {
     private final Map<String, Set<String>> classToPackages = new ConcurrentHashMap<>();
     private final Map<String, String> packageToDependency = new ConcurrentHashMap<>();
     private final Pattern importPattern = Pattern.compile(
-        "^import\\s+(?:static\\s+)?([a-zA-Z_$][a-zA-Z\\d_$]*(?:\\.[a-zA-Z_$][a-zA-Z\\d_$]*)*)\\.([a-zA-Z_$][a-zA-Z\\d_$]*)(?:\\s*;)?$"
+        "^import/s+(?:static/s+)?([a-zA-Z_$][a-zA-Z/d_$]*(?:/.[a-zA-Z_$][a-zA-Z/d_$]*)*)/.([a-zA-Z_$][a-zA-Z/d_$]*)(?:/s*;)?$"
     );
     
     /**
@@ -644,7 +644,7 @@ public class BuildModuleTool implements MCPTool {
             .addParameter("sourceFilePath", "string", true, 
                 "Source file path for module context")
             .addParameter("goals", "array", false, 
-                "Maven goals to execute (default: [\"compile\", \"dependency:resolve\"])")
+                "Maven goals to execute (default: [/"compile\", /"dependency:resolve\"])")
             .addParameter("downloadSources", "boolean", false, 
                 "Whether to download source JARs", "false")
             .addParameter("timeoutSeconds", "integer", false, 
@@ -696,7 +696,7 @@ public class BuildModuleTool implements MCPTool {
         String output = result.getOutput();
         if (output.length() > 10000) {
             output = output.substring(0, 5000) + 
-                    "\n...[truncated]...\n" + 
+                    "\n...[truncated].../n" + 
                     output.substring(output.length() - 5000);
         }
         response.put("output", output);
@@ -953,7 +953,7 @@ graph TD
         "org.springframework.beans.factory",
         "javax.inject"
       ],
-      "suggestion": "Found 3 possible packages for class 'Factory':\n\n**com.google.inject**:\n  - com.google.inject.Factory\n\n**org.springframework.beans.factory**:\n  - org.springframework.beans.factory.Factory\n\n**javax.inject**:\n  - javax.inject.Factory\n\nTo resolve ambiguity, you can:\n1. Use the full qualified class name\n2. Check which dependencies provide these classes"
+      "suggestion": "Found 3 possible packages for class 'Factory':\n/n**com.google.inject**:\n  - com.google.inject.Factory/n/n**org.springframework.beans.factory**:\n  - org.springframework.beans.factory.Factory/n/n**javax.inject**:\n  - javax.inject.Factory/n/nTo resolve ambiguity, you can:\n1. Use the full qualified class name/n2. Check which dependencies provide these classes"
     }
   },
   "tools": [
@@ -990,7 +990,7 @@ graph TD
       "missingDependencies": [
         "com.google.code.gson:gson:2.10.1"
       ],
-      "suggestion": "The dependency 'com.google.code.gson:gson:2.10.1' is missing.\n\nTo resolve this, you need to:\n1. **Build the module** to download dependencies:\n   ```bash\n   mvn compile -DskipTests\n   ```\n\n2. **Or download the specific dependency**:\n   ```bash\n   mvn dependency:get -Dartifact=com.google.code.gson:gson:2.10.1 -Dtransitive=false\n   ```\n\n3. **For source code inspection**, also download sources:\n   ```bash\n   mvn dependency:get -Dartifact=com.google.code.gson:gson:2.10.1 -Dclassifier=sources\n   ```"
+      "suggestion": "The dependency 'com.google.code.gson:gson:2.10.1' is missing./n/nTo resolve this, you need to:\n1. **Build the module** to download dependencies:\n   ```bash/n   mvn compile -DskipTests/n   ```\n/n2. **Or download the specific dependency**:\n   ```bash/n   mvn dependency:get -Dartifact=com.google.code.gson:gson:2.10.1 -Dtransitive=false/n   ```\n/n3. **For source code inspection**, also download sources:\n   ```bash/n   mvn dependency:get -Dartifact=com.google.code.gson:gson:2.10.1 -Dclassifier=sources/n   ```"
     }
   },
   "tools": [
@@ -1067,3 +1067,5 @@ graph TD
 - 为下一步提供智能建议
 - 通过缓存和索引保持高性能
 - 处理现实世界的 Maven 项目复杂性
+
+

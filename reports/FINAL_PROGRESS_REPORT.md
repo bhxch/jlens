@@ -216,7 +216,7 @@ java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ### iFlow CLI Integration
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 ## Summary
@@ -247,3 +247,4 @@ The project is now ready for production deployment and provides AI agents with p
 - Monitor performance in production
 - Collect user feedback
 - Plan future enhancements based on usage patterns
+

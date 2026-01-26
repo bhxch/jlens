@@ -5,7 +5,7 @@ A Model Context Protocol (MCP) server for inspecting Java classes and Maven depe
 ## Quick Links
 
 - **Documentation**: [docs/](docs/) - All project documentation
-- **Test Reports**: [reports/](rreports/) - Test results and reports
+- **Test Reports**: [reports/](reports/) - Test results and reports
 - **Scripts**: [scripts/](scripts/) - Test and automation scripts
 - **Configuration**: [config/](config/) - MCP Inspector and other configs
 - **Logs**: [logs/](logs/) - Temporary logs and outputs
@@ -54,13 +54,28 @@ Add this to your `claude_desktop_config.json`:
 }
 ```
 
+### Gemini CLI
+
+Add this to your `.gemini/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "jlens": {
+      "command": "java",
+      "args": ["-jar", "/path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar"]
+    }
+  }
+}
+```
+
 ### Cursor
 
 Settings -> Models -> MCP -> Add New MCP Server:
 
 - **Name**: jlens
 - **Type**: command
-- **Command**: `java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+- **Command**: `java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar`
 
 ### Cline (VS Code Extension)
 
@@ -73,22 +88,22 @@ MCP Settings -> Add Server:
 ### iFlow CLI
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 ## Build & Run
 
 ### Build
 
-`bash
+```bash
 mvn clean package
-`
+```
 
 ### Run
 
-`bash
+```bash
 java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
-`
+```
 
 ## Test Coverage
 
@@ -98,7 +113,7 @@ java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 - MCP Client Tests: 19/19 (100%)
 - MCP Inspector Tests: 8/8 (100%)
 
-See [reports/](rreports/) for detailed test results.
+See [reports/](reports/) for detailed test results.
 
 ## License
 

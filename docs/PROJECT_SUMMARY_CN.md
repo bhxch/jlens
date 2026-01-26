@@ -136,7 +136,7 @@ java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ### 与 iFlow CLI 集成
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 ## 文档
@@ -190,3 +190,4 @@ JLens MCP 服务器是一个功能齐全、生产就绪的 MCP 服务器，提�
 该服务器已成功集成到 iFlow CLI，并已通过 MCP Inspector CLI 验证，为 AI 代理提供了理解和处理 Java 代码库的强大工具。
 
 该服务器成功集成到 iFlow CLI，为 AI 代理提供了强大的工具，用于理解和使用 Java 代码库。
+

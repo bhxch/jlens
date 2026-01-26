@@ -80,7 +80,7 @@
 要将此 MCP 服务器添加到 iFlow，请使用以下命令：
 
 ```bash
-iflow mcp add-json --name jlens-mcp-server --command "java -jar target\\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --tools '[{"name":"inspect_java_class","description":"Inspect a Java class and return its metadata","inputSchema":{"type":"object","properties":{"className":{"type":"string","description":"Fully qualified class name"},"sourceFilePath":{"type":"string","description":"Path to source file (optional)"},"detailLevel":{"type":"string","description":"Level of detail","enum":["skeleton","basic","full"]}},"required":["className"]}},{"name":"list_module_dependencies","description":"List dependencies of a Maven module","inputSchema":{"type":"object","properties":{"sourceFilePath":{"type":"string","description":"Path to source file in the module"},"pomFilePath":{"type":"string","description":"Path to pom.xml file"},"scope":{"type":"string","description":"Dependency scope","enum":["compile","provided","runtime","test","system"]}}}}]'
+iflow mcp add-json --name jlens-mcp-server --command "java -jar target//jlens-mcp-server-1.0.0-SNAPSHOT.jar" --tools '[{"name":"inspect_java_class","description":"Inspect a Java class and return its metadata","inputSchema":{"type":"object","properties":{"className":{"type":"string","description":"Fully qualified class name"},"sourceFilePath":{"type":"string","description":"Path to source file (optional)"},"detailLevel":{"type":"string","description":"Level of detail","enum":["skeleton","basic","full"]}},"required":["className"]}},{"name":"list_module_dependencies","description":"List dependencies of a Maven module","inputSchema":{"type":"object","properties":{"sourceFilePath":{"type":"string","description":"Path to source file in the module"},"pomFilePath":{"type":"string","description":"Path to pom.xml file"},"scope":{"type":"string","description":"Dependency scope","enum":["compile","provided","runtime","test","system"]}}}}]'
 ```
 
 ## 构建 JAR 文件
@@ -94,7 +94,7 @@ mvn clean package
 这将创建以下位置的 JAR 文件：
 
 ```
-target\jlens-mcp-server-1.0.0-SNAPSHOT.jar
+target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ```
 
 ## 测试
@@ -109,15 +109,17 @@ target\jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ### 示例 1: 检查 Java 类
 
 ```bash
-echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"inspect_java_class","arguments":{"className":"java.util.List","detailLevel":"basic"}}}' | java -jar target\jlens-mcp-server-1.0.0-SNAPSHOT.jar
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"inspect_java_class","arguments":{"className":"java.util.List","detailLevel":"basic"}}}' | java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ```
 
 ### 示例 2: 列出模块依赖
 
 ```bash
-echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"list_module_dependencies","arguments":{"pomFilePath":"pom.xml","scope":"compile"}}}' | java -jar target\jlens-mcp-server-1.0.0-SNAPSHOT.jar
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"list_module_dependencies","arguments":{"pomFilePath":"pom.xml","scope":"compile"}}}' | java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ```
 
 ## 服务器说明
 
 此服务器提供用于检查 Java 类和列出 Maven 模块依赖的工具。使用 'inspect_java_class' 检查 Java 类，使用 'list_module_dependencies' 列出 Maven 依赖。
+
+

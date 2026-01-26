@@ -33,7 +33,7 @@
 - **Java 版本**: 17+
 - **Maven 版本**: 3.9+
 - **Code Agent**: 支持 MCP 协议的 AI 代码助手
-- **项目路径**: `E:\repos\0000\jlens`
+- **项目路径**: `/path/to/jlens`
 
 ---
 
@@ -47,26 +47,26 @@
 
 ```bash
 # 1. 进入项目目录
-cd E:\repos\0000\jlens
+cd /path/to/jlens
 
 # 2. 清理并构建项目
 mvn clean package
 
 # 3. 验证 JAR 文件生成
-dir target\jlens-mcp-server-1.0.0-SNAPSHOT.jar
+dir target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ```
 
 **预期结果**:
 
 - 构建成功，无错误
-- JAR 文件生成在 `target\jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+- JAR 文件生成在 `target/jlens-mcp-server-1.0.0-SNAPSHOT.jar`
 - 文件大小约 20-30 MB（包含所有依赖）
 
 **验证命令**:
 
 ```bash
 # 检查 JAR 文件是否存在
-if exist target\jlens-mcp-server-1.0.0-SNAPSHOT.jar (
+if exist target/jlens-mcp-server-1.0.0-SNAPSHOT.jar (
     echo JAR file created successfully
 ) else (
     echo JAR file not found
@@ -83,7 +83,7 @@ if exist target\jlens-mcp-server-1.0.0-SNAPSHOT.jar (
 
 ```bash
 # 使用 iflow mcp add-json 命令添加服务器
-iflow mcp add-json --name jlens-mcp-server --command "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --tools '[{"name":"inspect_java_class","description":"Inspect a Java class and return its metadata","inputSchema":{"type":"object","properties":{"className":{"type":"string","description":"Fully qualified class name"},"sourceFilePath":{"type":"string","description":"Path to source file (optional)"},"detailLevel":{"type":"string","description":"Level of detail","enum":["skeleton","basic","full"]}},"required":["className"]}},{"name":"list_module_dependencies","description":"List dependencies of a Maven module","inputSchema":{"type":"object","properties":{"sourceFilePath":{"type":"string","description":"Path to source file in the module"},"pomFilePath":{"type":"string","description":"Path to pom.xml file"},"scope":{"type":"string","description":"Dependency scope","enum":["compile","provided","runtime","test","system"]}}}},{"name":"search_java_class","description":"Search for Java classes across packages and dependencies","inputSchema":{"type":"object","properties":{"classNamePattern":{"type":"string","description":"Class name pattern (supports wildcards: *, ?)"},"sourceFilePath":{"type":"string","description":"Source file path for context"},"searchType":{"type":"string","description":"Search type: exact, prefix, suffix, contains, wildcard","enum":["exact","prefix","suffix","contains","wildcard"]},"limit":{"type":"integer","description":"Maximum number of results to return"}},"required":["classNamePattern","sourceFilePath"]}},{"name":"build_module","description":"Build Maven module and download missing dependencies","inputSchema":{"type":"object","properties":{"sourceFilePath":{"type":"string","description":"Source file path for module context"},"goals":{"type":"array","description":"Maven goals to execute","items":{"type":"string"}},"downloadSources":{"type":"boolean","description":"Whether to download source JARs"},"timeoutSeconds":{"type":"integer","description":"Build timeout in seconds"}},"required":["sourceFilePath"]}}]'
+iflow mcp add-json --name jlens-mcp-server --command "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --tools '[{"name":"inspect_java_class","description":"Inspect a Java class and return its metadata","inputSchema":{"type":"object","properties":{"className":{"type":"string","description":"Fully qualified class name"},"sourceFilePath":{"type":"string","description":"Path to source file (optional)"},"detailLevel":{"type":"string","description":"Level of detail","enum":["skeleton","basic","full"]}},"required":["className"]}},{"name":"list_module_dependencies","description":"List dependencies of a Maven module","inputSchema":{"type":"object","properties":{"sourceFilePath":{"type":"string","description":"Path to source file in the module"},"pomFilePath":{"type":"string","description":"Path to pom.xml file"},"scope":{"type":"string","description":"Dependency scope","enum":["compile","provided","runtime","test","system"]}}}},{"name":"search_java_class","description":"Search for Java classes across packages and dependencies","inputSchema":{"type":"object","properties":{"classNamePattern":{"type":"string","description":"Class name pattern (supports wildcards: *, ?)"},"sourceFilePath":{"type":"string","description":"Source file path for context"},"searchType":{"type":"string","description":"Search type: exact, prefix, suffix, contains, wildcard","enum":["exact","prefix","suffix","contains","wildcard"]},"limit":{"type":"integer","description":"Maximum number of results to return"}},"required":["classNamePattern","sourceFilePath"]}},{"name":"build_module","description":"Build Maven module and download missing dependencies","inputSchema":{"type":"object","properties":{"sourceFilePath":{"type":"string","description":"Source file path for module context"},"goals":{"type":"array","description":"Maven goals to execute","items":{"type":"string"}},"downloadSources":{"type":"boolean","description":"Whether to download source JARs"},"timeoutSeconds":{"type":"integer","description":"Build timeout in seconds"}},"required":["sourceFilePath"]}}]'
 ```
 
 **预期结果**:
@@ -290,7 +290,7 @@ iflow mcp call jlens-mcp-server inspect_java_class --params '{"className": "java
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server inspect_java_class --params '{"className": "io.github.bhxch.mcp.jlens.Main", "sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "detailLevel": "basic"}'
+iflow mcp call jlens-mcp-server inspect_java_class --params '{"className": "io.github.bhxch.mcp.jlens.Main", "sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "detailLevel": "basic"}'
 ```
 
 **预期结果**:
@@ -394,7 +394,7 @@ iflow mcp call jlens-mcp-server inspect_java_class --params '{"className": "com.
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens\\pom.xml", "scope": "compile"}'
+iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens/pom.xml", "scope": "compile"}'
 ```
 
 **预期结果**:
@@ -467,7 +467,7 @@ iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server list_module_dependencies --params '{"sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "scope": "compile"}'
+iflow mcp call jlens-mcp-server list_module_dependencies --params '{"sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "scope": "compile"}'
 ```
 
 **预期结果**:
@@ -504,7 +504,7 @@ iflow mcp call jlens-mcp-server list_module_dependencies --params '{"sourceFileP
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens\\pom.xml", "scope": "test"}'
+iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens/pom.xml", "scope": "test"}'
 ```
 
 **预期结果**:
@@ -561,7 +561,7 @@ iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens\\nonexistent\\pom.xml", "scope": "compile"}'
+iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens/nonexistent/pom.xml", "scope": "compile"}'
 ```
 
 **预期结果**:
@@ -571,7 +571,7 @@ iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath
   "success": false,
   "error": {
     "code": "FILE_NOT_FOUND",
-    "message": "POM file not found: /path/to/jlens\\nonexistent\\pom.xml",
+    "message": "POM file not found: /path/to/jlens/nonexistent/pom.xml",
     "suggestion": "Please provide a valid path to a pom.xml file or a source file in the module."
   }
 }
@@ -594,7 +594,7 @@ iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "*List*", "sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "searchType": "wildcard", "limit": 10}'
+iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "*List*", "sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "searchType": "wildcard", "limit": 10}'
 ```
 
 **预期结果**:
@@ -651,7 +651,7 @@ iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern":
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "String", "sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "searchType": "prefix", "limit": 5}'
+iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "String", "sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "searchType": "prefix", "limit": 5}'
 ```
 
 **预期结果**:
@@ -707,7 +707,7 @@ iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern":
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "Map", "sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "searchType": "exact", "limit": 10}'
+iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "Map", "sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "searchType": "exact", "limit": 10}'
 ```
 
 **预期结果**:
@@ -747,7 +747,7 @@ iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern":
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "*Handler*", "sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "searchType": "wildcard", "limit": 10}'
+iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "*Handler*", "sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "searchType": "wildcard", "limit": 10}'
 ```
 
 **预期结果**:
@@ -813,7 +813,7 @@ iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern":
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java"}'
+iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java"}'
 ```
 
 **预期结果**:
@@ -824,7 +824,7 @@ iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path
   "result": {
     "exitCode": 0,
     "durationSeconds": 5.2,
-    "output": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------------< io.github.bhxch:jlens-mcp-server >-----------------\n[INFO] Building Java Maven Classpath MCP Server 1.0.0-SNAPSHOT\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- compiler:3.13.0:compile (default-compile) @ jlens-mcp-server ---\n[INFO] Nothing to compile - all classes are up to date\n[INFO] \n[INFO] --- dependency:resolve (default) @ jlens-mcp-server ---\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD SUCCESS\n[INFO] ------------------------------------------------------------------------",
+    "output": "[INFO] Scanning for projects.../n[INFO] \n[INFO] ----------------< io.github.bhxch:jlens-mcp-server >-----------------/n[INFO] Building Java Maven Classpath MCP Server 1.0.0-SNAPSHOT/n[INFO] --------------------------------[ jar ]---------------------------------/n[INFO] \n[INFO] --- compiler:3.13.0:compile (default-compile) @ jlens-mcp-server ---/n[INFO] Nothing to compile - all classes are up to date/n[INFO] \n[INFO] --- dependency:resolve (default) @ jlens-mcp-server ---/n[INFO] ------------------------------------------------------------------------/n[INFO] BUILD SUCCESS/n[INFO] ------------------------------------------------------------------------",
     "downloadedArtifacts": [],
     "suggestion": "Build completed successfully. You can now inspect classes from the downloaded dependencies."
   }
@@ -847,7 +847,7 @@ iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "downloadSources": true, "goals": ["compile"]}'
+iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "downloadSources": true, "goals": ["compile"]}'
 ```
 
 **预期结果**:
@@ -858,19 +858,19 @@ iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path
   "result": {
     "exitCode": 0,
     "durationSeconds": 8.5,
-    "output": "[INFO] Downloading sources...\n[INFO] Downloaded sources for: io.modelcontextprotocol.sdk:mcp:0.17.2\n[INFO] Downloaded sources for: com.github.ben-manes.caffeine:caffeine:3.1.8\n[INFO] BUILD SUCCESS",
+    "output": "[INFO] Downloading sources.../n[INFO] Downloaded sources for: io.modelcontextprotocol.sdk:mcp:0.17.2/n[INFO] Downloaded sources for: com.github.ben-manes.caffeine:caffeine:3.1.8/n[INFO] BUILD SUCCESS",
     "downloadedArtifacts": [
       {
         "coordinates": "io.modelcontextprotocol.sdk:mcp:sources:0.17.2",
         "type": "jar",
         "sizeBytes": 102400,
-        "file": "C:\\Users\\bhxch\\.m2\\repository\\io\\modelcontextprotocol\\sdk\\mcp\\0.17.2\\mcp-0.17.2-sources.jar"
+        "file": "C:/Users/bhxch/.m2/repository/io/modelcontextprotocol/sdk/mcp/0.17.2/mcp-0.17.2-sources.jar"
       },
       {
         "coordinates": "com.github.ben-manes.caffeine:caffeine:sources:3.1.8",
         "type": "jar",
         "sizeBytes": 51200,
-        "file": "C:\\Users\\bhxch\\.m2\\repository\\com\\github\\ben-manes\\caffeine\\caffeine\\3.1.8\\caffeine-3.1.8-sources.jar"
+        "file": "C:/Users/bhxch/.m2/repository/com/github/ben-manes/caffeine/caffeine/3.1.8/caffeine-3.1.8-sources.jar"
       }
     ],
     "suggestion": "Build completed successfully with sources downloaded. You can now inspect source code from the dependencies."
@@ -893,7 +893,7 @@ iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path
 **操作步骤**:
 
 ```bash
-iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "goals": ["clean", "test-compile"]}'
+iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "goals": ["clean", "test-compile"]}'
 ```
 
 **预期结果**:
@@ -904,7 +904,7 @@ iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path
   "result": {
     "exitCode": 0,
     "durationSeconds": 12.3,
-    "output": "[INFO] --- clean:3.2.0:clean (default-clean) @ jlens-mcp-server ---\n[INFO] Deleting /path/to/jlens\\target\n[INFO] \n[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ jlens-mcp-server ---\n[INFO] Changes detected - recompiling the module!\n[INFO] Compiling 11 source files to target\\test-classes\n[INFO] BUILD SUCCESS",
+    "output": "[INFO] --- clean:3.2.0:clean (default-clean) @ jlens-mcp-server ---/n[INFO] Deleting /path/to/jlens/target/n[INFO] \n[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ jlens-mcp-server ---/n[INFO] Changes detected - recompiling the module!\n[INFO] Compiling 11 source files to target//test-classes/n[INFO] BUILD SUCCESS",
     "downloadedArtifacts": [],
     "suggestion": "Build completed successfully with custom goals."
   }
@@ -930,7 +930,7 @@ iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path
 ```bash
 # 步骤 1: 搜索 List 相关的类
 echo "Step 1: Search for List classes"
-iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "*List*", "sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "searchType": "wildcard", "limit": 5}'
+iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "*List*", "sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "searchType": "wildcard", "limit": 5}'
 
 # 步骤 2: 检查 java.util.List
 echo "Step 2: Inspect java.util.List"
@@ -1000,7 +1000,7 @@ iflow mcp call jlens-mcp-server inspect_java_class --params '{"className": "com.
 
 # 步骤 2: 搜索相似的类
 echo "Step 2: Search for similar classes"
-iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "*Class*", "sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "searchType": "wildcard", "limit": 10}'
+iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "*Class*", "sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "searchType": "wildcard", "limit": 10}'
 
 # 步骤 3: 检查找到的类
 echo "Step 3: Inspect found class"
@@ -1016,7 +1016,7 @@ Step 1: Try to inspect non-existent class
   "error": {
     "code": "CLASS_NOT_FOUND",
     "message": "Class not found: com.fake.NonExistentClass",
-    "suggestion": "Did you mean one of these?\n- java.lang.Class\n- java.lang.ClassLoader"
+    "suggestion": "Did you mean one of these?\n- java.lang.Class/n- java.lang.ClassLoader"
   }
 }
 
@@ -1059,15 +1059,15 @@ Step 3: Inspect found class
 ```bash
 # 步骤 1: 列出当前依赖
 echo "Step 1: List current dependencies"
-iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens\\pom.xml", "scope": "compile"}'
+iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens/pom.xml", "scope": "compile"}'
 
 # 步骤 2: 构建模块
 echo "Step 2: Build module"
-iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "goals": ["compile"]}'
+iflow mcp call jlens-mcp-server build_module --params '{"sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "goals": ["compile"]}'
 
 # 步骤 3: 再次列出依赖（验证下载）
 echo "Step 3: List dependencies after build"
-iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens\\pom.xml", "scope": "compile"}'
+iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens/pom.xml", "scope": "compile"}'
 ```
 
 **预期结果**:
@@ -1133,13 +1133,13 @@ Measure-Command {
 # 测量 search_java_class 响应时间
 echo "Testing search_java_class response time"
 Measure-Command {
-    iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "*List*", "sourceFilePath": "/path/to/jlens\\src\\main\\java\\io\\github\\bhxch\\mcp\\jlens\\Main.java", "searchType": "wildcard", "limit": 10}'
+    iflow mcp call jlens-mcp-server search_java_class --params '{"classNamePattern": "*List*", "sourceFilePath": "/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens//Main.java", "searchType": "wildcard", "limit": 10}'
 }
 
 # 测量 list_module_dependencies 响应时间
 echo "Testing list_module_dependencies response time"
 Measure-Command {
-    iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens\\pom.xml", "scope": "compile"}'
+    iflow mcp call jlens-mcp-server list_module_dependencies --params '{"pomFilePath": "/path/to/jlens/pom.xml", "scope": "compile"}'
 }
 ```
 
@@ -1226,7 +1226,7 @@ $jobs | Remove-Job
 **测试执行人**: Code Agent
 **测试环境**: Windows 10, Java 17, Maven 3.9
 
-**测试日志位置**: `E:\repos\0000\jlens\test-results\`
+**测试日志位置**: `/path/to/jlens/test-results/`
 
 ### 发现的问题
 
@@ -1250,7 +1250,7 @@ $jobs | Remove-Job
 mvn clean package
 
 # 添加 MCP 服务器
-iflow mcp add-json --name jlens-mcp-server --command "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --tools '[...]'
+iflow mcp add-json --name jlens-mcp-server --command "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --tools '[...]'
 
 # 列出工具
 iflow mcp tools jlens-mcp-server
@@ -1265,7 +1265,7 @@ iflow mcp remove jlens-mcp-server
 ### B. 常见问题
 
 **Q: JAR 文件在哪里？**
-A: JAR 文件位于 `E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+A: JAR 文件位于 `/path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar`
 
 **Q: 如何验证服务器是否正常运行？**
 A: 使用 `iflow mcp status jlens-mcp-server` 命令
@@ -1278,8 +1278,8 @@ A: 先移除旧配置 `iflow mcp remove jlens-mcp-server`，然后重新添加
 
 ### C. 联系信息
 
-- **项目地址**: E:\repos\0000\jlens
-- **文档位置**: E:\repos\0000\jlens\README.md
+- **项目地址**: /path/to/jlens
+- **文档位置**: /path/to/jlens/README.md
 - **问题反馈**: 通过项目 issue tracker
 
 ---
@@ -1296,3 +1296,9 @@ A: 先移除旧配置 `iflow mcp remove jlens-mcp-server`，然后重新添加
 **测试状态**: ✅ 全部通过
 
 **测试结论**: jlens-mcp-server 已准备好在 code agent 中使用，所有功能正常，性能符合预期。
+
+
+
+
+
+

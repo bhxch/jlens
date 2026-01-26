@@ -80,13 +80,28 @@ Add this to your `claude_desktop_config.json`:
 }
 ```
 
+### Gemini CLI
+
+Add this to your `.gemini/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "jlens": {
+      "command": "java",
+      "args": ["-jar", "/path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar"]
+    }
+  }
+}
+```
+
 ### Cursor
 
 Settings -> Models -> MCP -> Add New MCP Server:
 
 - **Name**: jlens
 - **Type**: command
-- **Command**: `java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+- **Command**: `java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar`
 
 ### Cline (VS Code Extension)
 
@@ -99,7 +114,7 @@ MCP Settings -> Add Server:
 ### iFlow CLI
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 See `iflow_mcp.md` for the complete JSON configuration.

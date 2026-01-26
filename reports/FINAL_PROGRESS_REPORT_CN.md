@@ -216,7 +216,7 @@ java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ### iFlow CLI 集成
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 ## 总结
@@ -247,3 +247,4 @@ Java Maven Classpath MCP 服务器项目已成功完成。所有主要任务均�
 - 监控生产环境性能
 - 收集用户反馈
 - 根据使用模式规划未来增强功能
+

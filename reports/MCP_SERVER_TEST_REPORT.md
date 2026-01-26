@@ -41,12 +41,12 @@
 #### 步骤 1：构建 JAR 文件
 - **命令**: `mvn clean package -DskipTests`
 - **结果**: BUILD SUCCESS
-- **JAR 文件**: `/path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+- **JAR 文件**: `/path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar`
 - **文件大小**: 12,437,629 字节 (~12.4 MB)
 - **验证**: JAR 文件存在且可执行
 
 #### 步骤 2：添加 MCP 服务器
-- **命令**: `iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar"`
+- **命令**: `iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar"`
 - **结果**: MCP 服务器 "jlens-mcp-server" 已添加到 project 设置。(stdio)
 - **验证**: 服务器出现在 iflow mcp list 中
 
@@ -54,7 +54,7 @@
 - **iflow mcp list**: 显示服务器已配置
 - **iflow mcp get**: 显示正确的配置信息
   - 传输方式：stdio
-  - 命令：java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar
+  - 命令：java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
   - 描述：MCP server for inspecting Java classes and Maven dependencies
   - 受信任：是
 - **服务器测试**: 服务器可以启动并响应初始化请求
@@ -241,13 +241,13 @@
 
 以下测试脚本用于执行测试：
 
-1. `.temp\test_tools_list_v2.py` - 测试工具列表
-2. `.temp\test_inspect_java_class_plan.py` - 测试 inspect_java_class（5个测试用例）
-3. `.temp\test_list_module_dependencies_plan.py` - 测试 list_module_dependencies（4个测试用例）
-4. `.temp\test_search_java_class_plan.py` - 测试 search_java_class（4个测试用例）
-5. `.temp\test_build_module_plan.py` - 测试 build_module（3个测试用例）
-6. `.temp\test_integration_plan.py` - 集成测试（3个测试用例）
-7. `.temp\test_performance_simple.py` - 性能测试
+1. `.temp/test_tools_list_v2.py` - 测试工具列表
+2. `.temp/test_inspect_java_class_plan.py` - 测试 inspect_java_class（5个测试用例）
+3. `.temp/test_list_module_dependencies_plan.py` - 测试 list_module_dependencies（4个测试用例）
+4. `.temp/test_search_java_class_plan.py` - 测试 search_java_class（4个测试用例）
+5. `.temp/test_build_module_plan.py` - 测试 build_module（3个测试用例）
+6. `.temp/test_integration_plan.py` - 集成测试（3个测试用例）
+7. `.temp/test_performance_simple.py` - 性能测试
 
 ### 测试执行时间
 
@@ -291,7 +291,7 @@ jlens-mcp-server 已完成所有测试，所有功能正常工作，可以投入
 #### 添加 MCP 服务器
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --scope project --description "MCP server for inspecting Java classes and Maven dependencies" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --scope project --description "MCP server for inspecting Java classes and Maven dependencies" --trust
 ```
 
 #### 验证配置
@@ -340,6 +340,8 @@ iflow mcp get jlens-mcp-server
 **测试报告生成时间**: 2026-01-25
 **报告版本**: 1.0
 **测试执行人**: Code Agent
+
+
 
 
 

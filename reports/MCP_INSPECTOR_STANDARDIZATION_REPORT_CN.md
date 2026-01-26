@@ -43,7 +43,7 @@
       "command": "java",
       "args": [
         "-jar",
-        "/path/to/jlens\\target\\jlens-mcp-server-1.0.0-SNAPSHOT.jar"
+        "/path/to/jlens/target//jlens-mcp-server-1.0.0-SNAPSHOT.jar"
       ]
     }
   }
@@ -72,6 +72,9 @@ powershell -ExecutionPolicy Bypass -File scripts/test_mcp_inspector_simple.ps1
 ## 5. 结论
 
 `jlens-mcp-server` 现已针对 MCP Inspector 集成完成了全面标准化。所有工具均返回一致的 JSON 元数据，错误处理机制通过特定代码得到了强化，类检查功能提供了基于反射的真实数据。集成测试确认新格式下的通过率为 100%。
+
+
+
 
 
 

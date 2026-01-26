@@ -189,7 +189,7 @@ java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ### iFlow CLI Integration
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 ## Conclusion
@@ -209,3 +209,4 @@ The JLens MCP Server project has been successfully completed. All objectives hav
 ### READY FOR PRODUCTION USE
 
 The JLens MCP Server provides AI agents with powerful tools for understanding and working with Java codebases, making it an essential component for any AI-assisted Java development workflow.
+

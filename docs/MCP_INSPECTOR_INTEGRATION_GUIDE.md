@@ -117,7 +117,7 @@ mvn clean package
 ### 3.3 运行测试脚本
 
 ```bash
-powershell -ExecutionPolicy Bypass -File /path/to/jlens\test_mcp_inspector_simple.ps1
+powershell -ExecutionPolicy Bypass -File /path/to/jlens/test_mcp_inspector_simple.ps1
 ```
 
 ---
@@ -140,7 +140,7 @@ npx @modelcontextprotocol/inspector --cli --config <config-file> --server <serve
 ### 4.2 列出工具
 
 ```bash
-npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/list
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens/mcp-inspector-config.json --server jlens-mcp-server --method tools/list
 ```
 
 **预期结果**: 返回包含所有 4 个工具的 JSON 响应
@@ -149,35 +149,35 @@ npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-
 
 ```bash
 # 检查 java.util.List
-npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.List
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.List
 
 # 检查 java.util.ArrayList
-npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.ArrayList
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.ArrayList
 
 # 检查 java.lang.String
-npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.lang.String
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.lang.String
 ```
 
 ### 4.4 调用 list_module_dependencies
 
 ```bash
-npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name list_module_dependencies --tool-arg pomFilePath=pom.xml
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name list_module_dependencies --tool-arg pomFilePath=pom.xml
 ```
 
 ### 4.5 调用 search_java_class
 
 ```bash
 # 通配符搜索
-npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name search_java_class --tool-arg classNamePattern=*List* --tool-arg searchType=wildcard
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name search_java_class --tool-arg classNamePattern=*List* --tool-arg searchType=wildcard
 
 # 前缀搜索
-npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name search_java_class --tool-arg classNamePattern=String --tool-arg searchType=prefix
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name search_java_class --tool-arg classNamePattern=String --tool-arg searchType=prefix
 ```
 
 ### 4.6 调用 build_module
 
 ```bash
-npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name build_module --tool-arg sourceFilePath=/path/to/jlens\src\main\java\io\github\bhxch\mcp\jlens\Main.java
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name build_module --tool-arg sourceFilePath=/path/to/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java
 ```
 
 ---
@@ -397,3 +397,7 @@ MCP Inspector 支持多种传输方式：
 **文档版本**: 1.0  
 **最后更新**: 2026-01-26  
 **维护者**: iFlow CLI
+
+
+
+
