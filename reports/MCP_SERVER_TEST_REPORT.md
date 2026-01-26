@@ -5,7 +5,7 @@
 - **测试日期**: 2026-01-25
 - **测试执行人**: Code Agent
 - **测试环境**: Windows 10, Java 17, Maven 3.9, iflow 0.5.2
-- **项目路径**: E:\repos\0000\jlens
+- **项目路径**: /path/to/jlens
 - **测试计划**: MCP_SERVER_TEST_PLAN.md
 
 ---
@@ -41,12 +41,12 @@
 #### 步骤 1：构建 JAR 文件
 - **命令**: `mvn clean package -DskipTests`
 - **结果**: BUILD SUCCESS
-- **JAR 文件**: `E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+- **JAR 文件**: `/path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar`
 - **文件大小**: 12,437,629 字节 (~12.4 MB)
 - **验证**: JAR 文件存在且可执行
 
 #### 步骤 2：添加 MCP 服务器
-- **命令**: `iflow mcp add jlens-mcp-server "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar"`
+- **命令**: `iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar"`
 - **结果**: MCP 服务器 "jlens-mcp-server" 已添加到 project 设置。(stdio)
 - **验证**: 服务器出现在 iflow mcp list 中
 
@@ -54,7 +54,7 @@
 - **iflow mcp list**: 显示服务器已配置
 - **iflow mcp get**: 显示正确的配置信息
   - 传输方式：stdio
-  - 命令：java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar
+  - 命令：java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar
   - 描述：MCP server for inspecting Java classes and Maven dependencies
   - 受信任：是
 - **服务器测试**: 服务器可以启动并响应初始化请求
@@ -291,7 +291,7 @@ jlens-mcp-server 已完成所有测试，所有功能正常工作，可以投入
 #### 添加 MCP 服务器
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --scope project --description "MCP server for inspecting Java classes and Maven dependencies" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --scope project --description "MCP server for inspecting Java classes and Maven dependencies" --trust
 ```
 
 #### 验证配置
@@ -320,7 +320,7 @@ iflow mcp get jlens-mcp-server
 - **Maven 版本**: 3.9+
 - **iflow CLI 版本**: 0.5.2
 - **MCP Java SDK**: 0.17.2
-- **项目路径**: E:\repos\0000\jlens
+- **项目路径**: /path/to/jlens
 
 ### 相关文档
 

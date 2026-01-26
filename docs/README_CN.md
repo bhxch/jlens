@@ -61,12 +61,45 @@ java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
   -h, --help                        显示此帮助信息
 ```
 
-### 与 iFlow CLI 集成
+## 客户端配置
 
-将此 MCP 服务器添加到 iFlow CLI：
+此 MCP 服务器可与各种兼容 MCP 的客户端配合使用。
+
+### Claude Desktop
+
+将以下内容添加到您的 `claude_desktop_config.json` 中：
+
+```json
+{
+  "mcpServers": {
+    "jlens": {
+      "command": "java",
+      "args": ["-jar", "/path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar"]
+    }
+  }
+}
+```
+
+### Cursor
+
+设置 (Settings) -> 模型 (Models) -> MCP -> 添加新 MCP 服务器 (Add New MCP Server)：
+
+- **名称**: jlens
+- **类型**: command
+- **命令**: `java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+
+### Cline (VS Code 扩展)
+
+MCP 设置 -> 添加服务器 (Add Server)：
+
+- **名称**: jlens
+- **命令**: `java`
+- **参数**: `["-jar", "/path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar"]`
+
+### iFlow CLI
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 完整 JSON 配置请参见 `iflow_mcp.md`。

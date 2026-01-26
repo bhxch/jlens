@@ -98,7 +98,7 @@ Write-Host ""
 # Test 5: build_module
 Write-Host "Test Suite: build_module" -ForegroundColor Cyan
 Run-Test -TestName "Build module" `
-        -Command "npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name build_module --tool-arg sourceFilePath=E:\repos\0000\jlens\src\main\java\io\github\bhxch\mcp\jlens\Main.java" `
+        -Command "npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name build_module --tool-arg sourceFilePath=/path/to/jlens\src\main\java\io\github\bhxch\mcp\jlens\Main.java" `
         -Validate { param($out) $out -match 'isError":\s*false' }
 
 Write-Host ""
@@ -113,7 +113,7 @@ Write-Host "Pass Rate: $PassRate%" -ForegroundColor $(if ($PassCount -eq $TestRe
 Write-Host ""
 
 # Export results
-$ResultsFile = "E:\repos\0000\jlens\mcp_inspector_test_results.json"
+$ResultsFile = "/path/to/jlens\mcp_inspector_test_results.json"
 $TestResults | ConvertTo-Json -Depth 3 | Out-File -FilePath $ResultsFile -Encoding UTF8
 Write-Host "Results saved to: $ResultsFile" -ForegroundColor Gray
 

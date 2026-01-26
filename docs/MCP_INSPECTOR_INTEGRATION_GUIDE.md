@@ -41,7 +41,7 @@
 - **Maven 版本**: 3.9+
 - **Node.js**: Latest (需要 npm)
 - **MCP Inspector CLI**: v0.19.0
-- **项目路径**: E:\repos\0000\jlens
+- **项目路径**: /path/to/jlens
 
 ---
 
@@ -70,7 +70,7 @@ npx @modelcontextprotocol/inspector-cli --help
       "command": "java",
       "args": [
         "-jar",
-        "E:\\repos\\0000\\jlens\\target\\jlens-mcp-server-1.0.0-SNAPSHOT.jar"
+        "/path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar"
       ],
       "env": {}
     }
@@ -117,7 +117,7 @@ mvn clean package
 ### 3.3 运行测试脚本
 
 ```bash
-powershell -ExecutionPolicy Bypass -File E:\repos\0000\jlens\test_mcp_inspector_simple.ps1
+powershell -ExecutionPolicy Bypass -File /path/to/jlens\test_mcp_inspector_simple.ps1
 ```
 
 ---
@@ -140,7 +140,7 @@ npx @modelcontextprotocol/inspector --cli --config <config-file> --server <serve
 ### 4.2 列出工具
 
 ```bash
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/list
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/list
 ```
 
 **预期结果**: 返回包含所有 4 个工具的 JSON 响应
@@ -149,35 +149,35 @@ npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspe
 
 ```bash
 # 检查 java.util.List
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.List
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.List
 
 # 检查 java.util.ArrayList
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.ArrayList
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.ArrayList
 
 # 检查 java.lang.String
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.lang.String
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.lang.String
 ```
 
 ### 4.4 调用 list_module_dependencies
 
 ```bash
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name list_module_dependencies --tool-arg pomFilePath=pom.xml
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name list_module_dependencies --tool-arg pomFilePath=pom.xml
 ```
 
 ### 4.5 调用 search_java_class
 
 ```bash
 # 通配符搜索
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name search_java_class --tool-arg classNamePattern=*List* --tool-arg searchType=wildcard
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name search_java_class --tool-arg classNamePattern=*List* --tool-arg searchType=wildcard
 
 # 前缀搜索
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name search_java_class --tool-arg classNamePattern=String --tool-arg searchType=prefix
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name search_java_class --tool-arg classNamePattern=String --tool-arg searchType=prefix
 ```
 
 ### 4.6 调用 build_module
 
 ```bash
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name build_module --tool-arg sourceFilePath=E:\repos\0000\jlens\src\main\java\io\github\bhxch\mcp\jlens\Main.java
+npx @modelcontextprotocol/inspector --cli --config /path/to/jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name build_module --tool-arg sourceFilePath=/path/to/jlens\src\main\java\io\github\bhxch\mcp\jlens\Main.java
 ```
 
 ---

@@ -35,7 +35,7 @@ class JavaClasspathServerIntegrationTest {
         ProcessBuilder pb = new ProcessBuilder(
             "java",
             "-jar",
-            "E:\\repos\\0000\\jlens\\target\\jlens-mcp-server-1.0.0-SNAPSHOT.jar"
+            "target/jlens-mcp-server-1.0.0-SNAPSHOT.jar"
         );
         pb.redirectErrorStream(true);
         serverProcess = pb.start();

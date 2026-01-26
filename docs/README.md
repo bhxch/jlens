@@ -61,12 +61,45 @@ Options:
   -h, --help                        Show this help message
 ```
 
-### Integration with iFlow CLI
+## Client Configuration
 
-To add this MCP server to iFlow CLI:
+This MCP server can be used with various MCP-compatible clients.
+
+### Claude Desktop
+
+Add this to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "jlens": {
+      "command": "java",
+      "args": ["-jar", "/path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar"]
+    }
+  }
+}
+```
+
+### Cursor
+
+Settings -> Models -> MCP -> Add New MCP Server:
+
+- **Name**: jlens
+- **Type**: command
+- **Command**: `java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+
+### Cline (VS Code Extension)
+
+MCP Settings -> Add Server:
+
+- **Name**: jlens
+- **Command**: `java`
+- **Args**: `["-jar", "/path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar"]`
+
+### iFlow CLI
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 See `iflow_mcp.md` for the complete JSON configuration.

@@ -43,7 +43,7 @@
       "command": "java",
       "args": [
         "-jar",
-        "E:\repos\0000\jlens\\target\\jlens-mcp-server-1.0.0-SNAPSHOT.jar"
+        "/path/to/jlens\\target\\jlens-mcp-server-1.0.0-SNAPSHOT.jar"
       ]
     }
   }

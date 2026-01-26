@@ -216,7 +216,7 @@ java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ### iFlow CLI 集成
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 ## 总结
