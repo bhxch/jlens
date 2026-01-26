@@ -4,7 +4,7 @@ A Model Context Protocol (MCP) server for inspecting Java classes and Maven depe
 
 ## Quick Execution
 
-You can run JLens instantly using `npx` or `uvx` (requires Java 17+ installed):
+You can run JLens instantly using `npx` or `uvx` (requires Java 25+ installed):
 
 ```bash
 # Using npx

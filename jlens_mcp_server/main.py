@@ -82,7 +82,7 @@ def main():
     try:
         subprocess.run([java_path, "-version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
     except (subprocess.CalledProcessError, FileNotFoundError):
-        print(f"Error: Java not found at '{java_path}'. Please ensure Java 17+ is installed.", file=sys.stderr)
+        print(f"Error: Java not found at '{java_path}'. Please ensure Java 25+ is installed.", file=sys.stderr)
         sys.exit(1)
 
     # Execute

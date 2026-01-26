@@ -56,7 +56,7 @@ async function main() {
     // Check for Java
     const javaCheck = spawn(javaPath, ['-version']);
     javaCheck.on('error', (err) => {
-        console.error(`Error: Java not found at "${javaPath}". Please ensure Java 17+ is installed and in PATH, or specify via --java-path.`);
+        console.error(`Error: Java not found at "${javaPath}". Please ensure Java 25+ is installed and in PATH, or specify via --java-path.`);
         process.exit(1);
     });
 

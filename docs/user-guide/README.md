@@ -27,7 +27,7 @@ All features are implemented, tested, and ready for production deployment.
 
 ## Requirements
 
-- Java 17 or higher
+- Java 25 or higher
 - Maven 3.9+ (for building)
 - Node.js (for npx) or Python (for uvx) - optional for execution
 

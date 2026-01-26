@@ -4,7 +4,7 @@ Thank you for your interest in contributing to JLens! We welcome all kinds of co
 
 ## Development Environment
 
-- **Java**: JDK 17 or higher.
+- **Java**: JDK 25 or higher.
 - **Build Tool**: Maven 3.9 or higher.
 - **Node.js**: Required for testing and building npm packages.
 - **Python**: Required for testing and building pypi packages.

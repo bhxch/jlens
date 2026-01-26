@@ -27,7 +27,7 @@
 
 ## 系统要求
 
-- Java 17 或更高版本
+- Java 25 或更高版本
 - Maven 3.9+（用于构建）
 - Node.js (用于 npx) 或 Python (用于 uvx) - 可选，用于运行
 
