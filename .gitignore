@@ -60,3 +60,8 @@ schema.ts
 
 # Test cases (JSON format)
 src/test/testcases/
+.iflow/settings.json
+
+
+# Logs and temporary outputs
+logs/
