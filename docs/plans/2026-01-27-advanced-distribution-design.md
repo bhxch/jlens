@@ -18,7 +18,7 @@ The distribution wrappers are enhanced to handle scenarios where the core JAR is
 Standardized `CONTRIBUTING.md` and `CONTRIBUTING_CN.md` are added to lower the barrier for new developers.
 
 ### Standards Established
-- **Technical Baseline**: Java 17+, Maven 3.9+.
+- **Technical Baseline**: Java 25+, Maven 3.9+.
 - **Commit Rigor**: Mandarin Chinese messages following Sentry/Conventional Commit formats.
 - **Quality Gates**: Mandatory 85% test coverage for core logic.
 - **Structure**: Clear separation between user guides, technical documentation, and design plans.

@@ -30,7 +30,7 @@ A GitHub Actions workflow is implemented to automate building and releasing.
 ### npx (NPM)
 - **Wrapper**: `bin/jlens-mcp-server.js` (Node.js script).
 - **Package**: `package.json` in root.
-- **Mechanism**: Checks for Java 17+, locates the JAR in the package, and spawns a child process.
+- **Mechanism**: Checks for Java 25+, locates the JAR in the package, and spawns a child process.
 
 ### uvx (PyPI)
 - **Wrapper**: `jlens_mcp_server/main.py` (Python script).

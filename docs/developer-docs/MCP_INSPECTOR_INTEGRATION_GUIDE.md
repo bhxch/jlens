@@ -37,7 +37,7 @@
 ### 1.3 测试环境
 
 - **操作系统**: Windows 10/11
-- **Java 版本**: 17+
+- **Java 版本**: 25+
 - **Maven 版本**: 3.9+
 - **Node.js**: Latest (需要 npm)
 - **MCP Inspector CLI**: v0.19.0

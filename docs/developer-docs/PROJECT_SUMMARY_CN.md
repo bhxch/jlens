@@ -81,7 +81,7 @@ JLens MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Model
 ### 构建工具
 
 - **Maven**：3.9+
-- **Java**：17+
+- **Java**：25+
 - **JUnit 5**：5.10.2（测试）
 - **JaCoCo**：0.8.11（代码覆盖率）
 

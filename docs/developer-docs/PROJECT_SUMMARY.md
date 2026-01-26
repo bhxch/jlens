@@ -81,7 +81,7 @@ JLens MCP Server is a Model Context Protocol (MCP) server designed for inspectin
 ### Build Tools
 
 - **Maven**: 3.9+
-- **Java**: 17+
+- **Java**: 25+
 - **JUnit 5**: 5.10.2 (Testing)
 - **JaCoCo**: 0.8.11 (Code coverage)
 
