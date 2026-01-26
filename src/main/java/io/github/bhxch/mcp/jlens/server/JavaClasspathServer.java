@@ -9,6 +9,7 @@ import io.github.bhxch.mcp.jlens.inspector.ClassInspector;
 import io.github.bhxch.mcp.jlens.maven.resolver.MavenResolverFactory;
 import io.github.bhxch.mcp.jlens.server.handlers.BuildModuleHandler;
 import io.github.bhxch.mcp.jlens.server.handlers.InspectJavaClassHandler;
+import io.github.bhxch.mcp.jlens.server.handlers.ListClassFieldsHandler;
 import io.github.bhxch.mcp.jlens.server.handlers.ListModuleDependenciesHandler;
 import io.github.bhxch.mcp.jlens.server.handlers.SearchJavaClassHandler;
 import io.modelcontextprotocol.json.McpJsonMapper;
@@ -50,17 +51,19 @@ public class JavaClasspathServer {
 
         // Build the server
         InspectJavaClassHandler inspectHandler = new InspectJavaClassHandler(inspector, resolverFactory);
+        ListClassFieldsHandler listFieldsHandler = new ListClassFieldsHandler(inspector, resolverFactory);
         ListModuleDependenciesHandler listDepsHandler = new ListModuleDependenciesHandler(resolverFactory);
         SearchJavaClassHandler searchClassHandler = new SearchJavaClassHandler(packageResolver, dependencyManager, resolverFactory);
         BuildModuleHandler buildModuleHandler = new BuildModuleHandler(mavenBuilder, dependencyManager, resolverFactory);
         
         this.mcpServer = McpServer.sync(transportProvider)
-            .serverInfo(new McpSchema.Implementation("jlens-mcp-server", "1.0.0"))
+            .serverInfo(new McpSchema.Implementation("jlens-mcp-server", "1.1.0"))
             .capabilities(McpSchema.ServerCapabilities.builder()
                 .tools(true)
                 .build())
-            .instructions("This server provides tools for inspecting Java classes, listing Maven module dependencies, searching for classes, and building Maven modules. Use 'inspect_java_class' to inspect a Java class, 'list_module_dependencies' to list Maven dependencies, 'search_java_class' to search for classes across packages, and 'build_module' to build a Maven module and download dependencies.")
+            .instructions("This server provides tools for inspecting Java classes, listing class fields, listing Maven module dependencies, searching for classes, and building Maven modules. Use 'inspect_java_class' to inspect a Java class, 'list_class_fields' to list variables in a class with visibility filtering, 'list_module_dependencies' to list Maven dependencies, 'search_java_class' to search for classes across packages, and 'build_module' to build a Maven module.")
             .toolCall(createInspectJavaClassTool(), (exchange, request) -> inspectHandler.handle(exchange, request))
+            .toolCall(createListClassFieldsTool(), (exchange, request) -> listFieldsHandler.handle(exchange, request))
             .toolCall(createListModuleDependenciesTool(), (exchange, request) -> listDepsHandler.handle(exchange, request))
             .toolCall(createSearchJavaClassTool(), (exchange, request) -> searchClassHandler.handle(exchange, request))
             .toolCall(createBuildModuleTool(), (exchange, request) -> buildModuleHandler.handle(exchange, request))
@@ -91,6 +94,42 @@ public class JavaClasspathServer {
         return McpSchema.Tool.builder()
             .name("inspect_java_class")
             .description("Inspect a Java class and return its metadata")
+            .inputSchema(new McpSchema.JsonSchema(
+                "object",
+                properties,
+                List.of("className"),
+                false,
+                null,
+                null
+            ))
+            .build();
+    }
+
+    /**
+     * Create the list_class_fields tool definition
+     */
+    private McpSchema.Tool createListClassFieldsTool() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("className", Map.of(
+            "type", "string",
+            "description", "Fully qualified class name"
+        ));
+        properties.put("visibility", Map.of(
+            "type", "array",
+            "description", "Visibility modifiers to include",
+            "items", Map.of(
+                "type", "string",
+                "enum", List.of("public", "protected", "private", "package-private")
+            )
+        ));
+        properties.put("sourceFilePath", Map.of(
+            "type", "string",
+            "description", "Path to source file in the module (optional)"
+        ));
+
+        return McpSchema.Tool.builder()
+            .name("list_class_fields")
+            .description("List fields of a Java class with visibility filtering")
             .inputSchema(new McpSchema.JsonSchema(
                 "object",
                 properties,
