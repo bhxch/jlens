@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jlens-mcp-server"
+version = "1.1.0"
+description = "MCP server for inspecting Java classes and Maven dependencies"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "bhxch"},
+]
+dependencies = []
+
+[project.scripts]
+jlens-mcp-server = "jlens_mcp_server.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["jlens_mcp_server"]
+artifacts = [
+    "target/*.jar",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "jlens_mcp_server",
+    "target/jlens-mcp-server-*.jar",
+]
