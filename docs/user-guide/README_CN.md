@@ -8,8 +8,8 @@
 
 所有功能已实现、测试完成，可投入生产部署。
 
-- **4 个 MCP 工具**：所有工具完全可用，支持标准化 JSON 输出
-- **100% 测试通过率**：25/25 端到端测试，19/19 集成测试，8/8 MCP Inspector 测试
+- **5 个 MCP 工具**：所有工具完全可用，支持标准化 JSON 输出
+- **100% 测试通过率**：71/71 个测试全部通过 (100%)
 - **MCP 协议兼容**：完全符合 MCP 2024-11-05 规范
 - **性能优化**：支持缓存的真实反射分析
 - **MCP Inspector 验证**：已通过 MCP Inspector CLI 模式测试 (JSON 格式)
@@ -47,7 +47,7 @@ mvn clean package
 
 **使用 npx:**
 ```bash
-npx jlens-mcp-server
+npx @bhxch/jlens-mcp-server
 ```
 
 **使用 uvx:**
@@ -87,7 +87,7 @@ java -jar target/jlens-mcp-server-1.1.0.jar
   "mcpServers": {
     "jlens": {
       "command": "npx",
-      "args": ["-y", "jlens-mcp-server"]
+      "args": ["-y", "@bhxch/jlens-mcp-server"]
     }
   }
 }
@@ -102,7 +102,7 @@ java -jar target/jlens-mcp-server-1.1.0.jar
   "mcpServers": {
     "jlens": {
       "command": "npx",
-      "args": ["-y", "jlens-mcp-server"]
+      "args": ["-y", "@bhxch/jlens-mcp-server"]
     }
   }
 }
@@ -114,7 +114,7 @@ java -jar target/jlens-mcp-server-1.1.0.jar
 
 - **名称**: jlens
 - **类型**: command
-- **命令**: `npx -y jlens-mcp-server`
+- **命令**: `npx -y @bhxch/jlens-mcp-server`
 
 ### Cline (VS Code 扩展)
 
@@ -122,12 +122,12 @@ MCP 设置 -> 添加服务器 (Add Server)：
 
 - **名称**: jlens
 - **命令**: `npx`
-- **参数**: `["-y", "jlens-mcp-server"]`
+- **参数**: `["-y", "@bhxch/jlens-mcp-server"]`
 
 ### iFlow CLI
 
 ```bash
-iflow mcp add jlens-mcp-server "npx -y jlens-mcp-server" --trust
+iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
 ```
 
 ## MCP 工具

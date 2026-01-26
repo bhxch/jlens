@@ -8,7 +8,7 @@ You can run JLens instantly using `npx` or `uvx` (requires Java 25+ installed):
 
 ```bash
 # Using npx
-npx -y jlens-mcp-server
+npx -y @bhxch/jlens-mcp-server
 
 # Using uvx
 uvx jlens-mcp-server

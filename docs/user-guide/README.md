@@ -8,8 +8,8 @@ A Model Context Protocol (MCP) server for inspecting Java classes and Maven depe
 
 All features are implemented, tested, and ready for production deployment.
 
-- **4 MCP Tools**: All tools fully functional with standardized JSON output
-- **100% Test Pass Rate**: 25/25 end-to-end tests, 19/19 integration tests, 8/8 MCP Inspector tests
+- **5 MCP Tools**: All tools fully functional with standardized JSON output
+- **100% Test Pass Rate**: 71/71 tests passed (100%)
 - **MCP Compliant**: Fully compliant with MCP 2024-11-05 specification
 - **Performance Optimized**: Real reflection-based inspection with caching
 - **MCP Inspector Verified**: Successfully tested with MCP Inspector CLI mode (JSON format)
@@ -47,7 +47,7 @@ You can run the server using Java directly, or via `npx`/`uvx`.
 
 **Using npx:**
 ```bash
-npx jlens-mcp-server
+npx @bhxch/jlens-mcp-server
 ```
 
 **Using uvx:**
@@ -87,7 +87,7 @@ Add this to your `claude_desktop_config.json`:
   "mcpServers": {
     "jlens": {
       "command": "npx",
-      "args": ["-y", "jlens-mcp-server"]
+      "args": ["-y", "@bhxch/jlens-mcp-server"]
     }
   }
 }
@@ -102,7 +102,7 @@ Add this to your `.gemini/settings.json`:
   "mcpServers": {
     "jlens": {
       "command": "npx",
-      "args": ["-y", "jlens-mcp-server"]
+      "args": ["-y", "@bhxch/jlens-mcp-server"]
     }
   }
 }
@@ -114,7 +114,7 @@ Settings -> Models -> MCP -> Add New MCP Server:
 
 - **Name**: jlens
 - **Type**: command
-- **Command**: `npx -y jlens-mcp-server`
+- **Command**: `npx -y @bhxch/jlens-mcp-server`
 
 ### Cline (VS Code Extension)
 
@@ -122,12 +122,12 @@ MCP Settings -> Add Server:
 
 - **Name**: jlens
 - **Command**: `npx`
-- **Args**: `["-y", "jlens-mcp-server"]`
+- **Args**: `["-y", "@bhxch/jlens-mcp-server"]`
 
 ### iFlow CLI
 
 ```bash
-iflow mcp add jlens-mcp-server "npx -y jlens-mcp-server" --trust
+iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
 ```
 
 ## MCP Tools
