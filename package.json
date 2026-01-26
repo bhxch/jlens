@@ -1,0 +1,21 @@
+{
+  "name": "@bhxch/jlens-mcp-server",
+  "version": "1.1.0",
+  "description": "MCP server for inspecting Java classes and Maven dependencies",
+  "bin": {
+    "jlens-mcp-server": "bin/jlens-mcp-server.js"
+  },
+  "files": [
+    "bin/",
+    "target/jlens-mcp-server-*.jar"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "author": "bhxch",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bhxch/jlens.git"
+  }
+}
