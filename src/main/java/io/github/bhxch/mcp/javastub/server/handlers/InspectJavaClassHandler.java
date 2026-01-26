@@ -1,5 +1,7 @@
 package io.github.bhxch.mcp.javastub.server.handlers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.bhxch.mcp.javastub.inspector.ClassInspector;
 import io.github.bhxch.mcp.javastub.inspector.model.ClassMetadata;
 import io.github.bhxch.mcp.javastub.maven.model.ModuleContext;
@@ -29,6 +31,7 @@ public class InspectJavaClassHandler {
 
     private final ClassInspector inspector;
     private final MavenResolverFactory resolverFactory;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public InspectJavaClassHandler(ClassInspector inspector, MavenResolverFactory resolverFactory) {
         this.inspector = inspector;
@@ -71,8 +74,12 @@ public class InspectJavaClassHandler {
 
             // Validate required parameters
             if (className == null || className.isEmpty()) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "INVALID_ARGUMENTS");
+                errorNode.put("message", "Error: className is required");
+                
                 return CallToolResult.builder()
-                    .content(List.of(new TextContent("Error: className is required")))
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
                     .isError(true)
                     .build();
             }
@@ -98,22 +105,31 @@ public class InspectJavaClassHandler {
 
             // Check if the class exists
             if (!isClassExists(className, context)) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "CLASS_NOT_FOUND");
+                errorNode.put("message", "Error: Class '" + className + "' not found in classpath");
+                errorNode.put("suggestion", "This class might not be in any dependency, or you need to build the project first.");
+                
                 return CallToolResult.builder()
-                    .content(List.of(new TextContent("Error: Class '" + className + "' not found in classpath")))
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
                     .isError(true)
                     .build();
             }
 
-            // Return the result
+            // Return the result as JSON
             return CallToolResult.builder()
-                .content(List.of(new TextContent(metadata.toString())))
+                .content(List.of(new TextContent(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(metadata))))
                 .isError(false)
                 .build();
 
         } catch (Exception e) {
             logger.error("Error inspecting class", e);
+            ObjectNode errorNode = objectMapper.createObjectNode();
+            errorNode.put("code", "INTERNAL_ERROR");
+            errorNode.put("message", "Error: " + e.getMessage());
+            
             return CallToolResult.builder()
-                .content(List.of(new TextContent("Error: " + e.getMessage())))
+                .content(List.of(new TextContent(errorNode.toPrettyString())))
                 .isError(true)
                 .build();
         }

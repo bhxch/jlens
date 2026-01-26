@@ -1,5 +1,7 @@
 package io.github.bhxch.mcp.javastub.inspector.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,6 +9,7 @@ import java.util.Objects;
 /**
  * Metadata about a Java class
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.ANY)
 public class ClassMetadata {
 
     private final String className;
@@ -17,6 +20,7 @@ public class ClassMetadata {
     private final List<FieldInfo> fields;
     private final List<MethodInfo> methods;
     private final List<MethodInfo> constructors;
+    
     private final boolean isInterface;
     private final boolean isEnum;
     private final boolean isAnnotation;
@@ -79,26 +83,32 @@ public class ClassMetadata {
         return constructors;
     }
 
+    @JsonProperty("isInterface")
     public boolean isInterface() {
         return isInterface;
     }
 
+    @JsonProperty("isEnum")
     public boolean isEnum() {
         return isEnum;
     }
 
+    @JsonProperty("isAnnotation")
     public boolean isAnnotation() {
         return isAnnotation;
     }
 
+    @JsonProperty("isAbstract")
     public boolean isAbstract() {
         return isAbstract;
     }
 
+    @JsonProperty("isFinal")
     public boolean isFinal() {
         return isFinal;
     }
 
+    @JsonProperty("isStatic")
     public boolean isStatic() {
         return isStatic;
     }

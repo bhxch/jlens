@@ -94,8 +94,12 @@ public class SearchJavaClassHandler {
 
             // Validate required parameters
             if (classNamePattern == null || classNamePattern.isEmpty()) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "INVALID_ARGUMENTS");
+                errorNode.put("message", "Error: classNamePattern is required");
+                
                 return CallToolResult.builder()
-                    .content(List.of(new TextContent("Error: classNamePattern is required")))
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
                     .isError(true)
                     .build();
             }
@@ -135,8 +139,12 @@ public class SearchJavaClassHandler {
 
         } catch (Exception e) {
             logger.error("Error searching for classes", e);
+            ObjectNode errorNode = objectMapper.createObjectNode();
+            errorNode.put("code", "INTERNAL_ERROR");
+            errorNode.put("message", "Error: " + e.getMessage());
+            
             return CallToolResult.builder()
-                .content(List.of(new TextContent("Error: " + e.getMessage())))
+                .content(List.of(new TextContent(errorNode.toPrettyString())))
                 .isError(true)
                 .build();
         }

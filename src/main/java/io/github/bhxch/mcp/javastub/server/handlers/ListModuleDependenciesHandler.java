@@ -1,5 +1,8 @@
 package io.github.bhxch.mcp.javastub.server.handlers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.bhxch.mcp.javastub.maven.model.DependencyInfo;
 import io.github.bhxch.mcp.javastub.maven.model.ModuleContext;
 import io.github.bhxch.mcp.javastub.maven.model.Scope;
@@ -27,6 +30,7 @@ public class ListModuleDependenciesHandler {
     private static final Logger logger = LoggerFactory.getLogger(ListModuleDependenciesHandler.class);
 
     private final MavenResolverFactory resolverFactory;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public ListModuleDependenciesHandler(MavenResolverFactory resolverFactory) {
         this.resolverFactory = resolverFactory;
@@ -69,8 +73,12 @@ public class ListModuleDependenciesHandler {
             // Validate that at least one path is provided
             if ((sourceFilePath == null || sourceFilePath.isEmpty()) && 
                 (pomFilePath == null || pomFilePath.isEmpty())) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "INVALID_ARGUMENTS");
+                errorNode.put("message", "Error: Either sourceFilePath or pomFilePath must be provided");
+                
                 return CallToolResult.builder()
-                    .content(List.of(new TextContent("Error: Either sourceFilePath or pomFilePath must be provided")))
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
                     .isError(true)
                     .build();
             }
@@ -84,8 +92,13 @@ public class ListModuleDependenciesHandler {
             }
 
             if (pomFile == null || !Files.exists(pomFile)) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "FILE_NOT_FOUND");
+                errorNode.put("message", "Error: pom.xml file not found");
+                errorNode.put("suggestion", "Please provide a valid path to a pom.xml file or a source file in the module.");
+                
                 return CallToolResult.builder()
-                    .content(List.of(new TextContent("Error: pom.xml file not found")))
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
                     .isError(true)
                     .build();
             }
@@ -98,40 +111,52 @@ public class ListModuleDependenciesHandler {
             ModuleContext moduleContext = resolver.resolveModule(pomFile, scope, List.of());
 
             if (moduleContext == null) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "RESOLUTION_FAILED");
+                errorNode.put("message", "Error: Failed to resolve module");
+                
                 return CallToolResult.builder()
-                    .content(List.of(new TextContent("Error: Failed to resolve module")))
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
                     .isError(true)
                     .build();
             }
 
-            // Format dependencies
-            StringBuilder result = new StringBuilder();
-            result.append("Module: ").append(moduleContext.getGroupId())
-                .append(":").append(moduleContext.getArtifactId())
-                .append(":").append(moduleContext.getVersion())
-                .append("\n\n");
-            result.append("Dependencies (").append(scope).append("):\n");
+            // Build JSON response
+            ObjectNode response = objectMapper.createObjectNode();
             
+            ObjectNode moduleNode = objectMapper.createObjectNode();
+            moduleNode.put("groupId", moduleContext.getGroupId());
+            moduleNode.put("artifactId", moduleContext.getArtifactId());
+            moduleNode.put("version", moduleContext.getVersion());
+            response.set("module", moduleNode);
+            
+            ArrayNode depsArray = objectMapper.createArrayNode();
             for (DependencyInfo dep : moduleContext.getDependencies()) {
-                result.append("  - ").append(dep.getGroupId())
-                    .append(":").append(dep.getArtifactId())
-                    .append(":").append(dep.getVersion());
-                if (dep.getScope() != null) {
-                    result.append(" [").append(dep.getScope()).append("]");
-                }
-                result.append("\n");
+                ObjectNode depNode = objectMapper.createObjectNode();
+                depNode.put("groupId", dep.getGroupId());
+                depNode.put("artifactId", dep.getArtifactId());
+                depNode.put("version", dep.getVersion());
+                depNode.put("scope", dep.getScope().toString().toLowerCase());
+                depNode.put("type", dep.getType());
+                depsArray.add(depNode);
             }
+            response.set("dependencies", depsArray);
+            response.put("totalDependencies", moduleContext.getDependencies().size());
 
             // Return the result
             return CallToolResult.builder()
-                .content(List.of(new TextContent(result.toString())))
+                .content(List.of(new TextContent(response.toPrettyString())))
                 .isError(false)
                 .build();
 
         } catch (Exception e) {
             logger.error("Error listing dependencies", e);
+            ObjectNode errorNode = objectMapper.createObjectNode();
+            errorNode.put("code", "INTERNAL_ERROR");
+            errorNode.put("message", "Error: " + e.getMessage());
+            
             return CallToolResult.builder()
-                .content(List.of(new TextContent("Error: " + e.getMessage())))
+                .content(List.of(new TextContent(errorNode.toPrettyString())))
                 .isError(true)
                 .build();
         }

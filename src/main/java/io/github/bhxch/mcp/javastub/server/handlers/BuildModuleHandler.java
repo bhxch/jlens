@@ -93,8 +93,12 @@ public class BuildModuleHandler {
 
             // Validate required parameters
             if (sourceFilePath == null || sourceFilePath.isEmpty()) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "INVALID_ARGUMENTS");
+                errorNode.put("message", "Error: sourceFilePath is required");
+                
                 return CallToolResult.builder()
-                    .content(List.of(new TextContent("Error: sourceFilePath is required")))
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
                     .isError(true)
                     .build();
             }
@@ -102,16 +106,24 @@ public class BuildModuleHandler {
             // Resolve module context
             Path path = Paths.get(sourceFilePath);
             if (!Files.exists(path)) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "FILE_NOT_FOUND");
+                errorNode.put("message", "Error: source file does not exist: " + sourceFilePath);
+                
                 return CallToolResult.builder()
-                    .content(List.of(new TextContent("Error: source file does not exist: " + sourceFilePath)))
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
                     .isError(true)
                     .build();
             }
 
             Path pomFile = findPomFile(path);
             if (pomFile == null || !Files.exists(pomFile)) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "POM_NOT_FOUND");
+                errorNode.put("message", "Error: could not find pom.xml for: " + sourceFilePath);
+                
                 return CallToolResult.builder()
-                    .content(List.of(new TextContent("Error: could not find pom.xml for: " + sourceFilePath)))
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
                     .isError(true)
                     .build();
             }
@@ -133,8 +145,12 @@ public class BuildModuleHandler {
 
         } catch (Exception e) {
             logger.error("Error building module", e);
+            ObjectNode errorNode = objectMapper.createObjectNode();
+            errorNode.put("code", "INTERNAL_ERROR");
+            errorNode.put("message", "Error: " + e.getMessage());
+            
             return CallToolResult.builder()
-                .content(List.of(new TextContent("Error: " + e.getMessage())))
+                .content(List.of(new TextContent(errorNode.toPrettyString())))
                 .isError(true)
                 .build();
         }
