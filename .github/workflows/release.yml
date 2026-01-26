@@ -1,0 +1,63 @@
+name: Release and Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+          
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+        
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: target/jlens-mcp-server-*.jar
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Publish to NPM (Trusted Publishing / OIDC)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          
+      - name: Publish to NPM
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # NPM OIDC 目前仍建议保留 Token 配置或在 NPM 后台完全开启免密
+
+      # Publish to PyPI (Trusted Publishing / OIDC)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Build Python package
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+          python -m build
+          
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
