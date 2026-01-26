@@ -139,7 +139,7 @@ npx @modelcontextprotocol/inspector --cli --config <config-path> --server <serve
 ## 测试环境信息
 
 - **操作系统**: Windows 10
-- **Java 版本**: 17+
+- **Java 版本**: 25+
 - **Maven 版本**: 3.9+
 - **Node.js 版本**: Latest
 - **MCP Inspector CLI 版本**: 0.19.0

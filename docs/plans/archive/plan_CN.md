@@ -4,7 +4,7 @@
 
 - **项目名称**: Java Maven Classpath MCP 服务器
 - **包名**: io.github.bhxch.mcp.jlens
-- **Java 版本**: 17+（MCP SDK 要求）
+- **Java 版本**: 25+（MCP SDK 要求）
 - **构建工具**: Maven
 - **MCP SDK 版本**: 0.17.2
 - **测试覆盖率**: ≥80%

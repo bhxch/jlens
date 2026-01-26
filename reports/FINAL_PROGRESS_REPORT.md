@@ -91,7 +91,7 @@ Updated and created comprehensive documentation:
 ## Technical Stack
 
 - **MCP Java SDK**: 0.17.2
-- **Java**: 17+
+- **Java**: 25+
 - **Maven**: 3.9+
 - **Testing Framework**: JUnit 5
 - **Coverage Tool**: JaCoCo

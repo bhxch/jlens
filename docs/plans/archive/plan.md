@@ -4,7 +4,7 @@
 
 - **Project Name**: Java Maven Classpath MCP Server
 - **Package Name**: `io.github.bhxch.mcp.jlens`
-- **Java Version**: 17+ (MCP SDK requirement)
+- **Java Version**: 25+ (MCP SDK requirement)
 - **Build Tool**: Maven
 - **MCP SDK Version**: 0.17.2
 - **Test Coverage**: ≥80%

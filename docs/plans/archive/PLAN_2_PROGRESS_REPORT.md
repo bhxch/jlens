@@ -204,7 +204,7 @@ Build Maven module and download missing dependencies.
 
 ## Known Issues
 
-1. **JaCoCo Compatibility**: There's a known issue with JaCoCo 0.8.11 and OpenJDK 17+ that causes instrumentation errors. This affects code coverage reporting but doesn't impact functionality.
+1. **JaCoCo Compatibility**: There's a known issue with JaCoCo 0.8.11 and OpenJDK 25+ that causes instrumentation errors. This affects code coverage reporting but doesn't impact functionality.
 
 ## Next Steps
 

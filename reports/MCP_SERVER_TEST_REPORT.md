@@ -4,7 +4,7 @@
 
 - **测试日期**: 2026-01-25
 - **测试执行人**: Code Agent
-- **测试环境**: Windows 10, Java 17, Maven 3.9, iflow 0.5.2
+- **测试环境**: Windows 10, Java 25, Maven 3.9, iflow 0.5.2
 - **项目路径**: /path/to/jlens
 - **测试计划**: MCP_SERVER_TEST_PLAN.md
 
@@ -316,7 +316,7 @@ iflow mcp get jlens-mcp-server
 ### 测试环境信息
 
 - **操作系统**: Windows 10/11
-- **Java 版本**: 17+
+- **Java 版本**: 25+
 - **Maven 版本**: 3.9+
 - **iflow CLI 版本**: 0.5.2
 - **MCP Java SDK**: 0.17.2

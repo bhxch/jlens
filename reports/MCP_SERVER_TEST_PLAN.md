@@ -30,7 +30,7 @@
 ### 测试环境
 
 - **操作系统**: Windows 10/11
-- **Java 版本**: 17+
+- **Java 版本**: 25+
 - **Maven 版本**: 3.9+
 - **Code Agent**: 支持 MCP 协议的 AI 代码助手
 - **项目路径**: `/path/to/jlens`
