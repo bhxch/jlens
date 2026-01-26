@@ -17,5 +17,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bhxch/jlens.git"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
