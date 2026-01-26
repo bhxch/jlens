@@ -1,9 +1,9 @@
 # MCP Inspector Integration Test Script (Final Version)
-# Tests the javastub-mcp-server using MCP Inspector CLI
+# Tests the jlens-mcp-server using MCP Inspector CLI
 
 $ErrorActionPreference = "Continue"
-$ConfigPath = "E:\repos\0000\javastub\mcp-inspector-config.json"
-$ServerName = "javastub-mcp-server"
+$ConfigPath = "E:\repos\0000\jlens\mcp-inspector-config.json"
+$ServerName = "jlens-mcp-server"
 
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "MCP Inspector Integration Test" -ForegroundColor Cyan
@@ -169,7 +169,7 @@ Write-Host "Test Suite 5: build_module" -ForegroundColor Cyan
 Write-Host "--------------------------" -ForegroundColor Cyan
 
 Test-Tool -ToolName "build_module" `
-          -Arguments "--tool-arg sourceFilePath=E:\repos\0000\javastub\src\main\java\io\github\bhxch\mcp\javastub\Main.java" `
+          -Arguments "--tool-arg sourceFilePath=E:\repos\0000\jlens\src\main\java\io\github\bhxch\mcp\jlens\Main.java" `
           -TestName "Build module" `
           -Validate { param($out) $out -match 'isError":\s*false' }
 
@@ -184,7 +184,7 @@ Write-Host "Pass Rate: $([math]::Round(($script:PassedTests / $script:TotalTests
 Write-Host ""
 
 # Export results
-$ResultsFile = "E:\repos\0000\javastub\mcp_inspector_test_results.json"
+$ResultsFile = "E:\repos\0000\jlens\mcp_inspector_test_results.json"
 $script:TestResults | ConvertTo-Json -Depth 3 | Out-File -FilePath $ResultsFile -Encoding UTF8
 Write-Host "Results saved to: $ResultsFile" -ForegroundColor Gray
 
@@ -201,3 +201,6 @@ if ($script:FailedTests -eq 0) {
     Write-Host "✗ Some tests failed. Please review the output above." -ForegroundColor Red
     exit 1
 }
+
+
+

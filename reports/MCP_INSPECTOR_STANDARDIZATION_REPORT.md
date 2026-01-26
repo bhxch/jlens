@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-This report documents the standardization of MCP tool outputs and the enhancement of class inspection logic for the `javastub-mcp-server`. The goal was to ensure full compatibility with the MCP Inspector CLI and provide high-quality, machine-readable metadata for AI agents.
+This report documents the standardization of MCP tool outputs and the enhancement of class inspection logic for the `jlens-mcp-server`. The goal was to ensure full compatibility with the MCP Inspector CLI and provide high-quality, machine-readable metadata for AI agents.
 
 **Date**: 2026-01-27  
 **Status**: ✅ Completed & Verified
@@ -39,11 +39,11 @@ File: `config/mcp-inspector-config.json`
 ```json
 {
   "mcpServers": {
-    "javastub-mcp-server": {
+    "jlens-mcp-server": {
       "command": "java",
       "args": [
         "-jar",
-        "E:\\repos\\0000\\javastub\\target\\javastub-mcp-server-1.0.0-SNAPSHOT.jar"
+        "E:\repos\0000\jlens\\target\\jlens-mcp-server-1.0.0-SNAPSHOT.jar"
       ]
     }
   }
@@ -52,11 +52,11 @@ File: `config/mcp-inspector-config.json`
 
 ### 3.3 Test Commands
 - **Tool Listing**:
-  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server javastub-mcp-server --method tools/list`
+  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server jlens-mcp-server --method tools/list`
 - **Class Inspection**:
-  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server javastub-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.List`
+  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.List`
 - **Dependency Listing**:
-  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server javastub-mcp-server --method tools/call --tool-name list_module_dependencies --tool-arg pomFilePath=pom.xml`
+  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name list_module_dependencies --tool-arg pomFilePath=pom.xml`
 
 ## 4. Automation Script
 
@@ -71,4 +71,8 @@ powershell -ExecutionPolicy Bypass -File scripts/test_mcp_inspector_simple.ps1
 
 ## 5. Conclusion
 
-The `javastub-mcp-server` is now fully standardized for MCP Inspector integration. All tools return consistent JSON metadata, error handling is robust with specific codes, and class inspection provides real reflection-based data. Integration tests confirm 100% pass rate with the new format.
+The `jlens-mcp-server` is now fully standardized for MCP Inspector integration. All tools return consistent JSON metadata, error handling is robust with specific codes, and class inspection provides real reflection-based data. Integration tests confirm 100% pass rate with the new format.
+
+
+
+

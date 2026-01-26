@@ -35,7 +35,7 @@
 mvn clean package
 ```
 
-这将创建一个可执行的 JAR 文件：`target/javastub-mcp-server-1.0.0-SNAPSHOT.jar`
+这将创建一个可执行的 JAR 文件：`target/jlens-mcp-server-1.0.0-SNAPSHOT.jar`
 
 ## 使用方法
 
@@ -44,7 +44,7 @@ mvn clean package
 MCP 服务器通过 stdin/stdout 使用 JSON-RPC 2.0 协议进行通信。
 
 ```bash
-java -jar target/javastub-mcp-server-1.0.0-SNAPSHOT.jar
+java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ```
 
 ### 命令行选项
@@ -66,7 +66,7 @@ java -jar target/javastub-mcp-server-1.0.0-SNAPSHOT.jar
 将此 MCP 服务器添加到 iFlow CLI：
 
 ```bash
-iflow mcp add javastub-mcp-server "java -jar E:\repos\javastub\target\javastub-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 完整 JSON 配置请参见 `iflow_mcp.md`。
@@ -177,7 +177,7 @@ iflow mcp add javastub-mcp-server "java -jar E:\repos\javastub\target\javastub-m
   "params": {
     "name": "build_module",
     "arguments": {
-      "sourceFilePath": "src/main/java/io/github/bhxch/mcp/javastub/Main.java",
+      "sourceFilePath": "src/main/java/io/github/bhxch/mcp/jlens/Main.java",
       "downloadSources": true
     }
   }
@@ -207,6 +207,7 @@ open target/site/jacoco/index.html
 ### 测试结果
 
 **端到端测试（Python 脚本）**：25/25 通过（100%）
+
 - 配置测试：4/4 通过
 - inspect_java_class：5/5 通过
 - list_module_dependencies：4/4 通过
@@ -216,6 +217,7 @@ open target/site/jacoco/index.html
 - 性能测试：2/2 通过
 
 **集成测试（Java - 直接 JSON-RPC）**：19/19 通过（100%）
+
 - 工具列表：1/1 通过
 - inspect_java_class：4/4 通过
 - list_module_dependencies：4/4 通过
@@ -224,6 +226,7 @@ open target/site/jacoco/index.html
 - 集成工作流：3/3 通过
 
 **MCP 客户端集成测试（Java）**：19/19 通过（100%）
+
 - 服务器初始化：2/2 通过
 - inspect_java_class：8/8 通过
 - list_module_dependencies：3/3 通过
@@ -231,6 +234,7 @@ open target/site/jacoco/index.html
 - build_module：4/4 通过
 
 **MCP Inspector CLI 测试**：8/8 通过（100%）
+
 - 服务器初始化：1/1 通过
 - inspect_java_class：3/3 通过
 - list_module_dependencies：1/1 通过
@@ -253,7 +257,7 @@ npm install -g @modelcontextprotocol/inspector-cli
 powershell -ExecutionPolicy Bypass -File test_mcp_inspector_simple.ps1
 
 # 手动测试
-npx @modelcontextprotocol/inspector --cli --config mcp-inspector-config.json --server javastub-mcp-server --method tools/list
+npx @modelcontextprotocol/inspector --cli --config mcp-inspector-config.json --server jlens-mcp-server --method tools/list
 ```
 
 详细测试说明请参见 `MCP_INSPECTOR_INTEGRATION_GUIDE.md`。
@@ -261,7 +265,7 @@ npx @modelcontextprotocol/inspector --cli --config mcp-inspector-config.json --s
 ## 架构
 
 ```
-io.github.bhxch.mcp.javastub/
+io.github.bhxch.mcp.jlens/
 ├── Main.java                          # 应用程序入口点
 ├── config/                            # 配置管理
 │   ├── ServerConfig.java

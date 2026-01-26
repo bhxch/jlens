@@ -2,7 +2,7 @@
 
 ## 1. 概述
 
-本报告记录了 `javastub-mcp-server` 的 MCP 工具输出标准化及类检查逻辑增强的实施过程。目标是确保与 MCP Inspector CLI 的完全兼容，并为 AI 代理提供高质量、机器可读的元数据。
+本报告记录了 `jlens-mcp-server` 的 MCP 工具输出标准化及类检查逻辑增强的实施过程。目标是确保与 MCP Inspector CLI 的完全兼容，并为 AI 代理提供高质量、机器可读的元数据。
 
 **日期**: 2026-01-27  
 **状态**: ✅ 已完成并验证
@@ -39,11 +39,11 @@
 ```json
 {
   "mcpServers": {
-    "javastub-mcp-server": {
+    "jlens-mcp-server": {
       "command": "java",
       "args": [
         "-jar",
-        "E:\\repos\\0000\\javastub\\target\\javastub-mcp-server-1.0.0-SNAPSHOT.jar"
+        "E:\repos\0000\jlens\\target\\jlens-mcp-server-1.0.0-SNAPSHOT.jar"
       ]
     }
   }
@@ -52,11 +52,11 @@
 
 ### 3.3 测试命令
 - **列出工具**:
-  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server javastub-mcp-server --method tools/list`
+  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server jlens-mcp-server --method tools/list`
 - **类检查**:
-  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server javastub-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.List`
+  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.List`
 - **列出依赖**:
-  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server javastub-mcp-server --method tools/call --tool-name list_module_dependencies --tool-arg pomFilePath=pom.xml`
+  `npx @modelcontextprotocol/inspector --cli --config config/mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name list_module_dependencies --tool-arg pomFilePath=pom.xml`
 
 ## 4. 自动化脚本
 
@@ -71,4 +71,8 @@ powershell -ExecutionPolicy Bypass -File scripts/test_mcp_inspector_simple.ps1
 
 ## 5. 结论
 
-`javastub-mcp-server` 现已针对 MCP Inspector 集成完成了全面标准化。所有工具均返回一致的 JSON 元数据，错误处理机制通过特定代码得到了强化，类检查功能提供了基于反射的真实数据。集成测试确认新格式下的通过率为 100%。
+`jlens-mcp-server` 现已针对 MCP Inspector 集成完成了全面标准化。所有工具均返回一致的 JSON 元数据，错误处理机制通过特定代码得到了强化，类检查功能提供了基于反射的真实数据。集成测试确认新格式下的通过率为 100%。
+
+
+
+

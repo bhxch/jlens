@@ -11,7 +11,7 @@
 ## Integration Tests (Java - Direct JSON-RPC)
 
 ### Test Class: JavaClasspathServerIntegrationTest
-**Location**: `src/test/java/io/github/bhxch/mcp/javastub/server/JavaClasspathServerIntegrationTest.java`
+**Location**: `src/test/java/io/github/bhxch/mcp/jlens/server/JavaClasspathServerIntegrationTest.java`
 
 | Test Name | Status | Time (s) |
 |-----------|--------|-----------|
@@ -44,7 +44,7 @@
 ## MCP Client Integration Tests (Java)
 
 ### Test Class: JavaClasspathServerMcpClientTest
-**Location**: `src/test/java/io/github/bhxch/mcp/javastub/server/JavaClasspathServerMcpClientTest.java`
+**Location**: `src/test/java/io/github/bhxch/mcp/jlens/server/JavaClasspathServerMcpClientTest.java`
 
 | Test Name | Status | Time (s) |
 |-----------|--------|-----------|
@@ -179,9 +179,12 @@
 
 ## Conclusion
 
-All 63 tests passed successfully, achieving 100% pass rate. The JavaStub MCP Server is production-ready with comprehensive test coverage, including:
+All 63 tests passed successfully, achieving 100% pass rate. The JLens MCP Server is production-ready with comprehensive test coverage, including:
 - 19 direct JSON-RPC integration tests
 - 19 MCP client integration tests
 - 25 end-to-end tests
 
 The server successfully handles all MCP tools and edge cases, demonstrating robust functionality and reliability.
+
+
+

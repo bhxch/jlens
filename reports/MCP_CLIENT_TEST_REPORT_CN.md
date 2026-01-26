@@ -61,14 +61,14 @@
 ```java
 // 通过 ProcessBuilder 启动服务器进程
 ProcessBuilder pb = new ProcessBuilder(
-    "java", "-jar", "javastub-mcp-server-1.0.0-SNAPSHOT.jar"
+    "java", "-jar", "jlens-mcp-server-1.0.0-SNAPSHOT.jar"
 );
 
 // JSON-RPC 初始化
 String initRequest = "{\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"test-client\",\"version\":\"1.0.0\"}}}\n";
 
 // 通过 JSON-RPC 执行工具
-String toolRequest = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:\\\\repos\\\\javastub\\\\pom.xml\",\"scope\":\"compile\"}}}\n";
+String toolRequest = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:\\\\repos\\\\0000\\\\jlens\\\\pom.xml\",\"scope\":\"compile\"}}}\n";
 ```
 
 ### 超时配置
@@ -124,3 +124,6 @@ private String sendRequest(String request) throws IOException, InterruptedExcept
 3. **错误报告**: 在测试失败时添加更详细的错误消息，以帮助更快地诊断问题。
 
 4. **测试隔离**: 考虑使用特定于测试的 Maven 配置，以避免与开发环境的潜在冲突。
+
+
+

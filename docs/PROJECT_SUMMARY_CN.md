@@ -1,8 +1,8 @@
-# JavaStub MCP 服务器 - 项目摘要
+# JLens MCP 服务器 - 项目摘要
 
 ## 项目概述
 
-JavaStub MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Model Context Protocol (MCP) 服务器。它为 AI 代理提供了理解 Java 代码库、分析类结构和管理 Maven 项目依赖的能力。
+JLens MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Model Context Protocol (MCP) 服务器。它为 AI 代理提供了理解 Java 代码库、分析类结构和管理 Maven 项目依赖的能力。
 
 ## 状态
 
@@ -29,6 +29,7 @@ JavaStub MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Mo
 ### 2. 测试结果
 
 #### MCP Inspector CLI 测试
+
 - **总计**：8 个测试
 - **通过**：8 个测试
 - **失败**：0 个测试
@@ -36,6 +37,7 @@ JavaStub MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Mo
 - **优化**：所有工具现在均返回标准化的 JSON，以实现与 AI 代理的最佳兼容性。
 
 **详细分类**：
+
 - 服务器初始化：1/1 通过
 - inspect_java_class：3/3 通过（真实反射数据）
 - list_module_dependencies：1/1 通过（JSON 格式）
@@ -64,17 +66,20 @@ JavaStub MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Mo
 ## 技术栈
 
 ### 核心依赖
+
 - **MCP Java SDK**：0.17.2
 - **Jackson**：2.19.2（JSON 处理）
 - **Caffeine**：3.1.8（缓存）
 - **SLF4J/Logback**：2.0.12/1.5.6（日志）
 
 ### 反编译器
+
 - **Vineflower**：1.10.1
 - **CFR**：0.152
 - **Fernflower**：242.23655.110
 
 ### 构建工具
+
 - **Maven**：3.9+
 - **Java**：17+
 - **JUnit 5**：5.10.2（测试）
@@ -125,13 +130,13 @@ mvn clean package
 ### 运行
 
 ```bash
-java -jar target/javastub-mcp-server-1.0.0-SNAPSHOT.jar
+java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ```
 
 ### 与 iFlow CLI 集成
 
 ```bash
-iflow mcp add javastub-mcp-server "java -jar E:\repos\javastub\target\javastub-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 ## 文档
@@ -175,7 +180,8 @@ iflow mcp add javastub-mcp-server "java -jar E:\repos\javastub\target\javastub-m
 
 ## 结论
 
-JavaStub MCP 服务器是一个功能齐全、生产就绪的 MCP 服务器，提供了全面的 Java 代码分析和 Maven 依赖管理功能。所有功能均已实现和测试，在 71 个测试中达到 100% 的通过率：
+JLens MCP 服务器是一个功能齐全、生产就绪的 MCP 服务器，提供了全面的 Java 代码分析和 Maven 依赖管理功能。所有功能均已实现和测试，在 71 个测试中达到 100% 的通过率：
+
 - 25 个端到端测试
 - 19 个直接 JSON-RPC 集成测试
 - 19 个 MCP 客户端集成测试

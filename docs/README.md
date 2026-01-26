@@ -35,7 +35,7 @@ All features are implemented, tested, and ready for production deployment.
 mvn clean package
 ```
 
-This will create an executable JAR file: `target/javastub-mcp-server-1.0.0-SNAPSHOT.jar`
+This will create an executable JAR file: `target/jlens-mcp-server-1.0.0-SNAPSHOT.jar`
 
 ## Usage
 
@@ -44,7 +44,7 @@ This will create an executable JAR file: `target/javastub-mcp-server-1.0.0-SNAPS
 The MCP server communicates via stdin/stdout using JSON-RPC 2.0 protocol.
 
 ```bash
-java -jar target/javastub-mcp-server-1.0.0-SNAPSHOT.jar
+java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ```
 
 ### Command Line Options
@@ -66,7 +66,7 @@ Options:
 To add this MCP server to iFlow CLI:
 
 ```bash
-iflow mcp add javastub-mcp-server "java -jar E:\repos\javastub\target\javastub-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 See `iflow_mcp.md` for the complete JSON configuration.
@@ -177,7 +177,7 @@ Build Maven module and download missing dependencies.
   "params": {
     "name": "build_module",
     "arguments": {
-      "sourceFilePath": "src/main/java/io/github/bhxch/mcp/javastub/Main.java",
+      "sourceFilePath": "src/main/java/io/github/bhxch/mcp/jlens/Main.java",
       "downloadSources": true
     }
   }
@@ -207,6 +207,7 @@ open target/site/jacoco/index.html
 ### Test Results
 
 **End-to-End Tests (Python Scripts)**: 25/25 passed (100%)
+
 - Configuration tests: 4/4 passed
 - inspect_java_class: 5/5 passed
 - list_module_dependencies: 4/4 passed
@@ -216,6 +217,7 @@ open target/site/jacoco/index.html
 - Performance tests: 2/2 passed
 
 **Integration Tests (Java - Direct JSON-RPC)**: 19/19 passed (100%)
+
 - Tool listing: 1/1 passed
 - inspect_java_class: 4/4 passed
 - list_module_dependencies: 4/4 passed
@@ -224,6 +226,7 @@ open target/site/jacoco/index.html
 - Integration workflows: 3/3 passed
 
 **MCP Client Integration Tests (Java)**: 19/19 passed (100%)
+
 - Server initialization: 2/2 passed
 - inspect_java_class: 8/8 passed
 - list_module_dependencies: 3/3 passed
@@ -231,6 +234,7 @@ open target/site/jacoco/index.html
 - build_module: 4/4 passed
 
 **MCP Inspector CLI Tests**: 8/8 passed (100%)
+
 - Server Initialization: 1/1 passed
 - inspect_java_class: 3/3 passed
 - list_module_dependencies: 1/1 passed
@@ -253,7 +257,7 @@ npm install -g @modelcontextprotocol/inspector-cli
 powershell -ExecutionPolicy Bypass -File test_mcp_inspector_simple.ps1
 
 # Manual testing
-npx @modelcontextprotocol/inspector --cli --config mcp-inspector-config.json --server javastub-mcp-server --method tools/list
+npx @modelcontextprotocol/inspector --cli --config mcp-inspector-config.json --server jlens-mcp-server --method tools/list
 ```
 
 See `MCP_INSPECTOR_INTEGRATION_GUIDE.md` for detailed testing instructions.
@@ -261,7 +265,7 @@ See `MCP_INSPECTOR_INTEGRATION_GUIDE.md` for detailed testing instructions.
 ## Architecture
 
 ```
-io.github.bhxch.mcp.javastub/
+io.github.bhxch.mcp.jlens/
 ├── Main.java                          # Application entry point
 ├── config/                            # Configuration management
 │   ├── ServerConfig.java

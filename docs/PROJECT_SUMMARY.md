@@ -1,8 +1,8 @@
-# JavaStub MCP Server - Project Summary
+# JLens MCP Server - Project Summary
 
 ## Project Overview
 
-JavaStub MCP Server is a Model Context Protocol (MCP) server designed for inspecting Java classes and resolving Maven dependencies. It provides AI agents with the ability to understand Java codebases, analyze class structures, and manage Maven project dependencies.
+JLens MCP Server is a Model Context Protocol (MCP) server designed for inspecting Java classes and resolving Maven dependencies. It provides AI agents with the ability to understand Java codebases, analyze class structures, and manage Maven project dependencies.
 
 ## Status
 
@@ -29,6 +29,7 @@ JavaStub MCP Server is a Model Context Protocol (MCP) server designed for inspec
 ### 2. Testing Results
 
 #### MCP Inspector CLI Tests
+
 - **Total**: 8 tests
 - **Passed**: 8 tests
 - **Failed**: 0 tests
@@ -36,6 +37,7 @@ JavaStub MCP Server is a Model Context Protocol (MCP) server designed for inspec
 - **Enhancement**: All tools now return standardized JSON for optimal AI agent compatibility.
 
 **Breakdown**:
+
 - Server Initialization: 1/1 passed
 - inspect_java_class: 3/3 passed (Real reflection data)
 - list_module_dependencies: 1/1 passed (JSON format)
@@ -64,17 +66,20 @@ JavaStub MCP Server is a Model Context Protocol (MCP) server designed for inspec
 ## Technical Stack
 
 ### Core Dependencies
+
 - **MCP Java SDK**: 0.17.2
 - **Jackson**: 2.19.2 (JSON processing)
 - **Caffeine**: 3.1.8 (Caching)
 - **SLF4J/Logback**: 2.0.12/1.5.6 (Logging)
 
 ### Decompilers
+
 - **Vineflower**: 1.10.1
 - **CFR**: 0.152
 - **Fernflower**: 242.23655.110
 
 ### Build Tools
+
 - **Maven**: 3.9+
 - **Java**: 17+
 - **JUnit 5**: 5.10.2 (Testing)
@@ -125,13 +130,13 @@ mvn clean package
 ### Run
 
 ```bash
-java -jar target/javastub-mcp-server-1.0.0-SNAPSHOT.jar
+java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
 ```
 
 ### Integration with iFlow CLI
 
 ```bash
-iflow mcp add javastub-mcp-server "java -jar E:\repos\javastub\target\javastub-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
 ```
 
 ## Documentation
@@ -175,7 +180,8 @@ iflow mcp add javastub-mcp-server "java -jar E:\repos\javastub\target\javastub-m
 
 ## Conclusion
 
-JavaStub MCP Server is a fully functional, production-ready MCP server that provides comprehensive Java code analysis and Maven dependency management capabilities. All features are implemented and tested, with 100% test pass rate across 71 tests:
+JLens MCP Server is a fully functional, production-ready MCP server that provides comprehensive Java code analysis and Maven dependency management capabilities. All features are implemented and tested, with 100% test pass rate across 71 tests:
+
 - 25 end-to-end tests
 - 19 direct JSON-RPC integration tests
 - 19 MCP client integration tests

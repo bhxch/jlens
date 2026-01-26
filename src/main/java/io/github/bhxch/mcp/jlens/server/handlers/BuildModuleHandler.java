@@ -1,0 +1,274 @@
+package io.github.bhxch.mcp.jlens.server.handlers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.github.bhxch.mcp.jlens.dependency.DependencyManager;
+import io.github.bhxch.mcp.jlens.dependency.MavenBuilder;
+import io.github.bhxch.mcp.jlens.intelligence.BuildPromptGenerator;
+import io.github.bhxch.mcp.jlens.maven.model.ModuleContext;
+import io.github.bhxch.mcp.jlens.maven.model.Scope;
+import io.github.bhxch.mcp.jlens.maven.resolver.MavenResolver;
+import io.github.bhxch.mcp.jlens.maven.resolver.MavenResolverFactory;
+import io.modelcontextprotocol.server.McpSyncServerExchange;
+import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
+import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
+import io.modelcontextprotocol.spec.McpSchema.TextContent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
+
+/**
+ * Handler for build_module tool
+ */
+public class BuildModuleHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(BuildModuleHandler.class);
+
+    private final MavenBuilder mavenBuilder;
+    private final DependencyManager dependencyManager;
+    private final MavenResolverFactory resolverFactory;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public BuildModuleHandler(MavenBuilder mavenBuilder,
+                              DependencyManager dependencyManager,
+                              MavenResolverFactory resolverFactory) {
+        this.mavenBuilder = mavenBuilder;
+        this.dependencyManager = dependencyManager;
+        this.resolverFactory = resolverFactory;
+    }
+
+    /**
+     * Handle the build_module tool call
+     */
+    public CallToolResult handle(McpSyncServerExchange exchange, CallToolRequest request) {
+        try {
+            // Extract parameters
+            String sourceFilePath = null;
+            List<String> goals = List.of("compile", "dependency:resolve");
+            boolean downloadSources = false;
+            int timeoutSeconds = 300;
+            
+            if (request.arguments() != null) {
+                var args = request.arguments();
+                
+                if (args.containsKey("sourceFilePath")) {
+                    Object value = args.get("sourceFilePath");
+                    if (value != null) {
+                        sourceFilePath = value.toString();
+                    }
+                }
+                
+                if (args.containsKey("goals")) {
+                    Object value = args.get("goals");
+                    if (value != null) {
+                        goals = parseGoals(value);
+                    }
+                }
+                
+                if (args.containsKey("downloadSources")) {
+                    Object value = args.get("downloadSources");
+                    if (value != null) {
+                        downloadSources = Boolean.parseBoolean(value.toString());
+                    }
+                }
+                
+                if (args.containsKey("timeoutSeconds")) {
+                    Object value = args.get("timeoutSeconds");
+                    if (value != null) {
+                        try {
+                            timeoutSeconds = Integer.parseInt(value.toString());
+                        } catch (NumberFormatException e) {
+                            // Use default
+                        }
+                    }
+                }
+            }
+
+            // Validate required parameters
+            if (sourceFilePath == null || sourceFilePath.isEmpty()) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "INVALID_ARGUMENTS");
+                errorNode.put("message", "Error: sourceFilePath is required");
+                
+                return CallToolResult.builder()
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
+                    .isError(true)
+                    .build();
+            }
+
+            // Resolve module context
+            Path path = Paths.get(sourceFilePath);
+            if (!Files.exists(path)) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "FILE_NOT_FOUND");
+                errorNode.put("message", "Error: source file does not exist: " + sourceFilePath);
+                
+                return CallToolResult.builder()
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
+                    .isError(true)
+                    .build();
+            }
+
+            Path pomFile = findPomFile(path);
+            if (pomFile == null || !Files.exists(pomFile)) {
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("code", "POM_NOT_FOUND");
+                errorNode.put("message", "Error: could not find pom.xml for: " + sourceFilePath);
+                
+                return CallToolResult.builder()
+                    .content(List.of(new TextContent(errorNode.toPrettyString())))
+                    .isError(true)
+                    .build();
+            }
+
+            MavenResolver resolver = resolverFactory.createResolver();
+            ModuleContext context = resolver.resolveModule(pomFile, Scope.COMPILE, List.of());
+
+            // Add source download to goals if requested
+            List<String> finalGoals = new ArrayList<>(goals);
+            if (downloadSources) {
+                finalGoals.add("dependency:sources");
+            }
+
+            // Execute build
+            MavenBuilder.BuildResult result = mavenBuilder.buildModule(context, finalGoals, List.of(), timeoutSeconds);
+
+            // Build response
+            return buildBuildResponse(result, context);
+
+        } catch (Exception e) {
+            logger.error("Error building module", e);
+            ObjectNode errorNode = objectMapper.createObjectNode();
+            errorNode.put("code", "INTERNAL_ERROR");
+            errorNode.put("message", "Error: " + e.getMessage());
+            
+            return CallToolResult.builder()
+                .content(List.of(new TextContent(errorNode.toPrettyString())))
+                .isError(true)
+                .build();
+        }
+    }
+
+    /**
+     * Parse goals from parameter
+     */
+    private List<String> parseGoals(Object goalsValue) {
+        List<String> goals = new ArrayList<>();
+        
+        if (goalsValue instanceof List) {
+            for (Object item : (List<?>) goalsValue) {
+                if (item != null) {
+                    goals.add(item.toString());
+                }
+            }
+        } else if (goalsValue instanceof String) {
+            String[] items = goalsValue.toString().split(",");
+            for (String item : items) {
+                goals.add(item.trim());
+            }
+        }
+        
+        return goals;
+    }
+
+    /**
+     * Build build response
+     */
+    private CallToolResult buildBuildResponse(MavenBuilder.BuildResult result, ModuleContext context) {
+        ObjectNode response = objectMapper.createObjectNode();
+
+        response.put("success", result.isSuccess());
+        response.put("exitCode", result.getExitCode());
+        response.put("durationSeconds", result.getDurationSeconds());
+
+        // Build output (truncated if too long)
+        String output = result.getOutput();
+        if (output.length() > 10000) {
+            output = output.substring(0, 5000) + 
+                    "\n...[truncated]\n" + 
+                    output.substring(output.length() - 5000);
+        }
+        response.put("output", output);
+
+        // Downloaded artifacts
+        ArrayNode artifactsArray = objectMapper.createArrayNode();
+        for (MavenBuilder.ArtifactInfo artifact : result.getDownloadedArtifacts()) {
+            ObjectNode artifactNode = objectMapper.createObjectNode();
+            artifactNode.put("coordinates", artifact.getCoordinates());
+            artifactNode.put("type", artifact.getType());
+            artifactNode.put("sizeBytes", artifact.getSizeBytes());
+            if (artifact.getFile() != null) {
+                artifactNode.put("file", artifact.getFile().toString());
+            }
+            artifactsArray.add(artifactNode);
+        }
+        response.set("downloadedArtifacts", artifactsArray);
+
+        // Suggestions based on build result
+        if (!result.isSuccess()) {
+            BuildPromptGenerator generator = new BuildPromptGenerator();
+            String suggestion = generator.generateBuildSuggestion(
+                "unknown",
+                context,
+                result.getMissingDependencies()
+            );
+            response.put("suggestion", suggestion);
+            
+            // Common error patterns
+            if (result.getOutput().contains("Could not resolve dependencies")) {
+                response.put("errorType", "DEPENDENCY_RESOLUTION_FAILED");
+            } else if (result.getOutput().contains("Compilation failure")) {
+                response.put("errorType", "COMPILATION_FAILED");
+            } else if (result.getOutput().contains("Connection refused") || 
+                       result.getOutput().contains("Network is unreachable")) {
+                response.put("errorType", "NETWORK_ERROR");
+                response.put("networkSuggestion", "Check your network connection and Maven repository settings");
+            } else if (!mavenBuilder.isMavenAvailable()) {
+                response.put("errorType", "MAVEN_NOT_FOUND");
+                response.put("mavenSuggestion", 
+                    "Maven is not available. Please install Maven or set M2_HOME environment variable");
+            }
+            
+            if (result.getError() != null) {
+                response.put("error", result.getError());
+            }
+        } else {
+            response.put("suggestion", 
+                "Build completed successfully. You can now inspect classes from the downloaded dependencies.");
+        }
+
+        return CallToolResult.builder()
+            .content(List.of(new TextContent(response.toPrettyString())))
+            .isError(false)
+            .build();
+    }
+
+    /**
+     * Find the pom.xml file for the given source file
+     */
+    private Path findPomFile(Path sourceFile) {
+        Path current = sourceFile;
+        while (current != null) {
+            Path pomFile = current.resolve("pom.xml");
+            if (Files.exists(pomFile)) {
+                return pomFile;
+            }
+            current = current.getParent();
+            if (current == null || current.toString().length() < 3) {
+                break;
+            }
+        }
+        return null;
+    }
+}
+
+
+
+

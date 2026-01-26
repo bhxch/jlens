@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.bhxch</groupId>
-    <artifactId>javastub-mcp-server</artifactId>
+    <artifactId>jlens-mcp-server</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Java Maven Classpath MCP Server</name>
+    <name>JLens MCP Server</name>
     <description>MCP server for inspecting Java classes and Maven dependencies using MCP Java SDK 0.17.2</description>
 
     <properties>
@@ -227,7 +227,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.github.bhxch.mcp.javastub.Main</mainClass>
+                                    <mainClass>io.github.bhxch.mcp.jlens.Main</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>
@@ -247,3 +247,6 @@
         </plugins>
     </build>
 </project>
+
+
+

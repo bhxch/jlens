@@ -2,7 +2,7 @@
 
 ## 测试概述
 
-本报告记录了使用 MCP Inspector CLI 模式对 javastub-mcp-server 进行的集成测试。
+本报告记录了使用 MCP Inspector CLI 模式对 jlens-mcp-server 进行的集成测试。
 
 **测试日期**: 2026-01-26
 **测试工具**: MCP Inspector CLI (@modelcontextprotocol/inspector-cli v0.19.0)
@@ -106,16 +106,16 @@
 
 ### 配置文件
 
-配置文件位置: `E:\repos\0000\javastub\mcp-inspector-config.json`
+配置文件位置: `E:\repos\0000\jlens\mcp-inspector-config.json`
 
 ```json
 {
   "mcpServers": {
-    "javastub-mcp-server": {
+    "jlens-mcp-server": {
       "command": "java",
       "args": [
         "-jar",
-        "E:\\repos\\0000\\javastub\\target\\javastub-mcp-server-1.0.0-SNAPSHOT.jar"
+        "E:\\repos\\0000\\jlens\\target\\jlens-mcp-server-1.0.0-SNAPSHOT.jar"
       ],
       "env": {}
     }
@@ -144,18 +144,18 @@ npx @modelcontextprotocol/inspector --cli --config <config-path> --server <serve
 - **Node.js 版本**: Latest
 - **MCP Inspector CLI 版本**: 0.19.0
 - **MCP SDK 版本**: 0.17.2
-- **项目路径**: E:\repos\0000\javastub
-- **JAR 文件**: E:\repos\0000\javastub\target\javastub-mcp-server-1.0.0-SNAPSHOT.jar
+- **项目路径**: E:\repos\0000\jlens
+- **JAR 文件**: E:\repos\0000\jlens\target\jlens-mcp-server-1.0.0-SNAPSHOT.jar
 
 ---
 
 ## 测试脚本
 
-测试脚本位置: `E:\repos\0000\javastub\test_mcp_inspector_simple.ps1`
+测试脚本位置: `E:\repos\0000\jlens\test_mcp_inspector_simple.ps1`
 
 运行命令:
 ```bash
-powershell -ExecutionPolicy Bypass -File E:\repos\0000\javastub\test_mcp_inspector_simple.ps1
+powershell -ExecutionPolicy Bypass -File E:\repos\0000\jlens\test_mcp_inspector_simple.ps1
 ```
 
 ---
@@ -166,7 +166,7 @@ powershell -ExecutionPolicy Bypass -File E:\repos\0000\javastub\test_mcp_inspect
 
 ✅ **所有测试通过 (8/8)**
 
-javastub-mcp-server 完全符合 MCP 协议规范，成功通过 MCP Inspector CLI 模式的所有集成测试。
+jlens-mcp-server 完全符合 MCP 协议规范，成功通过 MCP Inspector CLI 模式的所有集成测试。
 
 ### 验证的功能
 
@@ -178,7 +178,7 @@ javastub-mcp-server 完全符合 MCP 协议规范，成功通过 MCP Inspector C
 
 ### MCP 协议符合性
 
-javastub-mcp-server 完全符合 MCP 2024-11-05 规范：
+jlens-mcp-server 完全符合 MCP 2024-11-05 规范：
 
 - ✅ 正确实现 JSON-RPC 2.0 协议
 - ✅ 正确实现工具列表 (tools/list)
@@ -202,19 +202,19 @@ javastub-mcp-server 完全符合 MCP 2024-11-05 规范：
 
 ```bash
 # 列出所有工具
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\javastub\mcp-inspector-config.json --server javastub-mcp-server --method tools/list
+npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/list
 
 # 检查 Java 类
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\javastub\mcp-inspector-config.json --server javastub-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.List
+npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name inspect_java_class --tool-arg className=java.util.List
 
 # 列出依赖
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\javastub\mcp-inspector-config.json --server javastub-mcp-server --method tools/call --tool-name list_module_dependencies --tool-arg pomFilePath=pom.xml
+npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name list_module_dependencies --tool-arg pomFilePath=pom.xml
 
 # 搜索类
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\javastub\mcp-inspector-config.json --server javastub-mcp-server --method tools/call --tool-name search_java_class --tool-arg classNamePattern=*List* --tool-arg searchType=wildcard
+npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name search_java_class --tool-arg classNamePattern=*List* --tool-arg searchType=wildcard
 
 # 构建模块
-npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\javastub\mcp-inspector-config.json --server javastub-mcp-server --method tools/call --tool-name build_module --tool-arg sourceFilePath=E:\repos\0000\javastub\src\main\java\io\github\bhxch\mcp\javastub\Main.java
+npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\jlens\mcp-inspector-config.json --server jlens-mcp-server --method tools/call --tool-name build_module --tool-arg sourceFilePath=E:\repos\0000\jlens\src\main\java\io\github\bhxch\mcp\jlens\Main.java
 ```
 
 ### B. 相关文档
@@ -230,3 +230,6 @@ npx @modelcontextprotocol/inspector --cli --config E:\repos\0000\javastub\mcp-in
 **报告生成时间**: 2026-01-26
 **报告版本**: 1.0
 **测试执行人**: iFlow CLI
+
+
+

@@ -11,7 +11,7 @@
 ## 集成测试（Java - 直接 JSON-RPC）
 
 ### 测试类：JavaClasspathServerIntegrationTest
-**位置**：`src/test/java/io/github/bhxch/mcp/javastub/server/JavaClasspathServerIntegrationTest.java`
+**位置**：`src/test/java/io/github/bhxch/mcp/jlens/server/JavaClasspathServerIntegrationTest.java`
 
 | 测试名称 | 状态 | 时间（秒） |
 |-----------|--------|-----------|
@@ -44,7 +44,7 @@
 ## MCP 客户端集成测试（Java）
 
 ### 测试类：JavaClasspathServerMcpClientTest
-**位置**：`src/test/java/io/github/bhxch/mcp/javastub/server/JavaClasspathServerMcpClientTest.java`
+**位置**：`src/test/java/io/github/bhxch/mcp/jlens/server/JavaClasspathServerMcpClientTest.java`
 
 | 测试名称 | 状态 | 时间（秒） |
 |-----------|--------|-----------|
@@ -179,9 +179,12 @@
 
 ## 结论
 
-所有 63 个测试均成功通过，达到 100% 的通过率。JavaStub MCP 服务器具有全面的测试覆盖率，已准备好用于生产环境，包括：
+所有 63 个测试均成功通过，达到 100% 的通过率。JLens MCP 服务器具有全面的测试覆盖率，已准备好用于生产环境，包括：
 - 19 个直接 JSON-RPC 集成测试
 - 19 个 MCP 客户端集成测试
 - 25 个端到端测试
 
 服务器成功处理所有 MCP 工具和边缘情况，展示了强大的功能和可靠性。
+
+
+
