@@ -58,7 +58,7 @@ public class SearchJavaClassHandler {
             String classNamePattern = null;
             String sourceFilePath = null;
             String pomFilePath = null;
-            String mavenProfile = null;
+            List<String> profiles = List.of();
             String searchType = "wildcard";
             int limit = 50;
             String cursor = null;
@@ -86,10 +86,12 @@ public class SearchJavaClassHandler {
                     }
                 }
 
-                if (args.containsKey("mavenProfile")) {
-                    Object value = args.get("mavenProfile");
-                    if (value != null) {
-                        mavenProfile = value.toString();
+                if (args.containsKey("profiles")) {
+                    Object value = args.get("profiles");
+                    if (value instanceof List) {
+                        profiles = (List<String>) value;
+                    } else if (value != null) {
+                        profiles = List.of(value.toString());
                     }
                 }
                 
@@ -121,35 +123,20 @@ public class SearchJavaClassHandler {
 
             // Validate required parameters
             if (classNamePattern == null || classNamePattern.isEmpty()) {
-                ObjectNode errorNode = objectMapper.createObjectNode();
-                errorNode.put("code", "INVALID_ARGUMENTS");
-                errorNode.put("message", "Error: classNamePattern is required");
-                
-                return CallToolResult.builder()
-                    .content(List.of(new TextContent(errorNode.toPrettyString())))
-                    .isError(true)
-                    .build();
+                return errorResult("INVALID_ARGUMENTS", "Error: classNamePattern is required");
+            }
+            if (pomFilePath == null || pomFilePath.isEmpty()) {
+                return errorResult("INVALID_ARGUMENTS", "Error: pomFilePath is required");
             }
 
-            // Resolve module context if source file is provided
+            // Resolve module context
             ModuleContext context = null;
-            List<String> activeProfiles = mavenProfile != null && !mavenProfile.isEmpty() ? List.of(mavenProfile) : List.of();
-
-            if (pomFilePath != null && !pomFilePath.isEmpty()) {
-                Path pomFile = Paths.get(pomFilePath);
-                if (Files.exists(pomFile)) {
-                    MavenResolver resolver = resolverFactory.createResolver();
-                    context = resolver.resolveModule(pomFile, Scope.COMPILE, activeProfiles);
-                }
-            } else if (sourceFilePath != null && !sourceFilePath.isEmpty()) {
-                Path path = Paths.get(sourceFilePath);
-                if (Files.exists(path)) {
-                    Path pomFile = findPomFile(path);
-                    if (pomFile != null && Files.exists(pomFile)) {
-                        MavenResolver resolver = resolverFactory.createResolver();
-                        context = resolver.resolveModule(pomFile, Scope.COMPILE, activeProfiles);
-                    }
-                }
+            Path pomFile = Paths.get(pomFilePath);
+            if (Files.exists(pomFile)) {
+                MavenResolver resolver = resolverFactory.createResolver();
+                context = resolver.resolveModule(pomFile, Scope.COMPILE, profiles);
+            } else {
+                return errorResult("NOT_FOUND", "Error: pom.xml not found at " + pomFilePath);
             }
 
             // Build class index if not already built
@@ -174,15 +161,22 @@ public class SearchJavaClassHandler {
 
         } catch (Exception e) {
             logger.error("Error searching for classes", e);
-            ObjectNode errorNode = objectMapper.createObjectNode();
-            errorNode.put("code", "INTERNAL_ERROR");
-            errorNode.put("message", "Error: " + e.getMessage());
-            
-            return CallToolResult.builder()
-                .content(List.of(new TextContent(errorNode.toPrettyString())))
-                .isError(true)
-                .build();
+            return errorResult("INTERNAL_ERROR", "Error: " + e.getMessage());
         }
+    }
+
+    /**
+     * Helper to create an error result
+     */
+    private CallToolResult errorResult(String code, String message) {
+        ObjectNode errorNode = objectMapper.createObjectNode();
+        errorNode.put("code", code);
+        errorNode.put("message", message);
+        
+        return CallToolResult.builder()
+            .content(List.of(new TextContent(errorNode.toPrettyString())))
+            .isError(true)
+            .build();
     }
 
     /**
@@ -445,24 +439,6 @@ public class SearchJavaClassHandler {
                 .computeIfAbsent(className, k -> java.util.concurrent.ConcurrentHashMap.newKeySet())
                 .add(javaLangPackage);
         }
-    }
-
-    /**
-     * Find the pom.xml file for the given source file
-     */
-    private Path findPomFile(Path sourceFile) {
-        Path current = sourceFile;
-        while (current != null) {
-            Path pomFile = current.resolve("pom.xml");
-            if (Files.exists(pomFile)) {
-                return pomFile;
-            }
-            current = current.getParent();
-            if (current == null || current.toString().length() < 3) {
-                break;
-            }
-        }
-        return null;
     }
 
     /**

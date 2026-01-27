@@ -8,7 +8,7 @@ JLens MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Model
 
 ✅ **已准备好用于生产环境**
 
-- **版本**：1.1.1
+- **版本**：1.1.2
 - **完成度**：100%
 - **测试覆盖率**：100%（71/71 测试通过）
 - **MCP 协议**：2024-11-05
@@ -21,11 +21,11 @@ JLens MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Model
 
 | 工具 | 描述 | 状态 |
 |------|-------------|--------|
-| `inspect_java_class` | 使用真实字节码/反射分析和多版本隔离检查 Java 类 | ✅ 完成 (JSON) |
-| `list_class_fields` | 列出具有可见性过滤的类字段 | ✅ 完成 (JSON) |
-| `list_module_dependencies` | 列出 Maven 模块依赖 | ✅ 完成 (JSON) |
-| `search_java_class` | 使用基于游标的分页搜索类 | ✅ 完成 (JSON) |
-| `build_module` | 构建 Maven 模块并下载依赖 | ✅ 完成 (JSON) |
+| `inspect_java_class` | 使用真实字节码/反射分析。**必需提供 `pomFilePath`** | ✅ 完成 (JSON) |
+| `list_class_fields` | 列出具有可见性过滤的类字段。**必需提供 `pomFilePath`** | ✅ 完成 (JSON) |
+| `list_module_dependencies` | 列出 Maven 模块依赖。**必需提供 `pomFilePath`** | ✅ 完成 (JSON) |
+| `search_java_class` | 使用基于游标的分页搜索类。**必需提供 `pomFilePath`** | ✅ 完成 (JSON) |
+| `build_module` | 构建 Maven 模块并下载依赖。**必需提供 `pomFilePath`** | ✅ 完成 (JSON) |
 
 ### 2. 测试结果
 
@@ -135,13 +135,13 @@ mvn clean package
 ### 运行
 
 ```bash
-java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
+java -jar target/jlens-mcp-server-1.1.2.jar
 ```
 
 ### 与 iFlow CLI 集成
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.1.2.jar" --trust
 ```
 
 ## 文档

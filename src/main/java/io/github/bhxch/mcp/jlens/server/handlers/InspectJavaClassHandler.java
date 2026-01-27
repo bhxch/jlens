@@ -53,7 +53,7 @@ public class InspectJavaClassHandler {
             String detailLevelStr = "basic";
             String sourceFilePath = null;
             String pomFilePath = null;
-            String mavenProfile = null;
+            List<String> profiles = List.of();
             boolean bypassCache = false;
             
             if (request.arguments() != null) {
@@ -86,10 +86,12 @@ public class InspectJavaClassHandler {
                     }
                 }
 
-                if (args.containsKey("mavenProfile")) {
-                    Object value = args.get("mavenProfile");
-                    if (value != null) {
-                        mavenProfile = value.toString();
+                if (args.containsKey("profiles")) {
+                    Object value = args.get("profiles");
+                    if (value instanceof List) {
+                        profiles = (List<String>) value;
+                    } else if (value != null) {
+                        profiles = List.of(value.toString());
                     }
                 }
 
@@ -105,38 +107,23 @@ public class InspectJavaClassHandler {
 
             // Validate required parameters
             if (className == null || className.isEmpty()) {
-                ObjectNode errorNode = objectMapper.createObjectNode();
-                errorNode.put("code", "INVALID_ARGUMENTS");
-                errorNode.put("message", "Error: className is required");
-                
-                return CallToolResult.builder()
-                    .content(List.of(new TextContent(errorNode.toPrettyString())))
-                    .isError(true)
-                    .build();
+                return errorResult("INVALID_ARGUMENTS", "Error: className is required");
+            }
+            if (pomFilePath == null || pomFilePath.isEmpty()) {
+                return errorResult("INVALID_ARGUMENTS", "Error: pomFilePath is required");
             }
 
             // Parse detail level
             ParallelProcessor.DetailLevel detailLevel = parseDetailLevel(detailLevelStr);
 
-            // Resolve module context if source file is provided
+            // Resolve module context
             ModuleContext context = null;
-            List<String> activeProfiles = mavenProfile != null && !mavenProfile.isEmpty() ? List.of(mavenProfile) : List.of();
-
-            if (pomFilePath != null && !pomFilePath.isEmpty()) {
-                Path pomFile = Paths.get(pomFilePath);
-                if (Files.exists(pomFile)) {
-                    MavenResolver resolver = resolverFactory.createResolver();
-                    context = resolver.resolveModule(pomFile, Scope.COMPILE, activeProfiles);
-                }
-            } else if (sourceFilePath != null && !sourceFilePath.isEmpty()) {
-                Path path = Paths.get(sourceFilePath);
-                if (Files.exists(path)) {
-                    Path pomFile = findPomFile(path);
-                    if (pomFile != null && Files.exists(pomFile)) {
-                        MavenResolver resolver = resolverFactory.createResolver();
-                        context = resolver.resolveModule(pomFile, Scope.COMPILE, activeProfiles);
-                    }
-                }
+            Path pomFile = Paths.get(pomFilePath);
+            if (Files.exists(pomFile)) {
+                MavenResolver resolver = resolverFactory.createResolver();
+                context = resolver.resolveModule(pomFile, Scope.COMPILE, profiles);
+            } else {
+                return errorResult("NOT_FOUND", "Error: pom.xml not found at " + pomFilePath);
             }
 
             // Check Cache
@@ -197,22 +184,21 @@ public class InspectJavaClassHandler {
     }
 
     /**
-     * Find the pom.xml file for the given source file
+     * Helper to create an error result
      */
-    private Path findPomFile(Path sourceFile) {
-        Path current = sourceFile;
-        while (current != null) {
-            Path pomFile = current.resolve("pom.xml");
-            if (Files.exists(pomFile)) {
-                return pomFile;
-            }
-            current = current.getParent();
-            if (current == null || current.toString().length() < 3) {
-                break;
-            }
-        }
-        return null;
+    private CallToolResult errorResult(String code, String message) {
+        ObjectNode errorNode = objectMapper.createObjectNode();
+        errorNode.put("code", code);
+        errorNode.put("message", message);
+        
+        return CallToolResult.builder()
+            .content(List.of(new TextContent(errorNode.toPrettyString())))
+            .isError(true)
+            .build();
     }
+
+    /**
+     * Parse detail level string to enum
 
     /**
      * Check if a class exists in the classpath

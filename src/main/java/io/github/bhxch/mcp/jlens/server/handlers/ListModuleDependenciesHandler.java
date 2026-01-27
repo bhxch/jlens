@@ -45,7 +45,7 @@ public class ListModuleDependenciesHandler {
             String sourceFilePath = null;
             String pomFilePath = null;
             String scopeStr = "compile";
-            String mavenProfile = null;
+            List<String> profiles = List.of();
             
             if (request.arguments() != null) {
                 var args = request.arguments();
@@ -70,54 +70,34 @@ public class ListModuleDependenciesHandler {
                     }
                 }
 
-                if (args.containsKey("mavenProfile")) {
-                    Object value = args.get("mavenProfile");
-                    if (value != null) {
-                        mavenProfile = value.toString();
+                if (args.containsKey("profiles")) {
+                    Object value = args.get("profiles");
+                    if (value instanceof List) {
+                        profiles = (List<String>) value;
+                    } else if (value != null) {
+                        profiles = List.of(value.toString());
                     }
                 }
             }
 
-            // Validate that at least one path is provided
-            if ((sourceFilePath == null || sourceFilePath.isEmpty()) && 
-                (pomFilePath == null || pomFilePath.isEmpty())) {
-                ObjectNode errorNode = objectMapper.createObjectNode();
-                errorNode.put("code", "INVALID_ARGUMENTS");
-                errorNode.put("message", "Error: Either sourceFilePath or pomFilePath must be provided");
-                
-                return CallToolResult.builder()
-                    .content(List.of(new TextContent(errorNode.toPrettyString())))
-                    .isError(true)
-                    .build();
+            // Validate required parameters
+            if (pomFilePath == null || pomFilePath.isEmpty()) {
+                return errorResult("INVALID_ARGUMENTS", "Error: pomFilePath is required");
             }
 
             // Determine the pom.xml file
-            Path pomFile = null;
-            if (pomFilePath != null && !pomFilePath.isEmpty()) {
-                pomFile = Paths.get(pomFilePath);
-            } else if (sourceFilePath != null && !sourceFilePath.isEmpty()) {
-                pomFile = findPomFile(Paths.get(sourceFilePath));
-            }
+            Path pomFile = Paths.get(pomFilePath);
 
-            if (pomFile == null || !Files.exists(pomFile)) {
-                ObjectNode errorNode = objectMapper.createObjectNode();
-                errorNode.put("code", "FILE_NOT_FOUND");
-                errorNode.put("message", "Error: pom.xml file not found");
-                errorNode.put("suggestion", "Please provide a valid path to a pom.xml file or a source file in the module.");
-                
-                return CallToolResult.builder()
-                    .content(List.of(new TextContent(errorNode.toPrettyString())))
-                    .isError(true)
-                    .build();
+            if (!Files.exists(pomFile)) {
+                return errorResult("FILE_NOT_FOUND", "Error: pom.xml file not found at " + pomFilePath);
             }
 
             // Parse scope
             Scope scope = parseScope(scopeStr);
 
             // Resolve module
-            List<String> activeProfiles = mavenProfile != null && !mavenProfile.isEmpty() ? List.of(mavenProfile) : List.of();
             MavenResolver resolver = resolverFactory.createResolver();
-            ModuleContext moduleContext = resolver.resolveModule(pomFile, scope, activeProfiles);
+            ModuleContext moduleContext = resolver.resolveModule(pomFile, scope, profiles);
 
             if (moduleContext == null) {
                 ObjectNode errorNode = objectMapper.createObjectNode();
@@ -160,15 +140,22 @@ public class ListModuleDependenciesHandler {
 
         } catch (Exception e) {
             logger.error("Error listing dependencies", e);
-            ObjectNode errorNode = objectMapper.createObjectNode();
-            errorNode.put("code", "INTERNAL_ERROR");
-            errorNode.put("message", "Error: " + e.getMessage());
-            
-            return CallToolResult.builder()
-                .content(List.of(new TextContent(errorNode.toPrettyString())))
-                .isError(true)
-                .build();
+            return errorResult("INTERNAL_ERROR", "Error: " + e.getMessage());
         }
+    }
+
+    /**
+     * Helper to create an error result
+     */
+    private CallToolResult errorResult(String code, String message) {
+        ObjectNode errorNode = objectMapper.createObjectNode();
+        errorNode.put("code", code);
+        errorNode.put("message", message);
+        
+        return CallToolResult.builder()
+            .content(List.of(new TextContent(errorNode.toPrettyString())))
+            .isError(true)
+            .build();
     }
 
     /**
@@ -180,24 +167,6 @@ public class ListModuleDependenciesHandler {
         } catch (IllegalArgumentException e) {
             return Scope.COMPILE;
         }
-    }
-
-    /**
-     * Find the pom.xml file for the given source file
-     */
-    private Path findPomFile(Path sourceFile) {
-        Path current = sourceFile;
-        while (current != null) {
-            Path pomFile = current.resolve("pom.xml");
-            if (Files.exists(pomFile)) {
-                return pomFile;
-            }
-            current = current.getParent();
-            if (current == null || current.toString().length() < 3) {
-                break;
-            }
-        }
-        return null;
     }
 }
 

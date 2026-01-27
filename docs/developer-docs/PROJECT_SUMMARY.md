@@ -8,7 +8,7 @@ JLens MCP Server is a Model Context Protocol (MCP) server designed for inspectin
 
 ✅ **READY FOR PRODUCTION USE**
 
-- **Version**: 1.1.1
+- **Version**: 1.1.2
 - **Completion**: 100%
 - **Test Coverage**: 100% (71/71 tests passed)
 - **MCP Protocol**: 2024-11-05
@@ -21,11 +21,11 @@ JLens MCP Server is a Model Context Protocol (MCP) server designed for inspectin
 
 | Tool | Description | Status |
 |------|-------------|--------|
-| `inspect_java_class` | Inspect Java classes with real bytecode/reflection analysis and multi-version isolation | ✅ Complete (JSON) |
-| `list_class_fields` | List class fields with visibility filtering | ✅ Complete (JSON) |
-| `list_module_dependencies` | List Maven module dependencies | ✅ Complete (JSON) |
-| `search_java_class` | Search for classes with cursor-based pagination | ✅ Complete (JSON) |
-| `build_module` | Build Maven modules and download dependencies | ✅ Complete (JSON) |
+| `inspect_java_class` | Inspect Java classes with real bytecode/reflection analysis. **Requires `pomFilePath`**. | ✅ Complete (JSON) |
+| `list_class_fields` | List class fields with visibility filtering. **Requires `pomFilePath`**. | ✅ Complete (JSON) |
+| `list_module_dependencies` | List Maven module dependencies. **Requires `pomFilePath`**. | ✅ Complete (JSON) |
+| `search_java_class` | Search for classes with cursor-based pagination. **Requires `pomFilePath`**. | ✅ Complete (JSON) |
+| `build_module` | Build Maven modules and download dependencies. **Requires `pomFilePath`**. | ✅ Complete (JSON) |
 
 ### 2. Testing Results
 
@@ -137,13 +137,13 @@ mvn clean package
 ### Run
 
 ```bash
-java -jar target/jlens-mcp-server-1.1.1.jar
+java -jar target/jlens-mcp-server-1.1.2.jar
 ```
 
 ### Integration with iFlow CLI
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.1.1.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.1.2.jar" --trust
 ```
 
 ## Documentation

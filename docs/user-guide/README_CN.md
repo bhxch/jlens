@@ -39,7 +39,7 @@
 mvn clean package
 ```
 
-这将创建一个可执行的 JAR 文件：`target/jlens-mcp-server-1.1.1.jar`
+这将创建一个可执行的 JAR 文件：`target/jlens-mcp-server-1.1.2.jar`
 
 ## 使用方法
 
@@ -59,111 +59,33 @@ uvx jlens-mcp-server
 
 **使用 Java:**
 ```bash
-java -jar target/jlens-mcp-server-1.1.1.jar
+java -jar target/jlens-mcp-server-1.1.2.jar
 ```
 
 ### Agent Skills (智能体技能)
-
-您可以安装专门的 AI Agent 技能，让您的智能体掌握 JLens 的深度使用方法：
-
-```bash
-# 安装中文版技能
-npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp
-
-# 安装英文版技能
-npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp-en
-```
-
-### 命令行选项
-
-```
-选项：
-  -vt, --virtual-threads <count>    最大虚拟线程数（默认：1000）
-  -me, --maven-executable <path>    Maven 可执行文件路径
-  -ms, --maven-settings <path>       Maven settings.xml 文件路径
-  -mr, --maven-repo <path>          Maven 本地仓库路径
-  -d, --decompiler <type>           使用的反编译器：fernflower、cfr、vineflower（默认：fernflower）
-  -p, --port <port>                 服务器端口（默认：8080）
-  -l, --log-level <level>           日志级别：ERROR、WARN、INFO、DEBUG（默认：INFO）
-  -h, --help                        显示此帮助信息
-```
-
-## 客户端配置
-
-此 MCP 服务器可与各种兼容 MCP 的客户端配合使用。
-
-### Claude Desktop
-
-将以下内容添加到您的 `claude_desktop_config.json` 中：
-
-```json
-{
-  "mcpServers": {
-    "jlens": {
-      "command": "npx",
-      "args": ["-y", "@bhxch/jlens-mcp-server"]
-    }
-  }
-}
-```
-
-### Gemini CLI
-
-将以下内容添加到您的 `.gemini/settings.json` 中：
-
-```json
-{
-  "mcpServers": {
-    "jlens": {
-      "command": "npx",
-      "args": ["-y", "@bhxch/jlens-mcp-server"]
-    }
-  }
-}
-```
-
-### Cursor
-
-设置 (Settings) -> 模型 (Models) -> MCP -> 添加新 MCP 服务器 (Add New MCP Server)：
-
-- **名称**: jlens
-- **类型**: command
-- **命令**: `npx -y @bhxch/jlens-mcp-server`
-
-### Cline (VS Code 扩展)
-
-MCP 设置 -> 添加服务器 (Add Server)：
-
-- **名称**: jlens
-- **命令**: `npx`
-- **参数**: `["-y", "@bhxch/jlens-mcp-server"]`
-
-### iFlow CLI
-
-```bash
-iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
-```
-
-## MCP 工具
-
+...
 ### inspect_java_class
 
-检查 Java 类并返回其元数据。如果类位于本地工作区，将返回直接阅读源码的提示。
+检查 Java 类并返回其元数据。需要 `pomFilePath` 来识别模块上下文。
 
 **参数：**
 
 - `className`（字符串，必需）：要检查的完全限定类名
+- `pomFilePath`（字符串，必需）：目标模块的 `pom.xml` 路径
+- `profiles`（字符串数组，可选）：激活的 Maven Profile 列表
 - `sourceFilePath`（字符串，可选）：用于上下文的源文件路径
 - `detailLevel`（字符串，可选）：详细级别 - "skeleton"、"basic" 或 "full"（默认："basic"）
 - `bypassCache`（布尔值，可选）：是否跳过缓存重新检查（默认：false）
 
 ### list_class_fields
 
-列出 Java 类的字段，支持可见性过滤。
+列出 Java 类的字段，支持可见性过滤。需要 `pomFilePath`。
 
 **参数：**
 
 - `className`（字符串，必需）：要检查的完全限定类名
+- `pomFilePath`（字符串，必需）：目标模块的 `pom.xml` 路径
+- `profiles`（字符串数组，可选）：激活的 Maven Profile 列表
 - `visibility`（字符串数组，可选）：要包含的可见性修饰符 ("public", "protected", "private", "package-private")
 - `sourceFilePath`（字符串，可选）：用于上下文的源文件路径
 
@@ -186,12 +108,13 @@ iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
 
 ### list_module_dependencies
 
-列出 Maven 模块的依赖。
+列出 Maven 模块的依赖。需要 `pomFilePath`。
 
 **参数：**
 
-- `sourceFilePath`（字符串，可选）：用于定位模块的源文件路径
-- `pomFilePath`（字符串，可选）：pom.xml 文件路径
+- `pomFilePath`（字符串，必需）：目标模块的 `pom.xml` 路径
+- `profiles`（字符串数组，可选）：激活的 Maven Profile 列表
+- `sourceFilePath`（字符串，可选）：用于上下文的源文件路径
 - `scope`（字符串，可选）：依赖范围 - "compile"、"provided"、"runtime"、"test" 或 "system"（默认："compile"）
 
 **示例请求：**
@@ -213,11 +136,13 @@ iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
 
 ### search_java_class
 
-在包和依赖中搜索 Java 类，支持基于游标的分页。
+在包和依赖中搜索 Java 类，支持基于游标的分页。需要 `pomFilePath`。
 
 **参数：**
 
 - `classNamePattern`（字符串，必需）：类名模式（支持通配符：*、?）
+- `pomFilePath`（字符串，必需）：目标模块的 `pom.xml` 路径
+- `profiles`（字符串数组，可选）：激活的 Maven Profile 列表
 - `sourceFilePath`（字符串，可选）：用于上下文的源文件路径
 - `searchType`（字符串，可选）：搜索类型 - "exact"、"prefix"、"suffix"、"contains" 或 "wildcard"（默认："wildcard"）
 - `limit`（整数，可选）：每页返回的最大结果数（默认：50）
@@ -234,9 +159,9 @@ iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
     "name": "search_java_class",
     "arguments": {
       "classNamePattern": "*List*",
+      "pomFilePath": "pom.xml",
       "searchType": "wildcard",
-      "limit": 10,
-      "cursor": "..."
+      "limit": 10
     }
   }
 }
@@ -244,11 +169,13 @@ iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
 
 ### build_module
 
-构建 Maven 模块并下载缺失的依赖。
+构建 Maven 模块并下载缺失的依赖。需要 `pomFilePath`。
 
 **参数：**
 
-- `sourceFilePath`（字符串，必需）：用于模块上下文的源文件路径
+- `pomFilePath`（字符串，必需）：目标模块的 `pom.xml` 路径
+- `profiles`（字符串数组，可选）：激活的 Maven Profile 列表
+- `sourceFilePath`（字符串，可选）：用于模块上下文的源文件路径
 - `goals`（数组，可选）：要执行的 Maven 目标（默认：["compile", "dependency:resolve"]）
 - `downloadSources`（布尔值，可选）：是否下载源码 JAR（默认：false）
 - `timeoutSeconds`（整数，可选）：构建超时时间（秒）（默认：300）
@@ -263,7 +190,7 @@ iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
   "params": {
     "name": "build_module",
     "arguments": {
-      "sourceFilePath": "src/main/java/io/github/bhxch/mcp/jlens/Main.java",
+      "pomFilePath": "pom.xml",
       "downloadSources": true
     }
   }

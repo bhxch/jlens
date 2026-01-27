@@ -51,7 +51,7 @@ public class ListClassFieldsHandler {
             List<String> visibility = new ArrayList<>();
             String sourceFilePath = null;
             String pomFilePath = null;
-            String mavenProfile = null;
+            List<String> profiles = List.of();
             
             if (request.arguments() != null) {
                 var args = request.arguments();
@@ -85,45 +85,32 @@ public class ListClassFieldsHandler {
                     }
                 }
 
-                if (args.containsKey("mavenProfile")) {
-                    Object value = args.get("mavenProfile");
-                    if (value != null) {
-                        mavenProfile = value.toString();
+                if (args.containsKey("profiles")) {
+                    Object value = args.get("profiles");
+                    if (value instanceof List) {
+                        profiles = (List<String>) value;
+                    } else if (value != null) {
+                        profiles = List.of(value.toString());
                     }
                 }
             }
 
             // Validate required parameters
             if (className == null || className.isEmpty()) {
-                ObjectNode errorNode = objectMapper.createObjectNode();
-                errorNode.put("code", "INVALID_ARGUMENTS");
-                errorNode.put("message", "Error: className is required");
-                
-                return CallToolResult.builder()
-                    .content(List.of(new TextContent(errorNode.toPrettyString())))
-                    .isError(true)
-                    .build();
+                return errorResult("INVALID_ARGUMENTS", "Error: className is required");
+            }
+            if (pomFilePath == null || pomFilePath.isEmpty()) {
+                return errorResult("INVALID_ARGUMENTS", "Error: pomFilePath is required");
             }
 
-            // Resolve module context if source file is provided
+            // Resolve module context
             ModuleContext context = null;
-            List<String> activeProfiles = mavenProfile != null && !mavenProfile.isEmpty() ? List.of(mavenProfile) : List.of();
-
-            if (pomFilePath != null && !pomFilePath.isEmpty()) {
-                Path pomFile = Paths.get(pomFilePath);
-                if (Files.exists(pomFile)) {
-                    MavenResolver resolver = resolverFactory.createResolver();
-                    context = resolver.resolveModule(pomFile, Scope.COMPILE, activeProfiles);
-                }
-            } else if (sourceFilePath != null && !sourceFilePath.isEmpty()) {
-                Path path = Paths.get(sourceFilePath);
-                if (Files.exists(path)) {
-                    Path pomFile = findPomFile(path);
-                    if (pomFile != null && Files.exists(pomFile)) {
-                        MavenResolver resolver = resolverFactory.createResolver();
-                        context = resolver.resolveModule(pomFile, Scope.COMPILE, activeProfiles);
-                    }
-                }
+            Path pomFile = Paths.get(pomFilePath);
+            if (Files.exists(pomFile)) {
+                MavenResolver resolver = resolverFactory.createResolver();
+                context = resolver.resolveModule(pomFile, Scope.COMPILE, profiles);
+            } else {
+                return errorResult("NOT_FOUND", "Error: pom.xml not found at " + pomFilePath);
             }
 
             // Inspect the class with BASIC level to get fields
@@ -131,14 +118,7 @@ public class ListClassFieldsHandler {
 
             // Check if the class exists
             if (metadata == null || metadata.getClassName() == null || (metadata.getFields().isEmpty() && !isClassExists(className))) {
-                ObjectNode errorNode = objectMapper.createObjectNode();
-                errorNode.put("code", "CLASS_NOT_FOUND");
-                errorNode.put("message", "Error: Class '" + className + "' not found or could not be inspected");
-                
-                return CallToolResult.builder()
-                    .content(List.of(new TextContent(errorNode.toPrettyString())))
-                    .isError(true)
-                    .build();
+                return errorResult("CLASS_NOT_FOUND", "Error: Class '" + className + "' not found or could not be inspected");
             }
 
             // Filter fields by visibility
@@ -154,15 +134,22 @@ public class ListClassFieldsHandler {
 
         } catch (Exception e) {
             logger.error("Error listing class fields", e);
-            ObjectNode errorNode = objectMapper.createObjectNode();
-            errorNode.put("code", "INTERNAL_ERROR");
-            errorNode.put("message", "Error: " + e.getMessage());
-            
-            return CallToolResult.builder()
-                .content(List.of(new TextContent(errorNode.toPrettyString())))
-                .isError(true)
-                .build();
+            return errorResult("INTERNAL_ERROR", "Error: " + e.getMessage());
         }
+    }
+
+    /**
+     * Helper to create an error result
+     */
+    private CallToolResult errorResult(String code, String message) {
+        ObjectNode errorNode = objectMapper.createObjectNode();
+        errorNode.put("code", code);
+        errorNode.put("message", message);
+        
+        return CallToolResult.builder()
+            .content(List.of(new TextContent(errorNode.toPrettyString())))
+            .isError(true)
+            .build();
     }
 
     private boolean matchesVisibility(int modifiers, List<String> visibility) {
@@ -190,21 +177,6 @@ public class ListClassFieldsHandler {
             }
         }
         return false;
-    }
-
-    private Path findPomFile(Path sourceFile) {
-        Path current = sourceFile;
-        while (current != null) {
-            Path pomFile = current.resolve("pom.xml");
-            if (Files.exists(pomFile)) {
-                return pomFile;
-            }
-            current = current.getParent();
-            if (current == null || current.toString().length() < 3) {
-                break;
-            }
-        }
-        return null;
     }
 
     private boolean isClassExists(String className) {

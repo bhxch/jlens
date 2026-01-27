@@ -39,7 +39,7 @@ All features are implemented, tested, and ready for production deployment.
 mvn clean package
 ```
 
-This will create an executable JAR file: `target/jlens-mcp-server-1.1.1.jar`
+This will create an executable JAR file: `target/jlens-mcp-server-1.1.2.jar`
 
 ## Usage
 
@@ -59,111 +59,33 @@ uvx jlens-mcp-server
 
 **Using Java:**
 ```bash
-java -jar target/jlens-mcp-server-1.1.1.jar
+java -jar target/jlens-mcp-server-1.1.2.jar
 ```
 
 ### Agent Skills
-
-You can install specialized AI agent skills to provide your agent with deep procedural knowledge of JLens:
-
-```bash
-# English Version
-npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp-en
-
-# Chinese Version
-npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp
-```
-
-### Command Line Options
-
-```
-Options:
-  -vt, --virtual-threads <count>    Maximum number of virtual threads (default: 1000)
-  -me, --maven-executable <path>    Path to Maven executable
-  -ms, --maven-settings <path>       Path to Maven settings.xml
-  -mr, --maven-repo <path>          Path to Maven local repository
-  -d, --decompiler <type>           Decompiler to use: fernflower, cfr, vineflower (default: fernflower)
-  -p, --port <port>                 Server port (default: 8080)
-  -l, --log-level <level>           Log level: ERROR, WARN, INFO, DEBUG (default: INFO)
-  -h, --help                        Show this help message
-```
-
-## Client Configuration
-
-This MCP server can be used with various MCP-compatible clients.
-
-### Claude Desktop
-
-Add this to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "jlens": {
-      "command": "npx",
-      "args": ["-y", "@bhxch/jlens-mcp-server"]
-    }
-  }
-}
-```
-
-### Gemini CLI
-
-Add this to your `.gemini/settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "jlens": {
-      "command": "npx",
-      "args": ["-y", "@bhxch/jlens-mcp-server"]
-    }
-  }
-}
-```
-
-### Cursor
-
-Settings -> Models -> MCP -> Add New MCP Server:
-
-- **Name**: jlens
-- **Type**: command
-- **Command**: `npx -y @bhxch/jlens-mcp-server`
-
-### Cline (VS Code Extension)
-
-MCP Settings -> Add Server:
-
-- **Name**: jlens
-- **Command**: `npx`
-- **Args**: `["-y", "@bhxch/jlens-mcp-server"]`
-
-### iFlow CLI
-
-```bash
-iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
-```
-
-## MCP Tools
-
+...
 ### inspect_java_class
 
-Inspect a Java class and return its metadata. If the class is in local workspace, it will return a hint to read source directly.
+Inspect a Java class and return its metadata. Requires `pomFilePath` to identify the module context.
 
 **Parameters:**
 
 - `className` (string, required): The fully qualified class name to inspect
+- `pomFilePath` (string, required): Path to the target module's `pom.xml`
+- `profiles` (array of strings, optional): Active Maven profiles
 - `sourceFilePath` (string, optional): Path to source file for context
 - `detailLevel` (string, optional): Level of detail - "skeleton", "basic", or "full" (default: "basic")
 - `bypassCache` (boolean, optional): Whether to bypass cache and re-inspect (default: false)
 
 ### list_class_fields
 
-List fields of a Java class with visibility filtering.
+List fields of a Java class with visibility filtering. Requires `pomFilePath`.
 
 **Parameters:**
 
 - `className` (string, required): The fully qualified class name to inspect
+- `pomFilePath` (string, required): Path to the target module's `pom.xml`
+- `profiles` (array of strings, optional): Active Maven profiles
 - `visibility` (array of strings, optional): Visibility modifiers to include ("public", "protected", "private", "package-private")
 - `sourceFilePath` (string, optional): Path to source file for context
 
@@ -186,12 +108,13 @@ List fields of a Java class with visibility filtering.
 
 ### list_module_dependencies
 
-List dependencies for a Maven module.
+List dependencies for a Maven module. Requires `pomFilePath`.
 
 **Parameters:**
 
-- `sourceFilePath` (string, optional): Path to source file to locate module
-- `pomFilePath` (string, optional): Path to pom.xml file
+- `pomFilePath` (string, required): Path to the target module's `pom.xml`
+- `profiles` (array of strings, optional): Active Maven profiles
+- `sourceFilePath` (string, optional): Path to source file for context
 - `scope` (string, optional): Dependency scope - "compile", "provided", "runtime", "test", or "system" (default: "compile")
 
 **Example Request:**
@@ -213,11 +136,13 @@ List dependencies for a Maven module.
 
 ### search_java_class
 
-Search for Java classes across packages and dependencies with cursor-based pagination.
+Search for Java classes across packages and dependencies with cursor-based pagination. Requires `pomFilePath`.
 
 **Parameters:**
 
 - `classNamePattern` (string, required): Class name pattern (supports wildcards: *, ?)
+- `pomFilePath` (string, required): Path to the target module's `pom.xml`
+- `profiles` (array of strings, optional): Active Maven profiles
 - `sourceFilePath` (string, optional): Source file path for context
 - `searchType` (string, optional): Search type - "exact", "prefix", "suffix", "contains", or "wildcard" (default: "wildcard")
 - `limit` (integer, optional): Maximum number of results to return per page (default: 50)
@@ -234,9 +159,9 @@ Search for Java classes across packages and dependencies with cursor-based pagin
     "name": "search_java_class",
     "arguments": {
       "classNamePattern": "*List*",
+      "pomFilePath": "pom.xml",
       "searchType": "wildcard",
-      "limit": 10,
-      "cursor": "..."
+      "limit": 10
     }
   }
 }
@@ -244,11 +169,13 @@ Search for Java classes across packages and dependencies with cursor-based pagin
 
 ### build_module
 
-Build Maven module and download missing dependencies.
+Build Maven module and download missing dependencies. Requires `pomFilePath`.
 
 **Parameters:**
 
-- `sourceFilePath` (string, required): Source file path for module context
+- `pomFilePath` (string, required): Path to the target module's `pom.xml`
+- `profiles` (array of strings, optional): Active Maven profiles
+- `sourceFilePath` (string, optional): Source file path for module context
 - `goals` (array, optional): Maven goals to execute (default: ["compile", "dependency:resolve"])
 - `downloadSources` (boolean, optional): Whether to download source JARs (default: false)
 - `timeoutSeconds` (integer, optional): Build timeout in seconds (default: 300)
@@ -263,7 +190,7 @@ Build Maven module and download missing dependencies.
   "params": {
     "name": "build_module",
     "arguments": {
-      "sourceFilePath": "src/main/java/io/github/bhxch/mcp/jlens/Main.java",
+      "pomFilePath": "pom.xml",
       "downloadSources": true
     }
   }

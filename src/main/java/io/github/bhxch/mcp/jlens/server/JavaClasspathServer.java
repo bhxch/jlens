@@ -59,7 +59,7 @@ public class JavaClasspathServer {
         BuildModuleHandler buildModuleHandler = new BuildModuleHandler(mavenBuilder, dependencyManager, resolverFactory);
         
         this.mcpServer = McpServer.sync(transportProvider)
-            .serverInfo(new McpSchema.Implementation("jlens-mcp-server", "1.1.1"))
+            .serverInfo(new McpSchema.Implementation("jlens-mcp-server", "1.1.2"))
             .capabilities(McpSchema.ServerCapabilities.builder()
                 .tools(true)
                 .build())
@@ -83,6 +83,15 @@ public class JavaClasspathServer {
             "type", "string",
             "description", "Fully qualified class name"
         ));
+        properties.put("pomFilePath", Map.of(
+            "type", "string",
+            "description", "Path to pom.xml file"
+        ));
+        properties.put("profiles", Map.of(
+            "type", "array",
+            "description", "Active Maven profiles",
+            "items", Map.of("type", "string")
+        ));
         properties.put("sourceFilePath", Map.of(
             "type", "string",
             "description", "Path to source file (optional)"
@@ -100,11 +109,11 @@ public class JavaClasspathServer {
         
         return McpSchema.Tool.builder()
             .name("inspect_java_class")
-            .description("Inspect a Java class and return its metadata. If the class is in local workspace, it will return a hint to read source directly.")
+            .description("Inspect a Java class and return its metadata. Requires pomFilePath to identify the module.")
             .inputSchema(new McpSchema.JsonSchema(
                 "object",
                 properties,
-                List.of("className"),
+                List.of("className", "pomFilePath"),
                 false,
                 null,
                 null
@@ -121,6 +130,15 @@ public class JavaClasspathServer {
             "type", "string",
             "description", "Fully qualified class name"
         ));
+        properties.put("pomFilePath", Map.of(
+            "type", "string",
+            "description", "Path to pom.xml file"
+        ));
+        properties.put("profiles", Map.of(
+            "type", "array",
+            "description", "Active Maven profiles",
+            "items", Map.of("type", "string")
+        ));
         properties.put("visibility", Map.of(
             "type", "array",
             "description", "Visibility modifiers to include",
@@ -136,11 +154,11 @@ public class JavaClasspathServer {
 
         return McpSchema.Tool.builder()
             .name("list_class_fields")
-            .description("List fields of a Java class with visibility filtering")
+            .description("List fields of a Java class with visibility filtering. Requires pomFilePath.")
             .inputSchema(new McpSchema.JsonSchema(
                 "object",
                 properties,
-                List.of("className"),
+                List.of("className", "pomFilePath"),
                 false,
                 null,
                 null
@@ -153,13 +171,18 @@ public class JavaClasspathServer {
      */
     private McpSchema.Tool createListModuleDependenciesTool() {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("sourceFilePath", Map.of(
-            "type", "string",
-            "description", "Path to source file in the module"
-        ));
         properties.put("pomFilePath", Map.of(
             "type", "string",
             "description", "Path to pom.xml file"
+        ));
+        properties.put("profiles", Map.of(
+            "type", "array",
+            "description", "Active Maven profiles",
+            "items", Map.of("type", "string")
+        ));
+        properties.put("sourceFilePath", Map.of(
+            "type", "string",
+            "description", "Path to source file in the module (optional)"
         ));
         properties.put("scope", Map.of(
             "type", "string",
@@ -169,11 +192,11 @@ public class JavaClasspathServer {
         
         return McpSchema.Tool.builder()
             .name("list_module_dependencies")
-            .description("List dependencies of a Maven module")
+            .description("List dependencies of a Maven module. Requires pomFilePath.")
             .inputSchema(new McpSchema.JsonSchema(
                 "object",
                 properties,
-                List.of(),
+                List.of("pomFilePath"),
                 false,
                 null,
                 null
@@ -190,9 +213,18 @@ public class JavaClasspathServer {
             "type", "string",
             "description", "Class name pattern (supports wildcards: *, ?)"
         ));
+        properties.put("pomFilePath", Map.of(
+            "type", "string",
+            "description", "Path to pom.xml file"
+        ));
+        properties.put("profiles", Map.of(
+            "type", "array",
+            "description", "Active Maven profiles",
+            "items", Map.of("type", "string")
+        ));
         properties.put("sourceFilePath", Map.of(
             "type", "string",
-            "description", "Source file path for context"
+            "description", "Source file path for context (optional)"
         ));
         properties.put("searchType", Map.of(
             "type", "string",
@@ -212,11 +244,11 @@ public class JavaClasspathServer {
         
         return McpSchema.Tool.builder()
             .name("search_java_class")
-            .description("Search for Java classes across packages and dependencies with pagination")
+            .description("Search for Java classes across packages and dependencies with pagination. Requires pomFilePath.")
             .inputSchema(new McpSchema.JsonSchema(
                 "object",
                 properties,
-                List.of("classNamePattern"),
+                List.of("classNamePattern", "pomFilePath"),
                 false,
                 null,
                 null
@@ -229,9 +261,18 @@ public class JavaClasspathServer {
      */
     private McpSchema.Tool createBuildModuleTool() {
         Map<String, Object> properties = new HashMap<>();
+        properties.put("pomFilePath", Map.of(
+            "type", "string",
+            "description", "Path to pom.xml file"
+        ));
+        properties.put("profiles", Map.of(
+            "type", "array",
+            "description", "Active Maven profiles",
+            "items", Map.of("type", "string")
+        ));
         properties.put("sourceFilePath", Map.of(
             "type", "string",
-            "description", "Source file path for module context"
+            "description", "Source file path for module context (optional)"
         ));
         properties.put("goals", Map.of(
             "type", "array",
@@ -252,11 +293,11 @@ public class JavaClasspathServer {
         
         return McpSchema.Tool.builder()
             .name("build_module")
-            .description("Build Maven module and download missing dependencies")
+            .description("Build Maven module and download missing dependencies. Requires pomFilePath.")
             .inputSchema(new McpSchema.JsonSchema(
                 "object",
                 properties,
-                List.of("sourceFilePath"),
+                List.of("pomFilePath"),
                 false,
                 null,
                 null

@@ -52,7 +52,7 @@ public class BuildModuleHandler {
             // Extract parameters
             String sourceFilePath = null;
             String pomFilePath = null;
-            String mavenProfile = null;
+            List<String> profiles = List.of();
             List<String> goals = List.of("compile", "dependency:resolve");
             boolean downloadSources = false;
             int timeoutSeconds = 300;
@@ -74,10 +74,12 @@ public class BuildModuleHandler {
                     }
                 }
 
-                if (args.containsKey("mavenProfile")) {
-                    Object value = args.get("mavenProfile");
-                    if (value != null) {
-                        mavenProfile = value.toString();
+                if (args.containsKey("profiles")) {
+                    Object value = args.get("profiles");
+                    if (value instanceof List) {
+                        profiles = (List<String>) value;
+                    } else if (value != null) {
+                        profiles = List.of(value.toString());
                     }
                 }
                 
@@ -108,61 +110,18 @@ public class BuildModuleHandler {
             }
 
             // Validate required parameters
-            if ((sourceFilePath == null || sourceFilePath.isEmpty()) &&
-                (pomFilePath == null || pomFilePath.isEmpty())) {
-                ObjectNode errorNode = objectMapper.createObjectNode();
-                errorNode.put("code", "INVALID_ARGUMENTS");
-                errorNode.put("message", "Error: Either sourceFilePath or pomFilePath is required");
-                
-                return CallToolResult.builder()
-                    .content(List.of(new TextContent(errorNode.toPrettyString())))
-                    .isError(true)
-                    .build();
+            if (pomFilePath == null || pomFilePath.isEmpty()) {
+                return errorResult("INVALID_ARGUMENTS", "Error: pomFilePath is required");
             }
 
             // Resolve module context
-            Path pomFile = null;
-            if (pomFilePath != null && !pomFilePath.isEmpty()) {
-                pomFile = Paths.get(pomFilePath);
-                if (!Files.exists(pomFile)) {
-                     ObjectNode errorNode = objectMapper.createObjectNode();
-                    errorNode.put("code", "FILE_NOT_FOUND");
-                    errorNode.put("message", "Error: pom.xml does not exist: " + pomFilePath);
-                    
-                    return CallToolResult.builder()
-                        .content(List.of(new TextContent(errorNode.toPrettyString())))
-                        .isError(true)
-                        .build();
-                }
-            } else {
-                Path path = Paths.get(sourceFilePath);
-                if (!Files.exists(path)) {
-                    ObjectNode errorNode = objectMapper.createObjectNode();
-                    errorNode.put("code", "FILE_NOT_FOUND");
-                    errorNode.put("message", "Error: source file does not exist: " + sourceFilePath);
-                    
-                    return CallToolResult.builder()
-                        .content(List.of(new TextContent(errorNode.toPrettyString())))
-                        .isError(true)
-                        .build();
-                }
-
-                pomFile = findPomFile(path);
-                if (pomFile == null || !Files.exists(pomFile)) {
-                    ObjectNode errorNode = objectMapper.createObjectNode();
-                    errorNode.put("code", "POM_NOT_FOUND");
-                    errorNode.put("message", "Error: could not find pom.xml for: " + sourceFilePath);
-                    
-                    return CallToolResult.builder()
-                        .content(List.of(new TextContent(errorNode.toPrettyString())))
-                        .isError(true)
-                        .build();
-                }
+            Path pomFile = Paths.get(pomFilePath);
+            if (!Files.exists(pomFile)) {
+                return errorResult("FILE_NOT_FOUND", "Error: pom.xml does not exist: " + pomFilePath);
             }
 
-            List<String> activeProfiles = mavenProfile != null && !mavenProfile.isEmpty() ? List.of(mavenProfile) : List.of();
             MavenResolver resolver = resolverFactory.createResolver();
-            ModuleContext context = resolver.resolveModule(pomFile, Scope.COMPILE, activeProfiles);
+            ModuleContext context = resolver.resolveModule(pomFile, Scope.COMPILE, profiles);
 
             // Add source download to goals if requested
             List<String> finalGoals = new ArrayList<>(goals);
@@ -178,15 +137,22 @@ public class BuildModuleHandler {
 
         } catch (Exception e) {
             logger.error("Error building module", e);
-            ObjectNode errorNode = objectMapper.createObjectNode();
-            errorNode.put("code", "INTERNAL_ERROR");
-            errorNode.put("message", "Error: " + e.getMessage());
-            
-            return CallToolResult.builder()
-                .content(List.of(new TextContent(errorNode.toPrettyString())))
-                .isError(true)
-                .build();
+            return errorResult("INTERNAL_ERROR", "Error: " + e.getMessage());
         }
+    }
+
+    /**
+     * Helper to create an error result
+     */
+    private CallToolResult errorResult(String code, String message) {
+        ObjectNode errorNode = objectMapper.createObjectNode();
+        errorNode.put("code", code);
+        errorNode.put("message", message);
+        
+        return CallToolResult.builder()
+            .content(List.of(new TextContent(errorNode.toPrettyString())))
+            .isError(true)
+            .build();
     }
 
     /**
@@ -281,24 +247,6 @@ public class BuildModuleHandler {
             .content(List.of(new TextContent(response.toPrettyString())))
             .isError(false)
             .build();
-    }
-
-    /**
-     * Find the pom.xml file for the given source file
-     */
-    private Path findPomFile(Path sourceFile) {
-        Path current = sourceFile;
-        while (current != null) {
-            Path pomFile = current.resolve("pom.xml");
-            if (Files.exists(pomFile)) {
-                return pomFile;
-            }
-            current = current.getParent();
-            if (current == null || current.toString().length() < 3) {
-                break;
-            }
-        }
-        return null;
     }
 }
 
