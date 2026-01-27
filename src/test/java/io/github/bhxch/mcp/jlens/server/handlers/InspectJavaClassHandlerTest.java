@@ -1,5 +1,6 @@
 package io.github.bhxch.mcp.jlens.server.handlers;
 
+import io.github.bhxch.mcp.jlens.cache.CacheManager;
 import io.github.bhxch.mcp.jlens.config.DecompilerConfig;
 import io.github.bhxch.mcp.jlens.config.MavenConfig;
 import io.github.bhxch.mcp.jlens.config.ServerConfig;
@@ -39,8 +40,9 @@ class InspectJavaClassHandlerTest {
         );
         
         MavenResolverFactory resolverFactory = new MavenResolverFactory(config);
+        CacheManager cacheManager = new CacheManager(config);
         
-        handler = new InspectJavaClassHandler(inspector, resolverFactory);
+        handler = new InspectJavaClassHandler(inspector, resolverFactory, cacheManager);
         exchange = null; // Not used in current implementation
     }
 
