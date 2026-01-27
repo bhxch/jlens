@@ -2,6 +2,7 @@ package io.github.bhxch.mcp.jlens.server.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.github.bhxch.mcp.jlens.cache.CacheManager;
 import io.github.bhxch.mcp.jlens.inspector.ClassInspector;
 import io.github.bhxch.mcp.jlens.inspector.model.ClassMetadata;
 import io.github.bhxch.mcp.jlens.maven.model.ModuleContext;
@@ -31,11 +32,15 @@ public class InspectJavaClassHandler {
 
     private final ClassInspector inspector;
     private final MavenResolverFactory resolverFactory;
+    private final CacheManager cacheManager;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public InspectJavaClassHandler(ClassInspector inspector, MavenResolverFactory resolverFactory) {
+    public InspectJavaClassHandler(ClassInspector inspector, 
+                                  MavenResolverFactory resolverFactory,
+                                  CacheManager cacheManager) {
         this.inspector = inspector;
         this.resolverFactory = resolverFactory;
+        this.cacheManager = cacheManager;
     }
 
     /**
@@ -47,6 +52,7 @@ public class InspectJavaClassHandler {
             String className = null;
             String detailLevelStr = "basic";
             String sourceFilePath = null;
+            boolean bypassCache = false;
             
             if (request.arguments() != null) {
                 var args = request.arguments();
@@ -68,6 +74,15 @@ public class InspectJavaClassHandler {
                     Object value = args.get("sourceFilePath");
                     if (value != null) {
                         sourceFilePath = value.toString();
+                    }
+                }
+
+                if (args.containsKey("bypassCache")) {
+                    Object value = args.get("bypassCache");
+                    if (value instanceof Boolean) {
+                        bypassCache = (Boolean) value;
+                    } else if (value != null) {
+                        bypassCache = Boolean.parseBoolean(value.toString());
                     }
                 }
             }
@@ -100,20 +115,31 @@ public class InspectJavaClassHandler {
                 }
             }
 
-            // Inspect the class
-            ClassMetadata metadata = inspector.inspect(className, context, detailLevel, null);
+            // Check Cache
+            ClassMetadata metadata = null;
+            if (!bypassCache) {
+                if (context != null) {
+                    metadata = cacheManager.getClassMetadataIfPresent("gav:" + context.getCoordinates() + ":" + className);
+                } else {
+                    metadata = cacheManager.getClassMetadataIfPresent("cp:default:" + className);
+                }
+            }
 
-            // Check if the class exists
-            if (!isClassExists(className, context)) {
-                ObjectNode errorNode = objectMapper.createObjectNode();
-                errorNode.put("code", "CLASS_NOT_FOUND");
-                errorNode.put("message", "Error: Class '" + className + "' not found in classpath");
-                errorNode.put("suggestion", "This class might not be in any dependency, or you need to build the project first.");
+            if (metadata == null) {
+                // Get ClassLoader
+                ClassLoader classLoader = cacheManager.getClassLoaderManager().getClassLoader(context);
                 
-                return CallToolResult.builder()
-                    .content(List.of(new TextContent(errorNode.toPrettyString())))
-                    .isError(true)
-                    .build();
+                // Inspect the class
+                metadata = inspector.inspect(className, context, detailLevel, null, classLoader);
+                
+                // Put in cache if successful
+                if ("SUCCESS".equals(metadata.getStatus())) {
+                    if (context != null) {
+                        cacheManager.putClassMetadata("gav:" + context.getCoordinates() + ":" + className, metadata);
+                    } else {
+                        cacheManager.putClassMetadata("cp:default:" + className, metadata);
+                    }
+                }
             }
 
             // Return the result as JSON

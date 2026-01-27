@@ -12,7 +12,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,12 +34,40 @@ public class ClassInspector {
     }
 
     /**
-     * Inspect a Java class
+     * Inspect a Java class (backward compatibility)
      */
     public ClassMetadata inspect(String className, ModuleContext context,
                                  ParallelProcessor.DetailLevel level, Path sourceFile) {
+        return inspect(className, context, level, sourceFile, null);
+    }
+
+    /**
+     * Inspect a Java class with specific ClassLoader
+     */
+    public ClassMetadata inspect(String className, ModuleContext context,
+                                 ParallelProcessor.DetailLevel level, Path sourceFile,
+                                 ClassLoader classLoader) {
+        
+        // 1. Check if the class is from a local module in workspace
+        if (context != null && isLocalModule(context)) {
+            Path localSource = findSourceFileInModule(className, context);
+            if (localSource != null) {
+                return ClassMetadata.builder()
+                    .className(className)
+                    .status("LOCAL_SOURCE")
+                    .sourceFile(localSource.toString())
+                    .suggestion("This class is in your local workspace. Please use 'read_file' to view its source code directly for the most accurate information.")
+                    .build();
+            }
+        }
+
         try {
-            Class<?> clazz = Class.forName(className);
+            Class<?> clazz;
+            if (classLoader != null) {
+                clazz = Class.forName(className, true, classLoader);
+            } else {
+                clazz = Class.forName(className);
+            }
             return inspectClass(clazz, level, sourceFile);
         } catch (ClassNotFoundException e) {
             // Fallback to basic stub if class not found in classpath
@@ -46,6 +76,31 @@ public class ClassInspector {
             // Handle other loading errors
             return createStubMetadata(className, sourceFile);
         }
+    }
+
+    private boolean isLocalModule(ModuleContext context) {
+        // Simple heuristic: if pomFile is under current working directory
+        Path currentDir = Paths.get("").toAbsolutePath();
+        return context.getPomFile().toAbsolutePath().startsWith(currentDir);
+    }
+
+    private Path findSourceFileInModule(String className, ModuleContext context) {
+        // Implementation to find source file in module src/main/java
+        String relativePath = className.replace('.', '/') + ".java";
+        Path srcDir = context.getBaseDirectory().resolve("src/main/java");
+        Path sourcePath = srcDir.resolve(relativePath);
+        if (Files.exists(sourcePath)) {
+            return sourcePath;
+        }
+        
+        // Check src/test/java as well
+        Path testSrcDir = context.getBaseDirectory().resolve("src/test/java");
+        Path testSourcePath = testSrcDir.resolve(relativePath);
+        if (Files.exists(testSourcePath)) {
+            return testSourcePath;
+        }
+        
+        return null;
     }
 
     private ClassMetadata inspectClass(Class<?> clazz, ParallelProcessor.DetailLevel level, Path sourceFile) {

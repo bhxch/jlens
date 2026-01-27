@@ -3,6 +3,8 @@ package io.github.bhxch.mcp.jlens.cache;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import io.github.bhxch.mcp.jlens.cache.ClassMetadataCache;
+import io.github.bhxch.mcp.jlens.classpath.ClassLoaderManager;
 import io.github.bhxch.mcp.jlens.config.ServerConfig;
 import io.github.bhxch.mcp.jlens.inspector.model.ClassMetadata;
 import io.github.bhxch.mcp.jlens.maven.model.ModuleContext;
@@ -18,6 +20,7 @@ public class CacheManager {
     private final Cache<String, ModuleContext> moduleCache;
     private final Cache<String, ClassMetadata> classMetadataCache;
     private final Cache<String, String> decompilerCache;
+    private final ClassLoaderManager classLoaderManager;
     private final ServerConfig config;
 
     public CacheManager(ServerConfig config) {
@@ -25,6 +28,7 @@ public class CacheManager {
         this.moduleCache = createModuleCache();
         this.classMetadataCache = createClassMetadataCache();
         this.decompilerCache = createDecompilerCache();
+        this.classLoaderManager = new ClassLoaderManager();
     }
 
     private Cache<String, ModuleContext> createModuleCache() {
@@ -127,6 +131,10 @@ public class CacheManager {
 
     public long getDecompilerCacheSize() {
         return decompilerCache.estimatedSize();
+    }
+
+    public ClassLoaderManager getClassLoaderManager() {
+        return classLoaderManager;
     }
 
     public void cleanup() {
