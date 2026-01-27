@@ -45,7 +45,9 @@ JLens MCP Server is a Model Context Protocol (MCP) server designed for inspectin
 - search_java_class: 2/2 passed
 - build_module: 1/1 passed
 
-**Overall**: 71/71 tests passed (100%)
+- **Overall**: 71/71 tests passed (100%)
+
+See `docs/developer-docs/reports/` for detailed test results.
 
 ### 3. Performance
 
@@ -135,13 +137,13 @@ mvn clean package
 ### Run
 
 ```bash
-java -jar target/jlens-mcp-server-1.0.0-SNAPSHOT.jar
+java -jar target/jlens-mcp-server-1.1.1.jar
 ```
 
 ### Integration with iFlow CLI
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.0.0-SNAPSHOT.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.1.1.jar" --trust
 ```
 
 ## Documentation

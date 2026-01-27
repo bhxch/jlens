@@ -14,6 +14,18 @@ npx -y @bhxch/jlens-mcp-server
 uvx jlens-mcp-server
 ```
 
+### Environment Variables
+
+You can configure the server using environment variables:
+
+- `JLENS_JAVA_HOME`: Path to Java installation (overrides JAVA_HOME)
+- `JLENS_ARGS`: Additional JVM arguments or server options
+
+```bash
+# Example
+JLENS_JAVA_HOME="/path/to/jdk-25" JLENS_ARGS="-Dfile.encoding=UTF-8" npx @bhxch/jlens-mcp-server
+```
+
 ## Agent Skills
 
 Install specialized AI agent skills to help your agent use JLens more effectively (requires `npx skills` support):
@@ -40,7 +52,7 @@ npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp-en
 
 ## Quick Links
 
-- **Test Reports**: [reports/](reports/) - Test results and reports
+- **Test Reports**: [docs/developer-docs/reports/](docs/developer-docs/reports/) - Test results and reports
 - **Scripts**: [scripts/](scripts/) - Test and automation scripts
 - **Configuration**: [config/](config/) - MCP Inspector and other configs
 - **Logs**: [logs/](logs/) - Temporary logs and outputs

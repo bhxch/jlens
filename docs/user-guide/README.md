@@ -329,7 +329,7 @@ open target/site/jacoco/index.html
 
 **Overall**: 71/71 tests passed (100%)
 
-See `MCP_SERVER_TEST_REPORT.md`, `MCP_CLIENT_TEST_REPORT.md`, and `MCP_INSPECTOR_TEST_REPORT.md` for detailed test results.
+See `docs/developer-docs/reports/` for detailed test results.
 
 ### MCP Inspector Testing
 
