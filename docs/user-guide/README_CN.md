@@ -11,15 +11,17 @@
 - **5 个 MCP 工具**：所有工具完全可用，支持标准化 JSON 输出
 - **100% 测试通过率**：71/71 个测试全部通过 (100%)
 - **MCP 协议兼容**：完全符合 MCP 2024-11-05 规范
-- **性能优化**：支持缓存的真实反射分析
+- **性能优化**：通过动态 ClassLoader 实现多版本隔离的真实反射分析
+- **智能缓存**：基于 GAV 的全局依赖缓存，极速响应
 - **MCP Inspector 验证**：已通过 MCP Inspector CLI 模式测试 (JSON 格式)
 
 ## 功能特性
 
-- **Java 类检查**：通过真实反射分析、字节码分析和反编译检查 Java 类
+- **Java 类检查**：通过真实反射分析、字节码分析和基于动态 ClassLoader 的多版本隔离检查 Java 类
+- **本地源码提示**：自动检测本地工作区中的类，并建议直接查看源码以获得最高准确度
 - **变量列表**：列出类的字段，支持特定可见性过滤（public、private 等）
 - **Maven 依赖解析**：列出和分析 Maven 模块依赖 (JSON 格式)
-- **类搜索**：在包和依赖中搜索 Java 类
+- **稳定类搜索**：在包和依赖中搜索 Java 类，支持基于游标的分页
 - **模块构建**：构建 Maven 模块并下载缺失的依赖
 - **智能包解析**：AI 友好的类包解析，具有上下文感知能力
 - **标准化输出**：所有工具输出和错误均采用一致的 JSON 格式
@@ -134,13 +136,14 @@ iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
 
 ### inspect_java_class
 
-检查 Java 类并返回其元数据。
+检查 Java 类并返回其元数据。如果类位于本地工作区，将返回直接阅读源码的提示。
 
 **参数：**
 
 - `className`（字符串，必需）：要检查的完全限定类名
 - `sourceFilePath`（字符串，可选）：用于上下文的源文件路径
 - `detailLevel`（字符串，可选）：详细级别 - "skeleton"、"basic" 或 "full"（默认："basic"）
+- `bypassCache`（布尔值，可选）：是否跳过缓存重新检查（默认：false）
 
 ### list_class_fields
 
@@ -198,14 +201,15 @@ iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
 
 ### search_java_class
 
-在包和依赖中搜索 Java 类。
+在包和依赖中搜索 Java 类，支持基于游标的分页。
 
 **参数：**
 
 - `classNamePattern`（字符串，必需）：类名模式（支持通配符：*、?）
 - `sourceFilePath`（字符串，可选）：用于上下文的源文件路径
 - `searchType`（字符串，可选）：搜索类型 - "exact"、"prefix"、"suffix"、"contains" 或 "wildcard"（默认："wildcard"）
-- `limit`（整数，可选）：返回的最大结果数（默认：50）
+- `limit`（整数，可选）：每页返回的最大结果数（默认：50）
+- `cursor`（字符串，可选）：来自上一次请求的分页游标
 
 **示例请求：**
 
@@ -219,7 +223,8 @@ iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
     "arguments": {
       "classNamePattern": "*List*",
       "searchType": "wildcard",
-      "limit": 10
+      "limit": 10,
+      "cursor": "..."
     }
   }
 }

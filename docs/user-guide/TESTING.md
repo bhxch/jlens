@@ -166,7 +166,7 @@ mvn test -Dtest=*HandlerTest
 
 ### Python Test Scripts
 
-- `test_all_tools.py` - Tests all 4 MCP tools
+- `test_all_tools.py` - Tests all 5 MCP tools
 - `test_integration.py` - Integration workflow tests
 - `test_performance_simple.py` - Performance tests
 - `test_error_handling.py` - Error handling tests
@@ -188,13 +188,13 @@ Location: `src/test/testcases/*.json`
 - `inspect_java_class_testcases.json`
 - `list_module_dependencies_testcases.json`
 
-## Troubleshooting
+### Troubleshooting
 
 ### Test Failures
 
 If tests fail, check:
 
-1. JAR file exists: `target/jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+1. JAR file exists: `target/jlens-mcp-server-1.1.0.jar`
 2. Java version is 25+
 3. Maven dependencies are resolved
 

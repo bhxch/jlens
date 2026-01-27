@@ -11,15 +11,17 @@ All features are implemented, tested, and ready for production deployment.
 - **5 MCP Tools**: All tools fully functional with standardized JSON output
 - **100% Test Pass Rate**: 71/71 tests passed (100%)
 - **MCP Compliant**: Fully compliant with MCP 2024-11-05 specification
-- **Performance Optimized**: Real reflection-based inspection with caching
+- **Performance Optimized**: Real reflection-based inspection with multi-version isolation
+- **Smart Caching**: GAV-based global dependency caching for extreme speed
 - **MCP Inspector Verified**: Successfully tested with MCP Inspector CLI mode (JSON format)
 
 ## Features
 
-- **Java Class Inspection**: Inspect Java classes with real reflection analysis, bytecode analysis, and decompilation
+- **Java Class Inspection**: Inspect Java classes with real reflection analysis, bytecode analysis, and multi-version isolation using dynamic ClassLoaders
+- **Local Source Hint**: Automatically detects classes in your local workspace and suggests reading source directly for better accuracy
 - **Variable Listing**: List fields of a class with specific visibility filtering (public, private, etc.)
 - **Maven Dependency Resolution**: List and analyze Maven module dependencies (JSON format)
-- **Class Search**: Search for classes across packages and dependencies
+- **Stable Class Search**: Search for classes across packages and dependencies with cursor-based pagination
 - **Module Building**: Build Maven modules and download missing dependencies
 - **Intelligent Package Resolution**: AI-friendly class package resolution with context awareness
 - **Standardized Output**: Consistent JSON format for all tool outputs and errors
@@ -134,13 +136,14 @@ iflow mcp add jlens-mcp-server "npx -y @bhxch/jlens-mcp-server" --trust
 
 ### inspect_java_class
 
-Inspect a Java class and return its metadata.
+Inspect a Java class and return its metadata. If the class is in local workspace, it will return a hint to read source directly.
 
 **Parameters:**
 
 - `className` (string, required): The fully qualified class name to inspect
 - `sourceFilePath` (string, optional): Path to source file for context
 - `detailLevel` (string, optional): Level of detail - "skeleton", "basic", or "full" (default: "basic")
+- `bypassCache` (boolean, optional): Whether to bypass cache and re-inspect (default: false)
 
 ### list_class_fields
 
@@ -198,14 +201,15 @@ List dependencies for a Maven module.
 
 ### search_java_class
 
-Search for Java classes across packages and dependencies.
+Search for Java classes across packages and dependencies with cursor-based pagination.
 
 **Parameters:**
 
 - `classNamePattern` (string, required): Class name pattern (supports wildcards: *, ?)
 - `sourceFilePath` (string, optional): Source file path for context
 - `searchType` (string, optional): Search type - "exact", "prefix", "suffix", "contains", or "wildcard" (default: "wildcard")
-- `limit` (integer, optional): Maximum number of results to return (default: 50)
+- `limit` (integer, optional): Maximum number of results to return per page (default: 50)
+- `cursor` (string, optional): Pagination cursor from previous request
 
 **Example Request:**
 
@@ -219,7 +223,8 @@ Search for Java classes across packages and dependencies.
     "arguments": {
       "classNamePattern": "*List*",
       "searchType": "wildcard",
-      "limit": 10
+      "limit": 10,
+      "cursor": "..."
     }
   }
 }

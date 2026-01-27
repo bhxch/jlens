@@ -166,7 +166,7 @@ mvn test -Dtest=*HandlerTest
 
 ### Python 测试脚本
 
-- `test_all_tools.py` - 测试所有 4 个 MCP 工具
+- `test_all_tools.py` - 测试所有 5 个 MCP 工具
 - `test_integration.py` - 集成工作流测试
 - `test_performance_simple.py` - 性能测试
 - `test_error_handling.py` - 错误处理测试
@@ -194,7 +194,7 @@ mvn test -Dtest=*HandlerTest
 
 如果测试失败，请检查：
 
-1. JAR 文件是否存在：`target/jlens-mcp-server-1.0.0-SNAPSHOT.jar`
+1. JAR 文件是否存在：`target/jlens-mcp-server-1.1.0.jar`
 2. Java 版本是否为 25+
 3. Maven 依赖是否已解析
 

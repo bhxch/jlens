@@ -17,13 +17,14 @@ JLens MCP Server is a Model Context Protocol (MCP) server designed for inspectin
 
 ## Key Features
 
-### 1. MCP Tools (4/4 Complete)
+### 1. MCP Tools (5/5 Complete)
 
 | Tool | Description | Status |
 |------|-------------|--------|
-| `inspect_java_class` | Inspect Java classes with real bytecode/reflection analysis | ✅ Complete (JSON) |
+| `inspect_java_class` | Inspect Java classes with real bytecode/reflection analysis and multi-version isolation | ✅ Complete (JSON) |
+| `list_class_fields` | List class fields with visibility filtering | ✅ Complete (JSON) |
 | `list_module_dependencies` | List Maven module dependencies | ✅ Complete (JSON) |
-| `search_java_class` | Search for classes across packages | ✅ Complete (JSON) |
+| `search_java_class` | Search for classes with cursor-based pagination | ✅ Complete (JSON) |
 | `build_module` | Build Maven modules and download dependencies | ✅ Complete (JSON) |
 
 ### 2. Testing Results
@@ -97,16 +98,18 @@ JavaClasspathServer (Main MCP Server)
 │   └── Request/Response Processing
 ├── Tool Handlers
 │   ├── InspectJavaClassHandler
+│   ├── ListClassFieldsHandler
 │   ├── ListModuleDependenciesHandler
 │   ├── SearchJavaClassHandler
 │   └── BuildModuleHandler
 ├── Core Services
-│   ├── ClassInspector
+│   ├── ClassInspector (Multi-version aware)
 │   ├── DependencyManager
 │   ├── MavenBuilder
 │   └── PackageMappingResolver
 └── Supporting Services
-    ├── CacheManager
+    ├── CacheManager (GAV-based global caching)
+    ├── ClassLoaderManager (Dynamic version isolation)
     ├── DecompilerFactory
     └── BuildPromptGenerator
 ```
@@ -116,8 +119,10 @@ JavaClasspathServer (Main MCP Server)
 1. **Handler Pattern**: Each MCP tool has a dedicated handler
 2. **Strategy Pattern**: Multiple decompilers with pluggable implementation
 3. **Factory Pattern**: Decompiler and resolver creation
-4. **Cache Pattern**: Caffeine caching for performance
-5. **Virtual Threads**: Java 21+ concurrent processing
+4. **Cache Pattern**: GAV-based global caching with Caffeine
+5. **Version Isolation**: Dynamic URLClassLoader per module context
+6. **Cursor Pagination**: Stable search results using Base64 encoded cursors
+7. **Virtual Threads**: Java 21+ concurrent processing
 
 ## Deployment
 

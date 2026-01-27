@@ -17,13 +17,14 @@ JLens MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Model
 
 ## 主要功能
 
-### 1. MCP 工具（4/4 完成）
+### 1. MCP 工具 (5/5 完成)
 
 | 工具 | 描述 | 状态 |
 |------|-------------|--------|
-| `inspect_java_class` | 通过真实的字节码/反射分析检查 Java 类 | ✅ 完成 (JSON) |
+| `inspect_java_class` | 使用真实字节码/反射分析和多版本隔离检查 Java 类 | ✅ 完成 (JSON) |
+| `list_class_fields` | 列出具有可见性过滤的类字段 | ✅ 完成 (JSON) |
 | `list_module_dependencies` | 列出 Maven 模块依赖 | ✅ 完成 (JSON) |
-| `search_java_class` | 在包中搜索类 | ✅ 完成 (JSON) |
+| `search_java_class` | 使用基于游标的分页搜索类 | ✅ 完成 (JSON) |
 | `build_module` | 构建 Maven 模块并下载依赖 | ✅ 完成 (JSON) |
 
 ### 2. 测试结果
@@ -90,34 +91,38 @@ JLens MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Model
 ### 服务器组件
 
 ```
-JavaClasspathServer（主 MCP 服务器）
+JavaClasspathServer (主 MCP 服务器)
 ├── MCP SDK 集成
-│   ├── 协议处理器
+│   ├── 协议处理程序
 │   ├── 工具注册表
 │   └── 请求/响应处理
-├── 工具处理器
+├── 工具处理程序
 │   ├── InspectJavaClassHandler
+│   ├── ListClassFieldsHandler
 │   ├── ListModuleDependenciesHandler
 │   ├── SearchJavaClassHandler
 │   └── BuildModuleHandler
 ├── 核心服务
-│   ├── ClassInspector
+│   ├── ClassInspector (支持多版本隔离)
 │   ├── DependencyManager
 │   ├── MavenBuilder
 │   └── PackageMappingResolver
-└── 支持服务
-    ├── CacheManager
+└── 辅助服务
+    ├── CacheManager (基于 GAV 的全局缓存)
+    ├── ClassLoaderManager (动态版本隔离)
     ├── DecompilerFactory
     └── BuildPromptGenerator
 ```
 
 ### 关键设计模式
 
-1. **处理器模式**：每个 MCP 工具都有专用处理器
-2. **策略模式**：多个反编译器，可插拔实现
-3. **工厂模式**：反编译器和解析器创建
-4. **缓存模式**：Caffeine 缓存以提高性能
-5. **虚拟线程**：Java 21+ 并发处理
+1. **处理程序模式 (Handler Pattern)**：每个 MCP 工具都有专用的处理程序
+2. **策略模式 (Strategy Pattern)**：具有可插拔实现的多重反编译器
+3. **工厂模式 (Factory Pattern)**：反编译器和解析器创建
+4. **缓存模式 (Cache Pattern)**：基于 GAV 的 Caffeine 全局缓存
+5. **版本隔离 (Version Isolation)**：每个模块上下文使用动态 URLClassLoader
+6. **游标分页 (Cursor Pagination)**：使用 Base64 编码游标的稳定搜索结果
+7. **虚拟线程 (Virtual Threads)**：Java 21+ 并发处理
 
 ## 部署
 

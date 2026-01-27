@@ -7,7 +7,7 @@
 **测试日期**: 2026-01-26  
 **测试工具**: MCP Inspector CLI (@modelcontextprotocol/inspector-cli v0.19.0)  
 **测试模式**: CLI 模式  
-**测试结果**: ✅ 8/8 测试通过 (100%)
+**测试结果**: ✅ 9/9 测试通过 (100%)
 
 ---
 
@@ -25,14 +25,15 @@
 
 ### 1.2 测试范围
 
-| 测试类别 | 测试内容 | 测试用例数 |
+| 类别 | 内容 | 用例数 |
 |---------|---------|-----------|
 | Server Initialization | 服务器初始化和工具列表 | 1 |
 | inspect_java_class | Java 类检查功能 | 3 |
+| list_class_fields | 类字段可见性过滤 | 1 |
 | list_module_dependencies | Maven 依赖列表功能 | 1 |
 | search_java_class | Java 类搜索功能 | 2 |
 | build_module | Maven 模块构建功能 | 1 |
-| **总计** | | **8** |
+| **总计** | | **9** |
 
 ### 1.3 测试环境
 
@@ -143,7 +144,7 @@ npx @modelcontextprotocol/inspector --cli --config <config-file> --server <serve
 npx @modelcontextprotocol/inspector --cli --config /path/to/jlens/mcp-inspector-config.json --server jlens-mcp-server --method tools/list
 ```
 
-**预期结果**: 返回包含所有 4 个工具的 JSON 响应
+**预期结果**: 返回包含所有 5 个工具的 JSON 响应
 
 ### 4.3 调用 inspect_java_class
 
