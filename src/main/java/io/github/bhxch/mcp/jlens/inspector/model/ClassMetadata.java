@@ -30,6 +30,8 @@ public class ClassMetadata {
     private final int modifiers;
     private final String sourceFile;
     private final String decompiledSource;
+    private final String status;
+    private final String suggestion;
 
     private ClassMetadata(Builder builder) {
         this.className = builder.className;
@@ -49,6 +51,8 @@ public class ClassMetadata {
         this.modifiers = builder.modifiers;
         this.sourceFile = builder.sourceFile;
         this.decompiledSource = builder.decompiledSource;
+        this.status = builder.status != null ? builder.status : "SUCCESS";
+        this.suggestion = builder.suggestion;
     }
 
     public String getClassName() {
@@ -125,6 +129,14 @@ public class ClassMetadata {
         return decompiledSource;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public String getSuggestion() {
+        return suggestion;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -172,6 +184,8 @@ public class ClassMetadata {
         private int modifiers;
         private String sourceFile;
         private String decompiledSource;
+        private String status;
+        private String suggestion;
 
         public Builder className(String className) {
             this.className = className;
@@ -275,6 +289,16 @@ public class ClassMetadata {
 
         public Builder decompiledSource(String decompiledSource) {
             this.decompiledSource = decompiledSource;
+            return this;
+        }
+
+        public Builder status(String status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder suggestion(String suggestion) {
+            this.suggestion = suggestion;
             return this;
         }
 
