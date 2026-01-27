@@ -33,7 +33,7 @@ class JavaClasspathServerMcpClientTest {
         ProcessBuilder pb = new ProcessBuilder(
             "java",
             "-jar",
-            "target/jlens-mcp-server-1.1.0.jar"
+            "target/jlens-mcp-server-1.1.1.jar"
         );
         pb.redirectErrorStream(true);
         serverProcess = pb.start();

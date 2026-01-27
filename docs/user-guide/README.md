@@ -39,7 +39,7 @@ All features are implemented, tested, and ready for production deployment.
 mvn clean package
 ```
 
-This will create an executable JAR file: `target/jlens-mcp-server-1.1.0.jar`
+This will create an executable JAR file: `target/jlens-mcp-server-1.1.1.jar`
 
 ## Usage
 
@@ -59,7 +59,7 @@ uvx jlens-mcp-server
 
 **Using Java:**
 ```bash
-java -jar target/jlens-mcp-server-1.1.0.jar
+java -jar target/jlens-mcp-server-1.1.1.jar
 ```
 
 ### Agent Skills

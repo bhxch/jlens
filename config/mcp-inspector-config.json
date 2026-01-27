@@ -1,4 +1,4 @@
-{"mcpServers": {"jlens-mcp-server": {"command": "java", "args": ["-jar", "/path/to/jlens/target/jlens-mcp-server-1.1.0.jar"], "env": {}}}}
+{"mcpServers": {"jlens-mcp-server": {"command": "java", "args": ["-jar", "/path/to/jlens/target/jlens-mcp-server-1.1.1.jar"], "env": {}}}}
 
 
 

@@ -8,7 +8,7 @@ JLens MCP Server is a Model Context Protocol (MCP) server designed for inspectin
 
 ✅ **READY FOR PRODUCTION USE**
 
-- **Version**: 1.1.0
+- **Version**: 1.1.1
 - **Completion**: 100%
 - **Test Coverage**: 100% (71/71 tests passed)
 - **MCP Protocol**: 2024-11-05

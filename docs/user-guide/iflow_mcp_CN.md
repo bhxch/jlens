@@ -7,7 +7,7 @@
 ### 服务器信息
 
 - **名称**: jlens-mcp-server
-- **版本**: 1.1.0
+- **版本**: 1.1.1
 - **描述**: 用于检查 Java 类和 Maven 依赖的 MCP 服务器
 
 ### 工具
@@ -107,7 +107,7 @@ mvn clean package
 这将创建以下位置的 JAR 文件：
 
 ```
-target/jlens-mcp-server-1.1.0.jar
+target/jlens-mcp-server-1.1.1.jar
 ```
 
 ## 服务器说明

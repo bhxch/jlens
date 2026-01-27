@@ -1,6 +1,6 @@
 {
   "name": "@bhxch/jlens-mcp-server",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MCP server for inspecting Java classes and Maven dependencies",
   "bin": {
     "jlens-mcp-server": "bin/jlens-mcp-server.js"

@@ -71,7 +71,7 @@ npx @modelcontextprotocol/inspector-cli --help
       "command": "java",
       "args": [
         "-jar",
-        "/path/to/jlens/target/jlens-mcp-server-1.1.0.jar"
+        "/path/to/jlens/target/jlens-mcp-server-1.1.1.jar"
       ],
       "env": {}
     }
@@ -95,7 +95,7 @@ npx @modelcontextprotocol/inspector-cli --help
 mvn clean package
 ```
 
-生成的 JAR 文件位置: `target/jlens-mcp-server-1.1.0.jar`
+生成的 JAR 文件位置: `target/jlens-mcp-server-1.1.1.jar`
 
 ---
 

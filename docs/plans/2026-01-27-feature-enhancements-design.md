@@ -40,7 +40,7 @@ A GitHub Actions workflow is implemented to automate building and releasing.
 ## 4. Quality Assurance
 - **Unit Tests**: Added `ListClassFieldsHandlerTest` to verify filtering logic.    
 - **Test Coverage**: Targeting > 85% for core logic.
-- **Version Management**: Updated `pom.xml`, `package.json`, and `pyproject.toml` to `1.1.0`.
+- **Version Management**: Updated `pom.xml`, `package.json`, and `pyproject.toml` to `1.1.1`.
 
 ## 5. Documentation
 - Documentation reorganized into `user-guide`, `developer-docs`, and `plans`.      

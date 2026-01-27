@@ -176,13 +176,13 @@ mvn clean package
 ### 运行
 
 ```bash
-java -jar target/jlens-mcp-server-1.1.0.jar
+java -jar target/jlens-mcp-server-1.1.1.jar
 ```
 
 ### iFlow CLI 集成
 
 ```bash
-iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.1.0.jar" --trust
+iflow mcp add jlens-mcp-server "java -jar /path/to/jlens/target/jlens-mcp-server-1.1.1.jar" --trust
 ```
 
 ## 结论

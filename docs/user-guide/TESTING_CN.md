@@ -194,7 +194,7 @@ mvn test -Dtest=*HandlerTest
 
 如果测试失败，请检查：
 
-1. JAR 文件是否存在：`target/jlens-mcp-server-1.1.0.jar`
+1. JAR 文件是否存在：`target/jlens-mcp-server-1.1.1.jar`
 2. Java 版本是否为 25+
 3. Maven 依赖是否已解析
 

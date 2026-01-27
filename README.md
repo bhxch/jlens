@@ -53,7 +53,7 @@ npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp-en
 mvn clean package
 ```
 
-This will create an executable JAR file: `target/jlens-mcp-server-1.1.0.jar`
+This will create an executable JAR file: `target/jlens-mcp-server-1.1.1.jar`
 
 ## License
 

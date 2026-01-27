@@ -194,7 +194,7 @@ Location: `src/test/testcases/*.json`
 
 If tests fail, check:
 
-1. JAR file exists: `target/jlens-mcp-server-1.1.0.jar`
+1. JAR file exists: `target/jlens-mcp-server-1.1.1.jar`
 2. Java version is 25+
 3. Maven dependencies are resolved
 

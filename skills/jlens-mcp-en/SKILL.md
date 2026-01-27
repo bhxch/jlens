@@ -3,7 +3,7 @@ name: jlens-mcp-en
 description: Professional-grade Java codebase analysis and Maven dependency management skill. Triggers when: (1) Analyzing Java class structures with multi-version isolation in multi-module projects, (2) Deep parsing Maven dependency trees and troubleshooting version conflicts, (3) Searching for classes in massive Jar files using cursor-based pagination, (4) Automating Maven build tasks, (5) Intelligently identifying local source code vs. third-party libraries. This skill guides the Agent to prefer registered MCP services and provides a command-line Fallback mechanism.
 ---
 
-# JLens MCP Expert Navigation Guide (V1.1.0)
+# JLens MCP Expert Navigation Guide (V1.1.1)
 
 JLens is a Model Context Protocol (MCP) server designed for AI Agents. It provides deep understanding of Java projects through real reflection analysis and bytecode parsing. Unlike simple text search, JLens can identify class inheritance, method signatures, visibility modifiers, and complex Maven dependency topologies.
 

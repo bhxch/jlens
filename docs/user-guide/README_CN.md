@@ -39,7 +39,7 @@
 mvn clean package
 ```
 
-这将创建一个可执行的 JAR 文件：`target/jlens-mcp-server-1.1.0.jar`
+这将创建一个可执行的 JAR 文件：`target/jlens-mcp-server-1.1.1.jar`
 
 ## 使用方法
 
@@ -59,7 +59,7 @@ uvx jlens-mcp-server
 
 **使用 Java:**
 ```bash
-java -jar target/jlens-mcp-server-1.1.0.jar
+java -jar target/jlens-mcp-server-1.1.1.jar
 ```
 
 ### Agent Skills (智能体技能)

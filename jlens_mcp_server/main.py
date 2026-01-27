@@ -6,7 +6,7 @@ import urllib.request
 import tempfile
 from pathlib import Path
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 REPO = "bhxch/jlens"
 JAR_NAME_PREFIX = "jlens-mcp-server-"
 CACHE_DIR = Path.home() / ".jlens" / "cache"

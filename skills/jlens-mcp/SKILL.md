@@ -3,7 +3,7 @@ name: jlens-mcp
 description: 专业级 Java 代码库分析与 Maven 依赖管理技能。当需要进行以下操作时触发：(1) 在多模块项目中使用多版本隔离技术分析 Java 类结构，(2) 深度解析 Maven 依赖树及排查版本冲突，(3) 利用游标分页在海量 Jar 包中搜索类，(4) 自动化执行 Maven 构建任务，(5) 智能识别本地源码与第三方库。本技能指导 Agent 优先使用已注册的 MCP 服务，并提供命令行模式的 Fallback 机制。
 ---
 
-# JLens MCP 专家级导航指南 (V1.1.0)
+# JLens MCP 专家级导航指南 (V1.1.1)
 
 JLens 是一个专门为 AI Agent 设计的 Model Context Protocol (MCP) 服务器，它通过真实的反射分析和字节码解析，赋予 Agent 深度理解 Java 工程的能力。相比于简单的文本搜索，JLens 能够识别类继承关系、方法签名、可见性修饰符以及复杂的 Maven 依赖拓扑。
 

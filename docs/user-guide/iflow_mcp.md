@@ -7,7 +7,7 @@ This document contains the complete command content for the `iflow mcp add-json`
 ### Server Information
 
 - **Name**: jlens-mcp-server
-- **Version**: 1.1.0
+- **Version**: 1.1.1
 - **Description**: MCP server for inspecting Java classes and Maven dependencies
 
 ### Tools
@@ -107,7 +107,7 @@ mvn clean package
 This will create the JAR file at:
 
 ```
-target/jlens-mcp-server-1.1.0.jar
+target/jlens-mcp-server-1.1.1.jar
 ```
 
 ## Server Instructions

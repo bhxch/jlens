@@ -59,7 +59,7 @@ public class JavaClasspathServer {
         BuildModuleHandler buildModuleHandler = new BuildModuleHandler(mavenBuilder, dependencyManager, resolverFactory);
         
         this.mcpServer = McpServer.sync(transportProvider)
-            .serverInfo(new McpSchema.Implementation("jlens-mcp-server", "1.1.0"))
+            .serverInfo(new McpSchema.Implementation("jlens-mcp-server", "1.1.1"))
             .capabilities(McpSchema.ServerCapabilities.builder()
                 .tools(true)
                 .build())

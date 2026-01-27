@@ -6,7 +6,7 @@ const fs = require('fs');
 const os = require('os');
 const https = require('https');
 
-const VERSION = '1.1.0';
+const VERSION = '1.1.1';
 const REPO = 'bhxch/jlens';
 const JAR_NAME_PREFIX = 'jlens-mcp-server-';
 const CACHE_DIR = path.join(os.homedir(), '.jlens', 'cache');
