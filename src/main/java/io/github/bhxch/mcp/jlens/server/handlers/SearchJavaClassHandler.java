@@ -22,6 +22,9 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -56,6 +59,7 @@ public class SearchJavaClassHandler {
             String sourceFilePath = null;
             String searchType = "wildcard";
             int limit = 50;
+            String cursor = null;
             
             if (request.arguments() != null) {
                 var args = request.arguments();
@@ -88,6 +92,13 @@ public class SearchJavaClassHandler {
                         } catch (NumberFormatException e) {
                             // Use default
                         }
+                    }
+                }
+
+                if (args.containsKey("cursor")) {
+                    Object value = args.get("cursor");
+                    if (value != null) {
+                        cursor = value.toString();
                     }
                 }
             }
@@ -126,7 +137,7 @@ public class SearchJavaClassHandler {
             }
 
             // Search for classes
-            List<ClassSearchResult> results = searchClasses(classNamePattern, searchType, limit);
+            SearchResultContainer searchResults = searchClasses(classNamePattern, searchType, limit, cursor);
 
             // Check for missing dependencies
             List<DependencyInfo> missingDeps = List.of();
@@ -135,7 +146,7 @@ public class SearchJavaClassHandler {
             }
 
             // Build response
-            return buildSearchResponse(results, missingDeps, context, classNamePattern);
+            return buildSearchResponse(searchResults, missingDeps, context, classNamePattern);
 
         } catch (Exception e) {
             logger.error("Error searching for classes", e);
@@ -151,11 +162,11 @@ public class SearchJavaClassHandler {
     }
 
     /**
-     * Search for classes based on pattern
+     * Search for classes based on pattern with pagination
      */
-    private List<ClassSearchResult> searchClasses(String pattern, String searchType, int limit) {
+    private SearchResultContainer searchClasses(String pattern, String searchType, int limit, String cursor) {
         Pattern regexPattern = convertToRegex(pattern, searchType);
-        List<ClassSearchResult> results = new java.util.ArrayList<>();
+        List<ClassSearchResult> allMatches = new ArrayList<>();
 
         // Search in indexed classes
         for (var entry : packageResolver.getClassToPackages().entrySet()) {
@@ -169,20 +180,43 @@ public class SearchJavaClassHandler {
                     result.setDependency(packageResolver.getDependencyForPackage(packageName));
                     result.setInClasspath(true);
                     
-                    results.add(result);
-                    
-                    if (results.size() >= limit) {
-                        break;
-                    }
+                    allMatches.add(result);
                 }
-            }
-
-            if (results.size() >= limit) {
-                break;
             }
         }
 
-        return results;
+        // Sort results for stable pagination
+        allMatches.sort(Comparator.comparing(ClassSearchResult::getClassName));
+
+        int startIndex = 0;
+        if (cursor != null && !cursor.isEmpty()) {
+            try {
+                String decodedCursor = new String(Base64.getDecoder().decode(cursor));
+                JsonNode cursorNode = objectMapper.readTree(decodedCursor);
+                String lastClassName = cursorNode.get("lastClassName").asText();
+                
+                for (int i = 0; i < allMatches.size(); i++) {
+                    if (allMatches.get(i).getClassName().equals(lastClassName)) {
+                        startIndex = i + 1;
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Invalid cursor: {}", cursor);
+            }
+        }
+
+        int endIndex = Math.min(startIndex + limit, allMatches.size());
+        List<ClassSearchResult> pagedResults = allMatches.subList(startIndex, endIndex);
+        
+        String nextCursor = null;
+        if (endIndex < allMatches.size()) {
+            ObjectNode nextCursorNode = objectMapper.createObjectNode();
+            nextCursorNode.put("lastClassName", pagedResults.get(pagedResults.size() - 1).getClassName());
+            nextCursor = Base64.getEncoder().encodeToString(nextCursorNode.toString().getBytes());
+        }
+
+        return new SearchResultContainer(pagedResults, allMatches.size(), nextCursor);
     }
 
     /**
@@ -219,7 +253,7 @@ public class SearchJavaClassHandler {
     /**
      * Build search response
      */
-    private CallToolResult buildSearchResponse(List<ClassSearchResult> results, 
+    private CallToolResult buildSearchResponse(SearchResultContainer container, 
                                                List<DependencyInfo> missingDeps,
                                                ModuleContext context,
                                                String pattern) {
@@ -227,7 +261,7 @@ public class SearchJavaClassHandler {
 
         // Results array
         ArrayNode resultsArray = objectMapper.createArrayNode();
-        for (ClassSearchResult result : results) {
+        for (ClassSearchResult result : container.results) {
             ObjectNode resultNode = objectMapper.createObjectNode();
             resultNode.put("className", result.getClassName());
             resultNode.put("simpleName", result.getSimpleClassName());
@@ -238,13 +272,19 @@ public class SearchJavaClassHandler {
         }
 
         response.set("results", resultsArray);
-        response.put("totalResults", results.size());
+        response.put("totalResults", container.totalCount);
+        if (container.nextCursor != null) {
+            response.put("nextCursor", container.nextCursor);
+            response.put("hasMore", true);
+        } else {
+            response.put("hasMore", false);
+        }
 
         // Add suggestions if dependencies are missing
         if (!missingDeps.isEmpty()) {
             BuildPromptGenerator generator = new BuildPromptGenerator();
             String suggestion = generator.generateBuildSuggestion(
-                results.isEmpty() ? pattern : results.get(0).getSimpleClassName(),
+                container.results.isEmpty() ? pattern : container.results.get(0).getSimpleClassName(),
                 context,
                 missingDeps
             );
@@ -265,6 +305,21 @@ public class SearchJavaClassHandler {
             .content(List.of(new TextContent(response.toPrettyString())))
             .isError(false)
             .build();
+    }
+
+    /**
+     * Container for search results and pagination info
+     */
+    private static class SearchResultContainer {
+        final List<ClassSearchResult> results;
+        final int totalCount;
+        final String nextCursor;
+
+        SearchResultContainer(List<ClassSearchResult> results, int totalCount, String nextCursor) {
+            this.results = results;
+            this.totalCount = totalCount;
+            this.nextCursor = nextCursor;
+        }
     }
 
     /**
