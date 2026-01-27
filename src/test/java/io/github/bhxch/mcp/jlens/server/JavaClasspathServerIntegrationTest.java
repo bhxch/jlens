@@ -35,7 +35,7 @@ class JavaClasspathServerIntegrationTest {
         ProcessBuilder pb = new ProcessBuilder(
             "java",
             "-jar",
-            "target/jlens-mcp-server-1.1.1.jar"
+            "target/jlens-mcp-server-1.1.2.jar"
         );
         pb.redirectErrorStream(true);
         serverProcess = pb.start();
@@ -110,7 +110,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute inspect_java_class tool")
     void testInspectJavaClass() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"java.util.List\",\"detailLevel\":\"basic\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"java.util.List\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"detailLevel\":\"basic\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("List") || response.contains("java.util"), "Response should contain class information");
@@ -119,7 +119,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute inspect_java_class with full detail level")
     void testInspectJavaClassWithFullDetail() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"java.util.ArrayList\",\"detailLevel\":\"full\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"java.util.ArrayList\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"detailLevel\":\"full\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("ArrayList") || response.contains("java.util"), "Response should contain class information");
@@ -128,7 +128,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute inspect_java_class with source file path")
     void testInspectJavaClassWithSourceFile() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"io.github.bhxch.mcp.jlens.Main\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"detailLevel\":\"basic\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"io.github.bhxch.mcp.jlens.Main\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"detailLevel\":\"basic\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("Main") || response.contains("io.github.bhxch.mcp.jlens"), "Response should contain class information");
@@ -137,7 +137,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should handle missing className parameter")
     void testInspectJavaClassMissingParameter() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"detailLevel\":\"basic\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"detailLevel\":\"basic\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("error") || response.contains("required"), "Response should indicate error");
@@ -154,7 +154,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute list_module_dependencies with source file path")
     void testListModuleDependenciesWithSourceFile() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"scope\":\"compile\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"list_module_dependencies\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"scope\":\"compile\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response, "Should get a response from list_module_dependencies with source file");
     }
@@ -181,7 +181,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute search_java_class tool with wildcard")
     void testSearchJavaClassWildcard() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*List*\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*List*\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("List") || response.contains("result"), "Response should contain search results");
@@ -190,7 +190,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute search_java_class tool with prefix")
     void testSearchJavaClassPrefix() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"String\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"prefix\",\"limit\":5}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"String\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"prefix\",\"limit\":5}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("String") || response.contains("result"), "Response should contain search results");
@@ -199,7 +199,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute search_java_class tool with exact match")
     void testSearchJavaClassExact() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"Map\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"exact\",\"limit\":10}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"Map\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"exact\",\"limit\":10}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("Map") || response.contains("result"), "Response should contain search results");
@@ -208,7 +208,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute search_java_class tool for project classes")
     void testSearchJavaClassProjectClasses() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*Handler*\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*Handler*\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("Handler") || response.contains("result"), "Response should contain search results");
@@ -217,7 +217,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute build_module tool with default goals")
     void testBuildModuleDefaultGoals() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\"}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\"}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("BUILD") || response.contains("build") || response.contains("exitCode"), "Response should contain build information");
@@ -226,7 +226,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute build_module tool with source download")
     void testBuildModuleWithSourceDownload() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"downloadSources\":true,\"goals\":[\"compile\"]}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"downloadSources\":true,\"goals\":[\"compile\"]}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("BUILD") || response.contains("build") || response.contains("exitCode"), "Response should contain build information");
@@ -235,7 +235,7 @@ class JavaClasspathServerIntegrationTest {
     @Test
     @DisplayName("Should execute build_module tool with custom goals")
     void testBuildModuleCustomGoals() {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"goals\":[\"clean\",\"test-compile\"]}}}\n";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"goals\":[\"clean\",\"test-compile\"]}}}\n";
         String response = assertDoesNotThrow(() -> sendRequest(request));
         assertNotNull(response);
         assertTrue(response.contains("BUILD") || response.contains("build") || response.contains("exitCode"), "Response should contain build information");
@@ -245,12 +245,12 @@ class JavaClasspathServerIntegrationTest {
     @DisplayName("Should handle complete workflow: search -> inspect")
     void testCompleteWorkflow() {
         // Step 1: Search for List classes
-        String searchRequest = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*List*\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":5}}}\n";
+        String searchRequest = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*List*\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":5}}}\n";
         String searchResponse = assertDoesNotThrow(() -> sendRequest(searchRequest));
         assertNotNull(searchResponse);
 
         // Step 2: Inspect java.util.List
-        String inspectRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"java.util.List\",\"detailLevel\":\"basic\"}}}\n";
+        String inspectRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"java.util.List\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"detailLevel\":\"basic\"}}}\n";
         String inspectResponse = assertDoesNotThrow(() -> sendRequest(inspectRequest));
         assertNotNull(inspectResponse);
         assertTrue(inspectResponse.contains("List") || inspectResponse.contains("java.util"), "Response should contain class information");
@@ -260,17 +260,17 @@ class JavaClasspathServerIntegrationTest {
     @DisplayName("Should handle error recovery: non-existent class -> search -> inspect")
     void testErrorRecovery() {
         // Step 1: Try to inspect non-existent class
-        String inspectRequest1 = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"com.fake.NonExistentClass\",\"detailLevel\":\"basic\"}}}\n";
+        String inspectRequest1 = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"com.fake.NonExistentClass\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"detailLevel\":\"basic\"}}}\n";
         String result1 = assertDoesNotThrow(() -> sendRequest(inspectRequest1));
         assertNotNull(result1);
 
         // Step 2: Search for similar classes
-        String searchRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*Class*\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
+        String searchRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"search_java_class\",\"arguments\":{\"classNamePattern\":\"*Class*\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"searchType\":\"wildcard\",\"limit\":10}}}\n";
         String searchResponse = assertDoesNotThrow(() -> sendRequest(searchRequest));
         assertNotNull(searchResponse);
 
         // Step 3: Inspect found class
-        String inspectRequest2 = "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"java.lang.Class\",\"detailLevel\":\"basic\"}}}\n";
+        String inspectRequest2 = "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"inspect_java_class\",\"arguments\":{\"className\":\"java.lang.Class\",\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"detailLevel\":\"basic\"}}}\n";
         String result2 = assertDoesNotThrow(() -> sendRequest(inspectRequest2));
         assertNotNull(result2);
     }
@@ -284,7 +284,7 @@ class JavaClasspathServerIntegrationTest {
         assertNotNull(result1);
 
         // Step 2: Build module
-        String buildRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"goals\":[\"compile\"]}}}\n";
+        String buildRequest = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"build_module\",\"arguments\":{\"pomFilePath\":\"E:/repos/0000/jlens/pom.xml\",\"sourceFilePath\":\"E:/repos/0000/jlens/src/main/java/io/github/bhxch/mcp/jlens/Main.java\",\"goals\":[\"compile\"]}}}\n";
         String buildResult = assertDoesNotThrow(() -> sendRequest(buildRequest));
         assertNotNull(buildResult);
 

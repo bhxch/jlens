@@ -68,7 +68,7 @@ class ListModuleDependenciesHandlerTest {
     }
 
     @Test
-    @DisplayName("Should return error when neither path is provided")
+    @DisplayName("Should return error when pomFilePath is missing")
     void testHandleNoPathProvided() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("scope", "compile");
@@ -84,7 +84,7 @@ class ListModuleDependenciesHandlerTest {
         assertTrue(result.isError());
         
         String content = ((McpSchema.TextContent) result.content().get(0)).text();
-        assertTrue(content.contains("Either sourceFilePath or pomFilePath must be provided"));
+        assertTrue(content.contains("pomFilePath is required"));
     }
 
     @Test

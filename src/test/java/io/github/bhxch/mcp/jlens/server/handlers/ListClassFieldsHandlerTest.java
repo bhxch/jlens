@@ -49,6 +49,7 @@ class ListClassFieldsHandlerTest {
     void testListAllFields() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("className", "java.lang.String");
+        arguments.put("pomFilePath", "pom.xml");
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
             "list_class_fields",
@@ -71,6 +72,7 @@ class ListClassFieldsHandlerTest {
         // java.lang.reflect.Modifier has many public static final int fields
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("className", "java.lang.reflect.Modifier");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("visibility", List.of("public"));
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
@@ -91,6 +93,7 @@ class ListClassFieldsHandlerTest {
         
         arguments = new HashMap<>();
         arguments.put("className", "java.lang.String");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("visibility", List.of("public"));
         
         request = new McpSchema.CallToolRequest("list_class_fields", arguments);
@@ -104,6 +107,7 @@ class ListClassFieldsHandlerTest {
     void testMultipleVisibilityFilters() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("className", "java.lang.String");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("visibility", List.of("private", "public"));
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(

@@ -38,6 +38,7 @@ class SearchJavaClassHandlerTest {
     void testBasicSearch() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("classNamePattern", "java.util.List");
+        arguments.put("pomFilePath", "pom.xml");
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
             "search_java_class",
@@ -57,6 +58,7 @@ class SearchJavaClassHandlerTest {
     void testPrefixSearch() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("classNamePattern", "ArrayList");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("searchType", "prefix");
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
@@ -77,6 +79,7 @@ class SearchJavaClassHandlerTest {
     void testPaginationLimit() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("classNamePattern", "*");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("limit", 5);
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
@@ -98,6 +101,7 @@ class SearchJavaClassHandlerTest {
         // First page
         Map<String, Object> arguments1 = new HashMap<>();
         arguments1.put("classNamePattern", "*");
+        arguments1.put("pomFilePath", "pom.xml");
         arguments1.put("limit", 2);
 
         McpSchema.CallToolRequest request1 = new McpSchema.CallToolRequest(

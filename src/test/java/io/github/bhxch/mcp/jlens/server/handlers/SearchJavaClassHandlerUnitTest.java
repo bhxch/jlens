@@ -52,6 +52,7 @@ public class SearchJavaClassHandlerUnitTest {
     void testHandleExactSearch() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("classNamePattern", "String");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("searchType", "exact");
         CallToolRequest request = new CallToolRequest("search_java_class", arguments);
 
@@ -70,6 +71,7 @@ public class SearchJavaClassHandlerUnitTest {
     void testHandleWildcardSearch() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("classNamePattern", "Array*List");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("searchType", "wildcard");
         CallToolRequest request = new CallToolRequest("search_java_class", arguments);
 
@@ -91,16 +93,13 @@ public class SearchJavaClassHandlerUnitTest {
         try (MockedStatic<Files> filesMock = mockStatic(Files.class);
              MockedStatic<Paths> pathsMock = mockStatic(Paths.class)) {
             
-            Path mockDir = mock(Path.class);
             Path mockPom = mock(Path.class);
-            pathsMock.when(() -> Paths.get("src/Main.java")).thenReturn(mockDir);
-            when(mockDir.resolve("pom.xml")).thenReturn(mockPom);
+            pathsMock.when(() -> Paths.get("pom.xml")).thenReturn(mockPom);
             filesMock.when(() -> Files.exists(mockPom)).thenReturn(true);
-            filesMock.when(() -> Files.exists(mockDir)).thenReturn(true);
 
             Map<String, Object> arguments = new HashMap<>();
             arguments.put("classNamePattern", "MyClass");
-            arguments.put("sourceFilePath", "src/Main.java");
+            arguments.put("pomFilePath", "pom.xml");
             CallToolRequest request = new CallToolRequest("search_java_class", arguments);
 
             CallToolResult result = handler.handle(exchange, request);
@@ -113,6 +112,7 @@ public class SearchJavaClassHandlerUnitTest {
     void testPagination() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("classNamePattern", "Test");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("limit", 1);
         CallToolRequest request = new CallToolRequest("search_java_class", arguments);
 

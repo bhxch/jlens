@@ -33,8 +33,8 @@ class BuildModuleHandlerTest {
     }
 
     @Test
-    @DisplayName("Should return error when sourceFilePath is missing")
-    void testMissingSourceFilePath() {
+    @DisplayName("Should return error when pomFilePath is missing")
+    void testMissingPomFilePath() {
         Map<String, Object> arguments = new HashMap<>();
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
@@ -46,14 +46,14 @@ class BuildModuleHandlerTest {
 
         assertTrue(result.isError());
         String content = ((McpSchema.TextContent) result.content().get(0)).text();
-        assertTrue(content.contains("sourceFilePath is required"));
+        assertTrue(content.contains("pomFilePath is required"));
     }
 
     @Test
-    @DisplayName("Should return error when source file does not exist")
-    void testSourceFileNotFound() {
+    @DisplayName("Should return error when pom file does not exist")
+    void testPomFileNotFound() {
         Map<String, Object> arguments = new HashMap<>();
-        arguments.put("sourceFilePath", "non-existent-file.java");
+        arguments.put("pomFilePath", "non-existent-pom.xml");
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
             "build_module",
@@ -64,32 +64,14 @@ class BuildModuleHandlerTest {
 
         assertTrue(result.isError());
         String content = ((McpSchema.TextContent) result.content().get(0)).text();
-        assertTrue(content.contains("source file does not exist"));
-    }
-
-    @Test
-    @DisplayName("Should return error when pom.xml not found")
-    void testPomNotFound() {
-        // Create a temp file in a directory without pom.xml
-        Map<String, Object> arguments = new HashMap<>();
-        arguments.put("sourceFilePath", "src/main/java/io/github/bhxch/mcp/jlens/Main.java"); // Should find it
-        // Wait, Main.java should find pom.xml. Let's use a root file.
-        arguments.put("sourceFilePath", "README.md"); 
-
-        McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
-            "build_module",
-            arguments
-        );
-
-        McpSchema.CallToolResult result = handler.handle(exchange, request);
-        // This might actually find pom.xml if it's in the same dir.
+        assertTrue(content.contains("pom.xml does not exist"));
     }
 
     @Test
     @DisplayName("Should handle build timeout")
     void testBuildTimeout() {
         Map<String, Object> arguments = new HashMap<>();
-        arguments.put("sourceFilePath", "pom.xml");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("timeoutSeconds", 1);
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(

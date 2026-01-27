@@ -51,6 +51,7 @@ class InspectJavaClassHandlerTest {
     void testHandleValidClassInspection() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("className", "java.util.List");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("detailLevel", "basic");
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
@@ -61,11 +62,31 @@ class InspectJavaClassHandlerTest {
         McpSchema.CallToolResult result = handler.handle(exchange, request);
 
         assertNotNull(result);
-        assertFalse(result.isError());
+        assertFalse(result.isError(), "Should not return error. Result: " + (result.content().isEmpty() ? "empty" : result.content().get(0)));
         assertEquals(1, result.content().size());
         
         String content = ((McpSchema.TextContent) result.content().get(0)).text();
         assertTrue(content.contains("java.util.List"));
+    }
+
+    @Test
+    @DisplayName("Should return error when pomFilePath is missing")
+    void testHandleMissingPomFilePath() {
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("className", "java.util.List");
+
+        McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
+            "inspect_java_class",
+            arguments
+        );
+
+        McpSchema.CallToolResult result = handler.handle(exchange, request);
+
+        assertNotNull(result);
+        assertTrue(result.isError());
+        
+        String content = ((McpSchema.TextContent) result.content().get(0)).text();
+        assertTrue(content.contains("pomFilePath is required"));
     }
 
     @Test
@@ -117,6 +138,7 @@ class InspectJavaClassHandlerTest {
         for (String detailLevel : detailLevels) {
             Map<String, Object> arguments = new HashMap<>();
             arguments.put("className", "java.util.ArrayList");
+            arguments.put("pomFilePath", "pom.xml");
             arguments.put("detailLevel", detailLevel);
 
             McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
@@ -139,6 +161,7 @@ class InspectJavaClassHandlerTest {
     void testHandleDefaultDetailLevel() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("className", "java.util.Map");
+        arguments.put("pomFilePath", "pom.xml");
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(
             "inspect_java_class",
@@ -159,6 +182,7 @@ class InspectJavaClassHandlerTest {
     void testHandleInvalidDetailLevel() {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("className", "java.util.Set");
+        arguments.put("pomFilePath", "pom.xml");
         arguments.put("detailLevel", "invalid");
 
         McpSchema.CallToolRequest request = new McpSchema.CallToolRequest(

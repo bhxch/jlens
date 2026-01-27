@@ -82,25 +82,20 @@ public class ListModuleDependenciesHandlerUnitTest {
     }
 
     @Test
-    void testHandleWithSourceFilePath() {
+    void testHandleWithPomFilePath() {
         try (MockedStatic<Files> filesMock = mockStatic(Files.class);
              MockedStatic<Paths> pathsMock = mockStatic(Paths.class)) {
             
-            Path mockSrc = mock(Path.class);
-            Path mockParent = mock(Path.class);
             Path mockPom = mock(Path.class);
             
-            pathsMock.when(() -> Paths.get("src/Main.java")).thenReturn(mockSrc);
-            when(mockSrc.getParent()).thenReturn(mockParent);
-            when(mockParent.resolve("pom.xml")).thenReturn(mockPom);
-            filesMock.when(() -> Files.exists(mockSrc)).thenReturn(true);
+            pathsMock.when(() -> Paths.get("pom.xml")).thenReturn(mockPom);
             filesMock.when(() -> Files.exists(mockPom)).thenReturn(true);
 
             when(resolverFactory.createResolver()).thenReturn(mavenResolver);
             when(mavenResolver.resolveModule(any(), any(), any())).thenReturn(mock(ModuleContext.class));
 
             Map<String, Object> arguments = new HashMap<>();
-            arguments.put("sourceFilePath", "src/Main.java");
+            arguments.put("pomFilePath", "pom.xml");
             CallToolRequest request = new CallToolRequest("list_module_dependencies", arguments);
 
             CallToolResult result = handler.handle(exchange, request);
@@ -116,6 +111,6 @@ public class ListModuleDependenciesHandlerUnitTest {
 
         CallToolResult result = handler.handle(exchange, request);
         assertTrue(result.isError());
-        assertTrue(((TextContent) result.content().get(0)).text().contains("Either pomFilePath or sourceFilePath must be provided"));
+        assertTrue(((TextContent) result.content().get(0)).text().contains("pomFilePath is required"));
     }
 }

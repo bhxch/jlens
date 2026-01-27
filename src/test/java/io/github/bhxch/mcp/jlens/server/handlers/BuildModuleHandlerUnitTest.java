@@ -53,11 +53,8 @@ public class BuildModuleHandlerUnitTest {
         try (MockedStatic<Files> filesMock = mockStatic(Files.class);
              MockedStatic<Paths> pathsMock = mockStatic(Paths.class)) {
             
-            Path mockSrc = mock(Path.class);
             Path mockPom = mock(Path.class);
-            pathsMock.when(() -> Paths.get("src/Main.java")).thenReturn(mockSrc);
-            when(mockSrc.resolve("pom.xml")).thenReturn(mockPom);
-            filesMock.when(() -> Files.exists(mockSrc)).thenReturn(true);
+            pathsMock.when(() -> Paths.get("pom.xml")).thenReturn(mockPom);
             filesMock.when(() -> Files.exists(mockPom)).thenReturn(true);
 
             when(resolverFactory.createResolver()).thenReturn(mavenResolver);
@@ -70,7 +67,7 @@ public class BuildModuleHandlerUnitTest {
             when(mavenBuilder.buildModule(any(), any(), any(), anyInt())).thenReturn(mockResult);
 
             Map<String, Object> arguments = new HashMap<>();
-            arguments.put("sourceFilePath", "src/Main.java");
+            arguments.put("pomFilePath", "pom.xml");
             arguments.put("goals", List.of("clean", "install"));
             CallToolRequest request = new CallToolRequest("build_module", arguments);
 
@@ -88,18 +85,15 @@ public class BuildModuleHandlerUnitTest {
         try (MockedStatic<Files> filesMock = mockStatic(Files.class);
              MockedStatic<Paths> pathsMock = mockStatic(Paths.class)) {
             
-            Path mockSrc = mock(Path.class);
             Path mockPom = mock(Path.class);
-            pathsMock.when(() -> Paths.get("src/Main.java")).thenReturn(mockSrc);
-            when(mockSrc.resolve("pom.xml")).thenReturn(mockPom);
-            filesMock.when(() -> Files.exists(mockSrc)).thenReturn(true);
+            pathsMock.when(() -> Paths.get("pom.xml")).thenReturn(mockPom);
             filesMock.when(() -> Files.exists(mockPom)).thenReturn(true);
 
             when(resolverFactory.createResolver()).thenReturn(mavenResolver);
             when(mavenBuilder.buildModule(any(), any(), any(), anyInt())).thenReturn(mock(MavenBuilder.BuildResult.class));
 
             Map<String, Object> arguments = new HashMap<>();
-            arguments.put("sourceFilePath", "src/Main.java");
+            arguments.put("pomFilePath", "pom.xml");
             arguments.put("goals", "clean,compile");
             CallToolRequest request = new CallToolRequest("build_module", arguments);
 
@@ -114,11 +108,8 @@ public class BuildModuleHandlerUnitTest {
         try (MockedStatic<Files> filesMock = mockStatic(Files.class);
              MockedStatic<Paths> pathsMock = mockStatic(Paths.class)) {
             
-            Path mockSrc = mock(Path.class);
             Path mockPom = mock(Path.class);
-            pathsMock.when(() -> Paths.get("src/Main.java")).thenReturn(mockSrc);
-            when(mockSrc.resolve("pom.xml")).thenReturn(mockPom);
-            filesMock.when(() -> Files.exists(mockSrc)).thenReturn(true);
+            pathsMock.when(() -> Paths.get("pom.xml")).thenReturn(mockPom);
             filesMock.when(() -> Files.exists(mockPom)).thenReturn(true);
 
             when(resolverFactory.createResolver()).thenReturn(mavenResolver);
@@ -128,7 +119,7 @@ public class BuildModuleHandlerUnitTest {
             when(mavenBuilder.buildModule(any(), any(), any(), anyInt())).thenReturn(mockResult);
 
             Map<String, Object> arguments = new HashMap<>();
-            arguments.put("sourceFilePath", "src/Main.java");
+            arguments.put("pomFilePath", "pom.xml");
             CallToolRequest request = new CallToolRequest("build_module", arguments);
 
             CallToolResult result = handler.handle(exchange, request);
@@ -141,16 +132,16 @@ public class BuildModuleHandlerUnitTest {
     }
 
     @Test
-    void testMissingSourceFile() {
+    void testMissingPomFile() {
         try (MockedStatic<Files> filesMock = mockStatic(Files.class);
              MockedStatic<Paths> pathsMock = mockStatic(Paths.class)) {
             
-            Path mockSrc = mock(Path.class);
-            pathsMock.when(() -> Paths.get("non-existent.java")).thenReturn(mockSrc);
-            filesMock.when(() -> Files.exists(mockSrc)).thenReturn(false);
+            Path mockPom = mock(Path.class);
+            pathsMock.when(() -> Paths.get("non-existent.xml")).thenReturn(mockPom);
+            filesMock.when(() -> Files.exists(mockPom)).thenReturn(false);
 
             Map<String, Object> arguments = new HashMap<>();
-            arguments.put("sourceFilePath", "non-existent.java");
+            arguments.put("pomFilePath", "non-existent.xml");
             CallToolRequest request = new CallToolRequest("build_module", arguments);
 
             CallToolResult result = handler.handle(exchange, request);
