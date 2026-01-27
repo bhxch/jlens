@@ -20,11 +20,11 @@ jlens-mcp-server = "jlens_mcp_server.main:main"
 [tool.hatch.build.targets.wheel]
 packages = ["jlens_mcp_server"]
 artifacts = [
-    "target/*.jar",
+    "jlens_mcp_server/*.jar",
 ]
 
 [tool.hatch.build.targets.sdist]
 include = [
     "jlens_mcp_server",
-    "target/jlens-mcp-server-*.jar",
+    "jlens_mcp_server/*.jar",
 ]
