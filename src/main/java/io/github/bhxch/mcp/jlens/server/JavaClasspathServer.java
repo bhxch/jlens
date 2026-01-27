@@ -1,5 +1,6 @@
 package io.github.bhxch.mcp.jlens.server;
 
+import io.github.bhxch.mcp.jlens.cache.CacheManager;
 import io.github.bhxch.mcp.jlens.classpath.PackageMappingResolver;
 import io.github.bhxch.mcp.jlens.config.ServerConfig;
 import io.github.bhxch.mcp.jlens.decompiler.DecompilerFactory;
@@ -41,6 +42,7 @@ public class JavaClasspathServer {
         StdioServerTransportProvider transportProvider = new StdioServerTransportProvider(McpJsonMapper.getDefault());
 
         // Initialize components
+        CacheManager cacheManager = new CacheManager(config);
         ClassInspector inspector = new ClassInspector(
             DecompilerFactory.createDecompiler(config.getDecompilerConfig())
         );
@@ -50,7 +52,7 @@ public class JavaClasspathServer {
         PackageMappingResolver packageResolver = new PackageMappingResolver();
 
         // Build the server
-        InspectJavaClassHandler inspectHandler = new InspectJavaClassHandler(inspector, resolverFactory);
+        InspectJavaClassHandler inspectHandler = new InspectJavaClassHandler(inspector, resolverFactory, cacheManager);
         ListClassFieldsHandler listFieldsHandler = new ListClassFieldsHandler(inspector, resolverFactory);
         ListModuleDependenciesHandler listDepsHandler = new ListModuleDependenciesHandler(resolverFactory);
         SearchJavaClassHandler searchClassHandler = new SearchJavaClassHandler(packageResolver, dependencyManager, resolverFactory);
@@ -90,10 +92,15 @@ public class JavaClasspathServer {
             "description", "Level of detail",
             "enum", List.of("skeleton", "basic", "full")
         ));
+        properties.put("bypassCache", Map.of(
+            "type", "boolean",
+            "description", "Whether to bypass cache and re-inspect",
+            "default", false
+        ));
         
         return McpSchema.Tool.builder()
             .name("inspect_java_class")
-            .description("Inspect a Java class and return its metadata")
+            .description("Inspect a Java class and return its metadata. If the class is in local workspace, it will return a hint to read source directly.")
             .inputSchema(new McpSchema.JsonSchema(
                 "object",
                 properties,
@@ -195,13 +202,17 @@ public class JavaClasspathServer {
         ));
         properties.put("limit", Map.of(
             "type", "integer",
-            "description", "Maximum number of results to return",
+            "description", "Maximum number of results to return per page",
             "default", 50
+        ));
+        properties.put("cursor", Map.of(
+            "type", "string",
+            "description", "Pagination cursor from previous request"
         ));
         
         return McpSchema.Tool.builder()
             .name("search_java_class")
-            .description("Search for Java classes across packages and dependencies")
+            .description("Search for Java classes across packages and dependencies with pagination")
             .inputSchema(new McpSchema.JsonSchema(
                 "object",
                 properties,
@@ -275,6 +286,3 @@ public class JavaClasspathServer {
         return mcpServer;
     }
 }
-
-
-
