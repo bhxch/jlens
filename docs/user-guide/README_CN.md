@@ -62,6 +62,18 @@ uvx jlens-mcp-server
 java -jar target/jlens-mcp-server-1.1.0.jar
 ```
 
+### Agent Skills (智能体技能)
+
+您可以安装专门的 AI Agent 技能，让您的智能体掌握 JLens 的深度使用方法：
+
+```bash
+# 安装中文版技能
+npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp
+
+# 安装英文版技能
+npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp-en
+```
+
 ### 命令行选项
 
 ```

@@ -14,6 +14,18 @@ npx -y @bhxch/jlens-mcp-server
 uvx jlens-mcp-server
 ```
 
+## Agent Skills
+
+Install specialized AI agent skills to help your agent use JLens more effectively (requires `npx skills` support):
+
+```bash
+# Install Chinese Version
+npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp
+
+# Install English Version
+npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp-en
+```
+
 ## Documentation
 
 - **User Guide**: [docs/user-guide/](docs/user-guide/)

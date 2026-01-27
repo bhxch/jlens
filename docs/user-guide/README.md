@@ -62,6 +62,18 @@ uvx jlens-mcp-server
 java -jar target/jlens-mcp-server-1.1.0.jar
 ```
 
+### Agent Skills
+
+You can install specialized AI agent skills to provide your agent with deep procedural knowledge of JLens:
+
+```bash
+# English Version
+npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp-en
+
+# Chinese Version
+npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp
+```
+
 ### Command Line Options
 
 ```
