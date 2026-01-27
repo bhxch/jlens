@@ -52,6 +52,8 @@ public class InspectJavaClassHandler {
             String className = null;
             String detailLevelStr = "basic";
             String sourceFilePath = null;
+            String pomFilePath = null;
+            String mavenProfile = null;
             boolean bypassCache = false;
             
             if (request.arguments() != null) {
@@ -74,6 +76,20 @@ public class InspectJavaClassHandler {
                     Object value = args.get("sourceFilePath");
                     if (value != null) {
                         sourceFilePath = value.toString();
+                    }
+                }
+
+                if (args.containsKey("pomFilePath")) {
+                    Object value = args.get("pomFilePath");
+                    if (value != null) {
+                        pomFilePath = value.toString();
+                    }
+                }
+
+                if (args.containsKey("mavenProfile")) {
+                    Object value = args.get("mavenProfile");
+                    if (value != null) {
+                        mavenProfile = value.toString();
                     }
                 }
 
@@ -104,13 +120,21 @@ public class InspectJavaClassHandler {
 
             // Resolve module context if source file is provided
             ModuleContext context = null;
-            if (sourceFilePath != null && !sourceFilePath.isEmpty()) {
+            List<String> activeProfiles = mavenProfile != null && !mavenProfile.isEmpty() ? List.of(mavenProfile) : List.of();
+
+            if (pomFilePath != null && !pomFilePath.isEmpty()) {
+                Path pomFile = Paths.get(pomFilePath);
+                if (Files.exists(pomFile)) {
+                    MavenResolver resolver = resolverFactory.createResolver();
+                    context = resolver.resolveModule(pomFile, Scope.COMPILE, activeProfiles);
+                }
+            } else if (sourceFilePath != null && !sourceFilePath.isEmpty()) {
                 Path path = Paths.get(sourceFilePath);
                 if (Files.exists(path)) {
                     Path pomFile = findPomFile(path);
                     if (pomFile != null && Files.exists(pomFile)) {
                         MavenResolver resolver = resolverFactory.createResolver();
-                        context = resolver.resolveModule(pomFile, Scope.COMPILE, List.of());
+                        context = resolver.resolveModule(pomFile, Scope.COMPILE, activeProfiles);
                     }
                 }
             }

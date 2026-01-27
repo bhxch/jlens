@@ -14,7 +14,7 @@ public interface MavenResolver {
     /**
      * Resolve a Maven module from its pom.xml file
      */
-    ModuleContext resolveModule(Path pomFile, Scope scope, List<String> excludes);
+    ModuleContext resolveModule(Path pomFile, Scope scope, List<String> activeProfiles);
 
     /**
      * Check if this resolver is available

@@ -29,19 +29,15 @@ public class MavenInvokerResolver implements MavenResolver {
     }
 
     @Override
-    public ModuleContext resolveModule(Path pomFile, Scope scope, List<String> excludes) {
+    public ModuleContext resolveModule(Path pomFile, Scope scope, List<String> activeProfiles) {
         if (!Files.exists(pomFile)) {
             throw new IllegalArgumentException("POM file does not exist: " + pomFile);
         }
 
         try {
-            List<String> command = buildMavenCommand(pomFile, scope);
+            List<String> command = buildMavenCommand(pomFile, scope, activeProfiles);
 
-            ProcessBuilder pb = new ProcessBuilder(command);
-            pb.directory(pomFile.getParent().toFile());
-            pb.redirectErrorStream(true);
-
-            Process process = pb.start();
+            Process process = startProcess(pomFile, command);
 
             List<String> outputLines = new ArrayList<>();
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
@@ -63,7 +59,17 @@ public class MavenInvokerResolver implements MavenResolver {
         }
     }
 
-    private List<String> buildMavenCommand(Path pomFile, Scope scope) {
+    /**
+     * Start the Maven process. Extracted for testing.
+     */
+    protected Process startProcess(Path pomFile, List<String> command) throws IOException {
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.directory(pomFile.getParent().toFile());
+        pb.redirectErrorStream(true);
+        return pb.start();
+    }
+
+    private List<String> buildMavenCommand(Path pomFile, Scope scope, List<String> activeProfiles) {
         List<String> command = new ArrayList<>();
 
         if (config.getExecutable() != null) {
@@ -74,7 +80,11 @@ public class MavenInvokerResolver implements MavenResolver {
 
         command.add("dependency:list");
         command.add("-DincludeScope=" + scope.name().toLowerCase());
-        command.add("-DoutputFile=/dev/stdout");
+        
+        // Pass active profiles
+        if (activeProfiles != null && !activeProfiles.isEmpty()) {
+            command.add("-P" + String.join(",", activeProfiles));
+        }
 
         if (config.getSettingsFile() != null) {
             command.add("-s");

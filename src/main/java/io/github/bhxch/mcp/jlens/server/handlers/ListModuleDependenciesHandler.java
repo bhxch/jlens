@@ -45,6 +45,7 @@ public class ListModuleDependenciesHandler {
             String sourceFilePath = null;
             String pomFilePath = null;
             String scopeStr = "compile";
+            String mavenProfile = null;
             
             if (request.arguments() != null) {
                 var args = request.arguments();
@@ -66,6 +67,13 @@ public class ListModuleDependenciesHandler {
                     Object value = args.get("scope");
                     if (value != null) {
                         scopeStr = value.toString();
+                    }
+                }
+
+                if (args.containsKey("mavenProfile")) {
+                    Object value = args.get("mavenProfile");
+                    if (value != null) {
+                        mavenProfile = value.toString();
                     }
                 }
             }
@@ -107,8 +115,9 @@ public class ListModuleDependenciesHandler {
             Scope scope = parseScope(scopeStr);
 
             // Resolve module
+            List<String> activeProfiles = mavenProfile != null && !mavenProfile.isEmpty() ? List.of(mavenProfile) : List.of();
             MavenResolver resolver = resolverFactory.createResolver();
-            ModuleContext moduleContext = resolver.resolveModule(pomFile, scope, List.of());
+            ModuleContext moduleContext = resolver.resolveModule(pomFile, scope, activeProfiles);
 
             if (moduleContext == null) {
                 ObjectNode errorNode = objectMapper.createObjectNode();

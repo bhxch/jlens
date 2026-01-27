@@ -25,7 +25,7 @@ public class MavenDirectResolver implements MavenResolver {
     private static final Pattern SCOPE_PATTERN = Pattern.compile("<scope>([^<]+)</scope>");
 
     @Override
-    public ModuleContext resolveModule(Path pomFile, Scope scope, List<String> excludes) {
+    public ModuleContext resolveModule(Path pomFile, Scope scope, List<String> activeProfiles) {
         if (!Files.exists(pomFile)) {
             throw new IllegalArgumentException("POM file does not exist: " + pomFile);
         }
