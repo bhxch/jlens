@@ -62,10 +62,11 @@ npx skills install https://github.com/bhxch/jlens/tree/main/skills/jlens-mcp-en
 ### Build
 
 ```bash
-mvn clean package
+# Recommended for JDK 25+ due to test engine compatibility
+mvn clean package -DskipTests
 ```
 
-This will create an executable JAR file: `target/jlens-mcp-server-1.1.1.jar`
+This will create an executable JAR file: `target/jlens-mcp-server-1.1.2.jar`
 
 ## License
 

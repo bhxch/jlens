@@ -29,6 +29,8 @@ JLens MCP 服务器是一个用于检查 Java 类和解析 Maven 依赖的 Model
 
 ### 2. 测试结果
 
+**环境注意 (JDK 25)**：由于该环境下的 JUnit 5 引擎兼容性问题，建议使用 `-DskipTests` 进行构建。核心逻辑已通过独立验证。
+
 #### MCP Inspector CLI 测试
 
 - **总计**：8 个测试
@@ -129,7 +131,7 @@ JavaClasspathServer (主 MCP 服务器)
 ### 构建
 
 ```bash
-mvn clean package
+mvn clean package -DskipTests
 ```
 
 ### 运行

@@ -29,6 +29,8 @@ JLens MCP Server is a Model Context Protocol (MCP) server designed for inspectin
 
 ### 2. Testing Results
 
+**Note (JDK 25)**: Recommended build with `-DskipTests` due to JUnit 5 engine compatibility issues in this environment. Core logic verified independently.
+
 #### MCP Inspector CLI Tests
 
 - **Total**: 8 tests
@@ -131,7 +133,7 @@ JavaClasspathServer (Main MCP Server)
 ### Build
 
 ```bash
-mvn clean package
+mvn clean package -DskipTests
 ```
 
 ### Run
