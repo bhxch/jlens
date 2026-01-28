@@ -24,6 +24,7 @@ import java.util.List;
 public class ClassInspector {
 
     private final DecompilerAdapter decompiler;
+    private final JdkSourceService jdkSourceService = new JdkSourceService();
 
     public ClassInspector(DecompilerAdapter decompiler) {
         this.decompiler = decompiler;
@@ -38,15 +39,15 @@ public class ClassInspector {
      */
     public ClassMetadata inspect(String className, ModuleContext context,
                                  ParallelProcessor.DetailLevel level, Path sourceFile) {
-        return inspect(className, context, level, sourceFile, null);
+        return inspect(className, context, level, sourceFile, null, null);
     }
 
     /**
-     * Inspect a Java class with specific ClassLoader
+     * Inspect a Java class with specific ClassLoader and javaHome
      */
     public ClassMetadata inspect(String className, ModuleContext context,
                                  ParallelProcessor.DetailLevel level, Path sourceFile,
-                                 ClassLoader classLoader) {
+                                 ClassLoader classLoader, Path javaHome) {
         
         // 1. Check if the class is from a local module in workspace
         if (context != null && isLocalModule(context)) {
@@ -68,7 +69,7 @@ public class ClassInspector {
             } else {
                 clazz = Class.forName(className);
             }
-            return inspectClass(clazz, level, sourceFile);
+            return inspectClass(clazz, level, sourceFile, javaHome);
         } catch (ClassNotFoundException e) {
             // Fallback to basic stub if class not found in classpath
             return createStubMetadata(className, sourceFile);
@@ -79,6 +80,9 @@ public class ClassInspector {
     }
 
     private boolean isLocalModule(ModuleContext context) {
+        if (context == null || context.getPomFile() == null) {
+            return false;
+        }
         // Simple heuristic: if pomFile is under current working directory
         Path currentDir = Paths.get("").toAbsolutePath();
         return context.getPomFile().toAbsolutePath().startsWith(currentDir);
@@ -103,8 +107,9 @@ public class ClassInspector {
         return null;
     }
 
-    private ClassMetadata inspectClass(Class<?> clazz, ParallelProcessor.DetailLevel level, Path sourceFile) {
+    private ClassMetadata inspectClass(Class<?> clazz, ParallelProcessor.DetailLevel level, Path sourceFile, Path javaHome) {
         ClassMetadata.Builder builder = ClassMetadata.builder();
+        builder.status("SUCCESS");
 
         builder.className(clazz.getName());
         builder.packageName(clazz.getPackageName());
@@ -130,21 +135,45 @@ public class ClassInspector {
             builder.sourceFile(sourceFile.toString());
         }
 
+        // Get @since info if it's a JDK class and javaHome is provided
+        JdkSourceService.JdkSourceInfo jdkInfo = null;
+        if (javaHome != null && (clazz.getName().startsWith("java.") || clazz.getName().startsWith("javax."))) {
+            jdkInfo = jdkSourceService.getJdkSourceInfo(clazz.getName(), javaHome);
+            if (jdkInfo != null && jdkInfo.getClassSince() != null) {
+                builder.since(jdkInfo.getClassSince());
+            }
+        }
+
         // Add members based on detail level
         if (level != ParallelProcessor.DetailLevel.SKELETON) {
             // Add fields
             for (Field field : clazz.getDeclaredFields()) {
-                builder.addField(FieldInfo.builder()
+                // If BASIC level, only include public fields
+                if (level == ParallelProcessor.DetailLevel.BASIC && !Modifier.isPublic(field.getModifiers())) {
+                    continue;
+                }
+
+                FieldInfo.Builder fieldBuilder = FieldInfo.builder()
                     .name(field.getName())
                     .type(field.getType().getName())
                     .modifiers(field.getModifiers())
                     .isStatic(Modifier.isStatic(field.getModifiers()))
-                    .isFinal(Modifier.isFinal(field.getModifiers()))
-                    .build());
+                    .isFinal(Modifier.isFinal(field.getModifiers()));
+                
+                if (jdkInfo != null && jdkInfo.getFieldSince().containsKey(field.getName())) {
+                    fieldBuilder.since(jdkInfo.getFieldSince().get(field.getName()));
+                }
+                
+                builder.addField(fieldBuilder.build());
             }
 
             // Add constructors
             for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+                // If BASIC level, only include public constructors
+                if (level == ParallelProcessor.DetailLevel.BASIC && !Modifier.isPublic(constructor.getModifiers())) {
+                    continue;
+                }
+
                 List<ParameterInfo> params = new ArrayList<>();
                 java.lang.reflect.Parameter[] parameters = constructor.getParameters();
                 for (int i = 0; i < parameters.length; i++) {
@@ -156,17 +185,28 @@ public class ClassInspector {
                         .isVarArgs(p.isVarArgs())
                         .build());
                 }
-                builder.addConstructor(MethodInfo.builder()
+
+                MethodInfo.Builder methodBuilder = MethodInfo.builder()
                     .name("<init>")
                     .returnType("void")
                     .parameters(params)
                     .modifiers(constructor.getModifiers())
-                    .isStatic(Modifier.isStatic(constructor.getModifiers()))
-                    .build());
+                    .isStatic(Modifier.isStatic(constructor.getModifiers()));
+
+                if (jdkInfo != null && jdkInfo.getMethodSince().containsKey(clazz.getSimpleName())) {
+                    methodBuilder.since(jdkInfo.getMethodSince().get(clazz.getSimpleName()));
+                }
+
+                builder.addConstructor(methodBuilder.build());
             }
 
             // Add methods
             for (Method method : clazz.getDeclaredMethods()) {
+                // If BASIC level, only include public methods
+                if (level == ParallelProcessor.DetailLevel.BASIC && !Modifier.isPublic(method.getModifiers())) {
+                    continue;
+                }
+
                 List<ParameterInfo> params = new ArrayList<>();
                 java.lang.reflect.Parameter[] parameters = method.getParameters();
                 for (int i = 0; i < parameters.length; i++) {
@@ -178,7 +218,8 @@ public class ClassInspector {
                         .isVarArgs(p.isVarArgs())
                         .build());
                 }
-                builder.addMethod(MethodInfo.builder()
+
+                MethodInfo.Builder methodBuilder = MethodInfo.builder()
                     .name(method.getName())
                     .returnType(method.getReturnType().getName())
                     .parameters(params)
@@ -189,8 +230,13 @@ public class ClassInspector {
                     .isSynchronized(Modifier.isSynchronized(method.getModifiers()))
                     .isNative(Modifier.isNative(method.getModifiers()))
                     .isDefault(method.isDefault())
-                    .isVarArgs(method.isVarArgs())
-                    .build());
+                    .isVarArgs(method.isVarArgs());
+
+                if (jdkInfo != null && jdkInfo.getMethodSince().containsKey(method.getName())) {
+                    methodBuilder.since(jdkInfo.getMethodSince().get(method.getName()));
+                }
+
+                builder.addMethod(methodBuilder.build());
             }
         }
 
@@ -200,6 +246,7 @@ public class ClassInspector {
     private ClassMetadata createStubMetadata(String className, Path sourceFile) {
         ClassMetadata.Builder builder = ClassMetadata.builder();
         builder.className(className);
+        builder.status("NOT_FOUND");
 
         int lastDotIndex = className.lastIndexOf('.');
         if (lastDotIndex > 0) {
@@ -216,7 +263,3 @@ public class ClassInspector {
         return builder.build();
     }
 }
-
-
-
-
