@@ -52,6 +52,7 @@ public class InspectJavaClassHandler {
             String className = null;
             String detailLevelStr = "basic";
             String sourceFilePath = null;
+            String javaHomePath = null;
             String pomFilePath = null;
             List<String> profiles = List.of();
             boolean bypassCache = false;
@@ -76,6 +77,13 @@ public class InspectJavaClassHandler {
                     Object value = args.get("sourceFilePath");
                     if (value != null) {
                         sourceFilePath = value.toString();
+                    }
+                }
+
+                if (args.containsKey("javaHome")) {
+                    Object value = args.get("javaHome");
+                    if (value != null) {
+                        javaHomePath = value.toString();
                     }
                 }
 
@@ -140,8 +148,11 @@ public class InspectJavaClassHandler {
                 // Get ClassLoader
                 ClassLoader classLoader = cacheManager.getClassLoaderManager().getClassLoader(context);
                 
+                // Prepare javaHome path
+                Path javaHome = javaHomePath != null ? Paths.get(javaHomePath) : null;
+
                 // Inspect the class
-                metadata = inspector.inspect(className, context, detailLevel, null, classLoader);
+                metadata = inspector.inspect(className, context, detailLevel, null, classLoader, javaHome);
                 
                 // Put in cache if successful
                 if ("SUCCESS".equals(metadata.getStatus())) {

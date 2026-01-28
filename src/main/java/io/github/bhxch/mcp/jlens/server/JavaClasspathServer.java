@@ -63,7 +63,7 @@ public class JavaClasspathServer {
             .capabilities(McpSchema.ServerCapabilities.builder()
                 .tools(true)
                 .build())
-            .instructions("This server provides tools for inspecting Java classes, listing class fields, listing Maven module dependencies, searching for classes, and building Maven modules. Use 'inspect_java_class' to inspect a Java class, 'list_class_fields' to list variables in a class with visibility filtering, 'list_module_dependencies' to list Maven dependencies, 'search_java_class' to search for classes across packages, and 'build_module' to build a Maven module.")
+            .instructions("This server provides tools for inspecting Java classes, listing class fields, listing Maven module dependencies, searching for classes, and building Maven modules. Use 'inspect_java_class' to inspect a Java class, 'list_class_fields' to list variables in a class with visibility filtering, 'list_module_dependencies' to list Maven dependencies, 'search_java_class' to search for classes across packages, and 'build_module' to build a Maven module. For JDK classes, please provide 'javaHome' if possible to get accurate @since information.")
             .toolCall(createInspectJavaClassTool(), (exchange, request) -> inspectHandler.handle(exchange, request))
             .toolCall(createListClassFieldsTool(), (exchange, request) -> listFieldsHandler.handle(exchange, request))
             .toolCall(createListModuleDependenciesTool(), (exchange, request) -> listDepsHandler.handle(exchange, request))
@@ -95,6 +95,10 @@ public class JavaClasspathServer {
         properties.put("sourceFilePath", Map.of(
             "type", "string",
             "description", "Path to source file (optional)"
+        ));
+        properties.put("javaHome", Map.of(
+            "type", "string",
+            "description", "Path to JDK home (optional). Used to extract @since info for JDK classes from src.zip."
         ));
         properties.put("detailLevel", Map.of(
             "type", "string",

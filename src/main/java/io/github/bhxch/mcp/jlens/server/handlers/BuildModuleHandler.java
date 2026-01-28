@@ -189,12 +189,16 @@ public class BuildModuleHandler {
 
         // Build output (truncated if too long)
         String output = result.getOutput();
-        if (output.length() > 10000) {
-            output = output.substring(0, 5000) + 
-                    "\n...[truncated]\n" + 
-                    output.substring(output.length() - 5000);
+        if (output != null) {
+            if (output.length() > 10000) {
+                output = output.substring(0, 5000) + 
+                        "\n...[truncated]\n" + 
+                        output.substring(output.length() - 5000);
+            }
+            response.put("output", output);
+        } else {
+            response.put("output", "");
         }
-        response.put("output", output);
 
         // Downloaded artifacts
         ArrayNode artifactsArray = objectMapper.createArrayNode();
@@ -221,15 +225,19 @@ public class BuildModuleHandler {
             response.put("suggestion", suggestion);
             
             // Common error patterns
-            if (result.getOutput().contains("Could not resolve dependencies")) {
-                response.put("errorType", "DEPENDENCY_RESOLUTION_FAILED");
-            } else if (result.getOutput().contains("Compilation failure")) {
-                response.put("errorType", "COMPILATION_FAILED");
-            } else if (result.getOutput().contains("Connection refused") || 
-                       result.getOutput().contains("Network is unreachable")) {
-                response.put("errorType", "NETWORK_ERROR");
-                response.put("networkSuggestion", "Check your network connection and Maven repository settings");
-            } else if (!mavenBuilder.isMavenAvailable()) {
+            if (output != null) {
+                if (output.contains("Could not resolve dependencies")) {
+                    response.put("errorType", "DEPENDENCY_RESOLUTION_FAILED");
+                } else if (output.contains("Compilation failure")) {
+                    response.put("errorType", "COMPILATION_FAILED");
+                } else if (output.contains("Connection refused") || 
+                           output.contains("Network is unreachable")) {
+                    response.put("errorType", "NETWORK_ERROR");
+                    response.put("networkSuggestion", "Check your network connection and Maven repository settings");
+                }
+            }
+            
+            if (!mavenBuilder.isMavenAvailable()) {
                 response.put("errorType", "MAVEN_NOT_FOUND");
                 response.put("mavenSuggestion", 
                     "Maven is not available. Please install Maven or set M2_HOME environment variable");

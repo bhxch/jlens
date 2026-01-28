@@ -113,8 +113,8 @@ public class ListClassFieldsHandler {
                 return errorResult("NOT_FOUND", "Error: pom.xml not found at " + pomFilePath);
             }
 
-            // Inspect the class with BASIC level to get fields
-            ClassMetadata metadata = inspector.inspect(className, context, ParallelProcessor.DetailLevel.BASIC, null);
+            // Inspect the class with FULL level to get all fields for filtering
+            ClassMetadata metadata = inspector.inspect(className, context, ParallelProcessor.DetailLevel.FULL, null);
 
             // Check if the class exists
             if (metadata == null || metadata.getClassName() == null || (metadata.getFields().isEmpty() && !isClassExists(className))) {
