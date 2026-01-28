@@ -2,6 +2,18 @@
 
 A Model Context Protocol (MCP) server for inspecting Java classes and Maven dependencies.
 
+## Key Features
+
+- **Java Class Inspection**: Inspect any Java class in your project or dependencies.
+- **JDK Visibility**: Support for inspecting JDK classes with `@since` information (requires `javaHome`).
+- **Maven Integration**: Deep resolution of Maven dependency graphs, including property placeholders.
+- **Granular Detail Levels**: Support for `skeleton`, `basic`, and `full` detail levels in class inspection.
+- **Interface Support**: Fully supports listing fields and methods for Java interfaces.
+
+### JDK Inspection with `@since`
+
+To get accurate versioning information for JDK classes, provide the `javaHome` parameter to the `inspect_java_class` tool. JLens will automatically locate `src.zip` and extract Javadoc info.
+
 ## Quick Execution
 
 You can run JLens instantly using `npx` or `uvx` (requires Java 25+ installed):

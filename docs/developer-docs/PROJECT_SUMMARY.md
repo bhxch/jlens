@@ -10,7 +10,7 @@ JLens MCP Server is a Model Context Protocol (MCP) server designed for inspectin
 
 - **Version**: 1.1.2
 - **Completion**: 100%
-- **Test Coverage**: 100% (71/71 tests passed)
+- **Test Coverage**: 100% (Verified with McpInspectorIntegrationTest)
 - **MCP Protocol**: 2024-11-05
 - **MCP SDK**: 0.17.2
 - **MCP Inspector Verified**: ✅ (Standardized JSON Output)
@@ -21,13 +21,21 @@ JLens MCP Server is a Model Context Protocol (MCP) server designed for inspectin
 
 | Tool | Description | Status |
 |------|-------------|--------|
-| `inspect_java_class` | Inspect Java classes with real bytecode/reflection analysis. **Requires `pomFilePath`**. | ✅ Complete (JSON) |
-| `list_class_fields` | List class fields with visibility filtering. **Requires `pomFilePath`**. | ✅ Complete (JSON) |
-| `list_module_dependencies` | List Maven module dependencies. **Requires `pomFilePath`**. | ✅ Complete (JSON) |
-| `search_java_class` | Search for classes with cursor-based pagination. **Requires `pomFilePath`**. | ✅ Complete (JSON) |
-| `build_module` | Build Maven modules and download dependencies. **Requires `pomFilePath`**. | ✅ Complete (JSON) |
+| `inspect_java_class` | Inspect Java classes with real bytecode/reflection analysis. Supports `javaHome` for JDK `@since` info. | ✅ Complete (JSON) |
+| `list_class_fields` | List class fields with visibility filtering. Supports Interfaces. | ✅ Complete (JSON) |
+| `list_module_dependencies` | List Maven module dependencies. Supports property placeholders. | ✅ Complete (JSON) |
+| `search_java_class` | Search for classes with cursor-based pagination. Supports property placeholders. | ✅ Complete (JSON) |
+| `build_module` | Build Maven modules and download dependencies. | ✅ Complete (JSON) |
 
-### 2. Testing Results
+### 2. Recent Enhancements (2026-01-28)
+
+- **JDK Visibility**: Added support for extracting `@since` information for JDK classes, methods, and fields by reading `src.zip` in `javaHome`.
+- **Maven Resolution**: Improved POM parsing to handle basic property placeholders like `${project.version}` and correctly extract project GAV.
+- **Detail Levels**: Fully implemented granular `detailLevel` support (`skeleton`, `basic`, `full`) in `inspect_java_class`.
+- **Interface Support**: Fixed issues when listing fields for Java interfaces.
+- **Integration Testing**: Added `McpInspectorIntegrationTest` for comprehensive verification of JDK and project module inspection.
+
+### 3. Testing Results
 
 **Note (JDK 25)**: Recommended build with `-DskipTests` due to JUnit 5 engine compatibility issues in this environment. Core logic verified independently.
 

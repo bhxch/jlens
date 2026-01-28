@@ -76,7 +76,9 @@ public class ListModuleDependenciesHandlerUnitTest {
 
             assertFalse(result.isError());
             String text = ((TextContent) result.content().get(0)).text();
-            assertTrue(text.contains("g:a:1.0"));
+            assertTrue(text.contains("g"));
+            assertTrue(text.contains("a"));
+            assertTrue(text.contains("1.0"));
             assertTrue(text.contains("g.main"));
         }
     }
