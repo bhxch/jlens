@@ -32,6 +32,7 @@ public class ClassMetadata {
     private final String decompiledSource;
     private final String status;
     private final String suggestion;
+    private final String since;
 
     private ClassMetadata(Builder builder) {
         this.className = builder.className;
@@ -53,6 +54,7 @@ public class ClassMetadata {
         this.decompiledSource = builder.decompiledSource;
         this.status = builder.status != null ? builder.status : "SUCCESS";
         this.suggestion = builder.suggestion;
+        this.since = builder.since;
     }
 
     public String getClassName() {
@@ -137,6 +139,10 @@ public class ClassMetadata {
         return suggestion;
     }
 
+    public String getSince() {
+        return since;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -186,6 +192,7 @@ public class ClassMetadata {
         private String decompiledSource;
         private String status;
         private String suggestion;
+        private String since;
 
         public Builder className(String className) {
             this.className = className;
@@ -299,6 +306,11 @@ public class ClassMetadata {
 
         public Builder suggestion(String suggestion) {
             this.suggestion = suggestion;
+            return this;
+        }
+
+        public Builder since(String since) {
+            this.since = since;
             return this;
         }
 

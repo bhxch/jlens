@@ -16,10 +16,11 @@ public class FieldInfo {
     private final boolean isVolatile;
     private final boolean isTransient;
     private final Object constantValue;
+    private final String since;
 
     public FieldInfo(String name, String type, String signature, int modifiers,
                     boolean isStatic, boolean isFinal, boolean isVolatile,
-                    boolean isTransient, Object constantValue) {
+                    boolean isTransient, Object constantValue, String since) {
         this.name = name;
         this.type = type;
         this.signature = signature;
@@ -29,6 +30,7 @@ public class FieldInfo {
         this.isVolatile = isVolatile;
         this.isTransient = isTransient;
         this.constantValue = constantValue;
+        this.since = since;
     }
 
     public String getName() {
@@ -65,6 +67,10 @@ public class FieldInfo {
 
     public Object getConstantValue() {
         return constantValue;
+    }
+
+    public String getSince() {
+        return since;
     }
 
     @Override
@@ -105,6 +111,7 @@ public class FieldInfo {
         private boolean isVolatile;
         private boolean isTransient;
         private Object constantValue;
+        private String since;
 
         public Builder name(String name) {
             this.name = name;
@@ -151,9 +158,14 @@ public class FieldInfo {
             return this;
         }
 
+        public Builder since(String since) {
+            this.since = since;
+            return this;
+        }
+
         public FieldInfo build() {
             return new FieldInfo(name, type, signature, modifiers,
-                               isStatic, isFinal, isVolatile, isTransient, constantValue);
+                               isStatic, isFinal, isVolatile, isTransient, constantValue, since);
         }
     }
 }

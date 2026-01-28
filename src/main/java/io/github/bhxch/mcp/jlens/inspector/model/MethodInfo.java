@@ -23,12 +23,13 @@ public class MethodInfo {
     private final boolean isDefault;
     private final boolean isVarArgs;
     private final String signature;
+    private final String since;
 
     public MethodInfo(String name, String returnType, String descriptor,
                      List<ParameterInfo> parameters, List<String> exceptions,
                      int modifiers, boolean isStatic, boolean isFinal,
                      boolean isSynchronized, boolean isNative, boolean isAbstract,
-                     boolean isDefault, boolean isVarArgs, String signature) {
+                     boolean isDefault, boolean isVarArgs, String signature, String since) {
         this.name = name;
         this.returnType = returnType;
         this.descriptor = descriptor;
@@ -43,6 +44,7 @@ public class MethodInfo {
         this.isDefault = isDefault;
         this.isVarArgs = isVarArgs;
         this.signature = signature;
+        this.since = since;
     }
 
     public String getName() {
@@ -101,6 +103,10 @@ public class MethodInfo {
         return signature;
     }
 
+    public String getSince() {
+        return since;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -143,6 +149,7 @@ public class MethodInfo {
         private boolean isDefault;
         private boolean isVarArgs;
         private String signature;
+        private String since;
 
         public Builder name(String name) {
             this.name = name;
@@ -224,11 +231,16 @@ public class MethodInfo {
             return this;
         }
 
+        public Builder since(String since) {
+            this.since = since;
+            return this;
+        }
+
         public MethodInfo build() {
             return new MethodInfo(name, returnType, descriptor, parameters,
                                exceptions, modifiers, isStatic, isFinal,
                                isSynchronized, isNative, isAbstract, isDefault,
-                               isVarArgs, signature);
+                               isVarArgs, signature, since);
         }
     }
 }
