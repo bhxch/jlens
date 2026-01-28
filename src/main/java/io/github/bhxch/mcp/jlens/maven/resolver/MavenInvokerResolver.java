@@ -104,14 +104,21 @@ public class MavenInvokerResolver implements MavenResolver {
 
     private ModuleContext parseModuleContext(Path pomFile, List<String> outputLines, Scope scope) {
         List<DependencyInfo> dependencies = new ArrayList<>();
+        String projectGroupId = "unknown";
+        String projectArtifactId = "unknown";
+        String projectVersion = "unknown";
+
+        // Regex for project GAV in dependency:list output
+        // Usually looks like: [INFO] io.github.bhxch.mcp:jlens-mcp-server:jar:1.1.1
+        Pattern projectGavPattern = Pattern.compile("\\[INFO\\]\\s+([^:]+):([^:]+):[^:]+:([^\\s]+)");
 
         for (String line : outputLines) {
             Matcher matcher = DEPENDENCY_PATTERN.matcher(line);
             if (matcher.find()) {
                 String groupId = matcher.group(1);
                 String artifactId = matcher.group(2);
-                String version = matcher.group(3);
-                String type = matcher.group(4);
+                String type = matcher.group(3);
+                String version = matcher.group(4);
                 String scopeStr = matcher.group(5);
 
                 DependencyInfo dep = DependencyInfo.builder()
@@ -123,7 +130,29 @@ public class MavenInvokerResolver implements MavenResolver {
                     .build();
 
                 dependencies.add(dep);
+            } else {
+                // Try to find project GAV
+                if (line.contains("--- dependency:") && line.contains(" @ ")) {
+                    // Extract from "[INFO] --- dependency:3.6.1:list (default-cli) @ jlens-mcp-server ---"
+                    int start = line.indexOf("@ ") + 2;
+                    int end = line.lastIndexOf(" ---");
+                    if (start > 1 && end > start) {
+                        projectArtifactId = line.substring(start, end).trim();
+                    }
+                }
             }
+        }
+
+        // If still unknown, try a quick scan of the pom file for the project's own GAV
+        if ("unknown".equals(projectGroupId) || "unknown".equals(projectVersion)) {
+            try {
+                String content = Files.readString(pomFile);
+                projectGroupId = extractDirectValue(content, Pattern.compile("<groupId>([^<]+)</groupId>"), true);
+                if (projectArtifactId.equals("unknown")) {
+                    projectArtifactId = extractDirectValue(content, Pattern.compile("<artifactId>([^<]+)</artifactId>"), true);
+                }
+                projectVersion = extractDirectValue(content, Pattern.compile("<version>([^<]+)</version>"), true);
+            } catch (IOException ignored) {}
         }
 
         Path baseDirectory = pomFile.getParent();
@@ -133,13 +162,21 @@ public class MavenInvokerResolver implements MavenResolver {
         return ModuleContext.builder()
             .pomFile(pomFile)
             .baseDirectory(baseDirectory)
-            .groupId("unknown")
-            .artifactId("unknown")
-            .version("unknown")
+            .groupId(projectGroupId)
+            .artifactId(projectArtifactId)
+            .version(projectVersion)
             .dependencies(dependencies)
             .outputDirectory(outputDirectory)
             .testOutputDirectory(testOutputDirectory)
             .build();
+    }
+
+    private String extractDirectValue(String content, Pattern pattern, boolean firstOnly) {
+        Matcher matcher = pattern.matcher(content);
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        }
+        return "unknown";
     }
 
     @Override

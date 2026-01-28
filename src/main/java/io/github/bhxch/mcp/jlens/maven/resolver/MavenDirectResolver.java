@@ -32,6 +32,9 @@ public class MavenDirectResolver implements MavenResolver {
 
         try {
             String pomContent = Files.readString(pomFile);
+            
+            // Extract properties for interpolation
+            java.util.Map<String, String> properties = extractProperties(pomContent);
 
             String groupId = extractValue(pomContent, GROUP_ID_PATTERN);
             String artifactId = extractValue(pomContent, ARTIFACT_ID_PATTERN);
@@ -44,8 +47,20 @@ public class MavenDirectResolver implements MavenResolver {
             if (version == null) {
                 version = "unknown";
             }
+            
+            // Basic interpolation
+            properties.put("project.groupId", groupId);
+            properties.put("project.artifactId", artifactId);
+            properties.put("project.version", version);
+            properties.put("pom.groupId", groupId);
+            properties.put("pom.artifactId", artifactId);
+            properties.put("pom.version", version);
 
-            List<DependencyInfo> dependencies = extractDependencies(pomContent);
+            groupId = interpolate(groupId, properties);
+            artifactId = interpolate(artifactId, properties);
+            version = interpolate(version, properties);
+
+            List<DependencyInfo> dependencies = extractDependencies(pomContent, properties);
 
             Path baseDirectory = pomFile.getParent();
             if (baseDirectory == null) {
@@ -75,22 +90,38 @@ public class MavenDirectResolver implements MavenResolver {
         }
     }
 
-    private String extractValue(String content, Pattern pattern) {
-        Matcher matcher = pattern.matcher(content);
-        if (matcher.find()) {
-            return matcher.group(1).trim();
+    private java.util.Map<String, String> extractProperties(String pomContent) {
+        java.util.Map<String, String> properties = new java.util.HashMap<>();
+        Pattern propsPattern = Pattern.compile("<properties>(.*?)</properties>", Pattern.DOTALL);
+        Matcher propsMatcher = propsPattern.matcher(pomContent);
+        if (propsMatcher.find()) {
+            String propsBlock = propsMatcher.group(1);
+            Pattern propPattern = Pattern.compile("<([^>]+)>([^<]+)</\\1>");
+            Matcher propMatcher = propPattern.matcher(propsBlock);
+            while (propMatcher.find()) {
+                properties.put(propMatcher.group(1), propMatcher.group(2).trim());
+            }
         }
-        return null;
+        return properties;
     }
 
-    private List<DependencyInfo> extractDependencies(String pomContent) {
+    private String interpolate(String value, java.util.Map<String, String> properties) {
+        if (value == null) return null;
+        String result = value;
+        for (java.util.Map.Entry<String, String> entry : properties.entrySet()) {
+            result = result.replace("${" + entry.getKey() + "}", entry.getValue());
+        }
+        return result;
+    }
+
+    private List<DependencyInfo> extractDependencies(String pomContent, java.util.Map<String, String> properties) {
         List<DependencyInfo> dependencies = new ArrayList<>();
         Matcher dependencyMatcher = DEPENDENCY_PATTERN.matcher(pomContent);
 
         while (dependencyMatcher.find()) {
-            String groupId = dependencyMatcher.group(1).trim();
-            String artifactId = dependencyMatcher.group(2).trim();
-            String version = dependencyMatcher.group(3).trim();
+            String groupId = interpolate(dependencyMatcher.group(1).trim(), properties);
+            String artifactId = interpolate(dependencyMatcher.group(2).trim(), properties);
+            String version = interpolate(dependencyMatcher.group(3).trim(), properties);
 
             String dependencyBlock = dependencyMatcher.group(0);
             String scopeStr = extractValue(dependencyBlock, SCOPE_PATTERN);
@@ -107,6 +138,14 @@ public class MavenDirectResolver implements MavenResolver {
         }
 
         return dependencies;
+    }
+
+    private String extractValue(String content, Pattern pattern) {
+        Matcher matcher = pattern.matcher(content);
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        }
+        return null;
     }
 
     @Override
