@@ -148,9 +148,12 @@ public class ClassInspector {
         if (level != ParallelProcessor.DetailLevel.SKELETON) {
             // Add fields
             for (Field field : clazz.getDeclaredFields()) {
-                // If BASIC level, only include public fields
-                if (level == ParallelProcessor.DetailLevel.BASIC && !Modifier.isPublic(field.getModifiers())) {
-                    continue;
+                // If BASIC level, only include public and protected fields
+                if (level == ParallelProcessor.DetailLevel.BASIC) {
+                    int mods = field.getModifiers();
+                    if (!Modifier.isPublic(mods) && !Modifier.isProtected(mods)) {
+                        continue;
+                    }
                 }
 
                 FieldInfo.Builder fieldBuilder = FieldInfo.builder()
@@ -159,19 +162,22 @@ public class ClassInspector {
                     .modifiers(field.getModifiers())
                     .isStatic(Modifier.isStatic(field.getModifiers()))
                     .isFinal(Modifier.isFinal(field.getModifiers()));
-                
+
                 if (jdkInfo != null && jdkInfo.getFieldSince().containsKey(field.getName())) {
                     fieldBuilder.since(jdkInfo.getFieldSince().get(field.getName()));
                 }
-                
+
                 builder.addField(fieldBuilder.build());
             }
 
             // Add constructors
             for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-                // If BASIC level, only include public constructors
-                if (level == ParallelProcessor.DetailLevel.BASIC && !Modifier.isPublic(constructor.getModifiers())) {
-                    continue;
+                // If BASIC level, only include public and protected constructors
+                if (level == ParallelProcessor.DetailLevel.BASIC) {
+                    int mods = constructor.getModifiers();
+                    if (!Modifier.isPublic(mods) && !Modifier.isProtected(mods)) {
+                        continue;
+                    }
                 }
 
                 List<ParameterInfo> params = new ArrayList<>();
@@ -202,9 +208,12 @@ public class ClassInspector {
 
             // Add methods
             for (Method method : clazz.getDeclaredMethods()) {
-                // If BASIC level, only include public methods
-                if (level == ParallelProcessor.DetailLevel.BASIC && !Modifier.isPublic(method.getModifiers())) {
-                    continue;
+                // If BASIC level, only include public and protected methods
+                if (level == ParallelProcessor.DetailLevel.BASIC) {
+                    int mods = method.getModifiers();
+                    if (!Modifier.isPublic(mods) && !Modifier.isProtected(mods)) {
+                        continue;
+                    }
                 }
 
                 List<ParameterInfo> params = new ArrayList<>();
