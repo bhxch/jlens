@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(mvn :*)",
+      "Bash(chmod +x test_tools.sh && ./test_tools.sh)",
+      "Bash(chmod +x verify_tools.sh && ./verify_tools.sh)",
+      "Bash(mvn test:*)",
+      "Bash(which java:*)",
+      "Bash(python3 test_mcp_tools.py)"
+    ]
+  }
+}
