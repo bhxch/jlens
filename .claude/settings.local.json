@@ -9,7 +9,8 @@
       "Bash(which java:*)",
       "Bash(ls :*)",
       "Bash(mvn test-compile:*)",
-      "Bash(mvn clean:*)"
+      "Bash(mvn clean:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
